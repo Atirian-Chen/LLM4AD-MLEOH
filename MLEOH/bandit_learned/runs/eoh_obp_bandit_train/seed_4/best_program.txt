@@ -1,0 +1,24 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    valid = remaining >= 0
+    # Compute inverse of relative leftover space: 1 / (remaining + item) to emphasize minimizing leftover
+    # Use item + 1e-12 to avoid division by zero in case item is zero
+    relative_leftover = np.where(valid, remaining / (bins + 1e-12), 1e12)
+    # Higher priority for smaller relative leftover; invert to get higher score for better fit
+    priority_scores = 1.0 / (relative_leftover + 1e-12)
+    # Break ties by favoring larger original bin capacities
+    priority_scores += bins / (np.max(bins) + 1)
+    # Invalid bins get zero priority
+    priority_scores = np.where(valid, priority_scores, 0)
+    return priority_scores
+

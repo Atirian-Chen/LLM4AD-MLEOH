@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{Assign priority using a modified Gaussian score with a narrower peak and a more aggressive overflow penalty, emphasizing near-perfect fits while strongly discouraging overflows.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Use a narrower Gaussian-like score centered at zero (perfect fit)\n    scale = 0.3\n    raw_score = np.exp(-(remaining ** 2) / (2 * scale ** 2))\n    # Apply a steeper penalty for overflow: sigmoid drops more sharply when remaining < 0\n    penalty = 1 / (1 + np.exp(20 * remaining))\n    priority_scores = raw_score * penalty\n    return priority_scores\n\n",
+        "score": -2089.6
+    },
+    {
+        "algorithm": "{Assign priority using a smooth, bounded score that peaks at perfect fit, decreases symmetrically for both underfill and overfill, but applies a steep cutoff to heavily discourage overflows.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Use a Gaussian-like score centered at zero (perfect fit)\n    # Scale parameter controls width of the peak\n    scale = 0.5\n    raw_score = np.exp(-(remaining ** 2) / (2 * scale ** 2))\n    # Apply strong penalty for overflow: multiply by a sigmoid that drops sharply when remaining < 0\n    penalty = 1 / (1 + np.exp(10 * remaining))\n    priority_scores = raw_score * penalty\n    return priority_scores\n\n",
+        "score": -2091.0
+    },
+    {
+        "algorithm": "{Prioritize bins based on a hyperbolic tangent of the ratio of item size to remaining capacity, emphasizing bins where the item size is a moderate fraction of remaining space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    ratio = item / (remaining + 1e-12)\n    score = np.tanh(ratio)\n    penalty = np.where(remaining >= 0, 1.0, -1e9)\n    priority_scores = score * penalty\n    return priority_scores\n\n",
+        "score": -2091.6
+    },
+    {
+        "algorithm": "{We prioritize bins where adding the item would leave the least remaining capacity, but only if the bin can fit the item; otherwise, priority is zero.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    priority_scores = np.where(valid, -remaining, 0.0)\n    return priority_scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{We assign priority based on the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the smallest positive remaining capacity, while heavily penalizing overfull bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Perfect fit gets highest priority\n    perfect_fit = (remaining == 0)\n    # Positive remaining capacity is good, smaller is better\n    positive_remaining = (remaining > 0)\n    # Overfull bins get very low priority\n    overfull = (remaining < 0)\n    \n    priority_scores = np.zeros_like(bins)\n    # Assign high score for perfect fit\n    priority_scores[perfect_fit] = 1.0\n    # For positive remaining, score is 1/(1+remaining) so smaller remaining gives higher score\n    priority_scores[positive_remaining] = 1.0 / (1.0 + remaining[positive_remaining])\n    # For overfull, assign negative score proportional to how overfull\n    priority_scores[overfull] = -1.0 - np.abs(remaining[overfull])\n    \n    return priority_scores\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{Prioritize bins using a smooth exponential decay of remaining capacity, scaled by a soft penalty that gradually increases as the bin nears overflow, without hard thresholds.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    decay = np.exp(-remaining / bins.max())\n    penalty = 1 / (1 + np.exp(-remaining))\n    priority_scores = decay * penalty\n    return priority_scores\n\n",
+        "score": -2157.6
+    },
+    {
+        "algorithm": "{Assign priority based on the ratio of item size to bin capacity, favoring bins where the item represents a moderate fraction, while applying a sharp exponential penalty for bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    ratio = item / bins\n    ideal_ratio = 0.6\n    fit_penalty = np.where(bins >= item, 1.0, np.exp(-10 * (item - bins)))\n    desirability = 1.0 - np.abs(ratio - ideal_ratio)\n    priority_scores = fit_penalty * desirability\n    return priority_scores\n\n",
+        "score": -2382.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a sigmoid-weighted score that balances remaining capacity and a penalty for overflow, favoring bins where the item fits well without hard thresholds.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    sigmoid = 1 / (1 + np.exp(-remaining))\n    penalty = np.where(remaining < 0, -1e6, 1.0)\n    priority_scores = sigmoid * penalty\n    return priority_scores\n\n",
+        "score": -3578.2
+    }
+]

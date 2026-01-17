@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item without exceeding their capacity while minimizing fragmentation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.minimum(bins, item)\n    return remaining\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{The algorithm calculates priority as the remaining capacity after hypothetically adding the item, preferring bins where the item fits perfectly or leaves minimal wasted space, while heavily penalizing overfull bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Perfect fit gets highest priority, then positive remaining space (prefer smallest leftover),\n    # overfull bins get very low priority.\n    priority_scores = np.where(remaining == 0, np.inf, \n                               np.where(remaining > 0, -remaining, \n                                        remaining - bins.max()))  # Penalize overfull by capacity deficit\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

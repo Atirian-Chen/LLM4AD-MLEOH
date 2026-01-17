@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the least wasted space, while heavily penalizing overfull bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Large negative priority for bins that would be overfilled\n    penalty = -1e9\n    priority_scores = np.where(remaining >= 0, remaining, penalty + remaining)\n    return priority_scores\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins that are nearly filled but not overfilled, by taking the negative absolute difference between the bin capacity and the item, and then adjusting so that overfilled bins have the lowest priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Priority is higher for smaller positive remaining capacity (nearly filled),\n    # and negative remaining (overfill) gets lowest priority.\n    priority_scores = -np.abs(remaining)\n    # Ensure overfilled bins are strictly worse than any non-overfilled bin\n    priority_scores[remaining < 0] -= bins.max() - bins.min() + 1\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the smallest current total load relative to their capacity, favoring bins that can accommodate the item with minimal wastage while maintaining balance across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.fmin(bins, item)\n    # Normalize by capacity to get a measure of utilization\n    utilization = (bins - remaining) / bins\n    # Prioritize bins with lower utilization (more empty space), but ensure they can fit the item\n    # Use a combination of remaining space and utilization to determine priority\n    priorities = (remaining + 1e-8) / (bins + 1e-8) * (1 - utilization)\n    # Penalize bins that cannot fit the item\n    can_fit = remaining >= item\n    priorities = np.where(can_fit, priorities, 0)\n    return priorities\n\n",
+        "score": -3786.2,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{We compute priority as the remaining capacity after hypothetically adding the item, preferring bins where the item fits perfectly or leaves the least wasted space, while penalizing overfull bins heavily.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Large positive priority if fits perfectly, high positive if fits well,\n    # negative if overfull, with more overfill giving more negative priority.\n    priority_scores = np.where(\n        remaining == 0,\n        2.0,                     # highest for exact fit\n        np.where(\n            remaining > 0,\n            1.0 / (remaining + 1e-9),  # fits, prefer smaller remaining capacity\n            -np.abs(remaining)   # does not fit, penalize by overfill amount\n        )\n    )\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

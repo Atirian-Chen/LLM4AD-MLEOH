@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{We prioritize bins with capacity exactly equal to the item first, then bins with capacity greater than the item by preferring those with the smallest remaining capacity after placement, and finally assign the lowest priority to bins with insufficient capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    result = np.full_like(bins, -np.inf, dtype=float)\n    sufficient = bins >= item\n    remaining = bins - item\n    # Highest priority: capacity exactly equal to item\n    exact = (bins == item)\n    result[exact] = np.inf\n    # Medium priority: capacity greater than item, smaller remaining is better\n    greater = sufficient & ~exact\n    result[greater] = -remaining[greater]  # negative so smaller remaining gives higher score\n    # Lowest priority: insufficient capacity already handled by -np.inf default\n    return result\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{We prioritize bins by combining a normalized distance to the ideal fit (slightly larger than the item) with a dynamic scaling factor that amplifies preferences for bins with remaining capacity close to a target threshold, while penalizing both underutilization and overflow using a piecewise quadratic function.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    exact_fit = (remaining == 0)\n    fits = (remaining > 0)\n    overflow = (remaining < 0)\n\n    priority_scores = np.full_like(bins, -np.inf, dtype=float)\n\n    # Exact fit gets highest priority\n    priority_scores[exact_fit] = np.inf\n\n    # For bins that fit, use a quadratic penalty scaled by proximity to an ideal remaining capacity\n    # Ideal remaining is set to max(0.1, item * 0.1) to avoid degeneracy for small items\n    ideal_remaining = max(0.1, item * 0.1)\n    fit_distance = np.abs(remaining[fits] - ideal_remaining)\n    fit_penalty = -0.5 * (fit_distance ** 2)  # Negative quadratic penalty\n    priority_scores[fits] = fit_penalty\n\n    # Overflow bins: apply a steep quadratic penalty based on excess capacity\n    overflow_excess = -remaining[overflow]\n    overflow_penalty = -1.5 * (overflow_excess ** 2)\n    priority_scores[overflow] = overflow_penalty\n\n    return priority_scores\n\n",
+        "score": -2092.8
+    },
+    {
+        "algorithm": "{The algorithm calculates priority by first preferring bins where the item fits exactly, then bins where it fits without exceeding capacity, and finally bins where it would cause overflow, with ties broken by preferring bins with smaller remaining capacity after the item is added.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    exact_fit = (remaining == 0)\n    fits = (remaining > 0)\n    overflow = (remaining < 0)\n    \n    priority_scores = np.full_like(bins, -np.inf)\n    priority_scores[exact_fit] = 2 * bins[exact_fit]\n    priority_scores[fits] = 1 * bins[fits] - remaining[fits]\n    priority_scores[overflow] = 0 * bins[overflow] + remaining[overflow]\n    \n    return priority_scores\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{We prioritize bins by maximizing the sum of the item and the bin's current load relative to its capacity, while preferring bins that are already fuller to better utilize capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    return (bins + item) / (1.0 - bins) if np.any(bins < 1.0) else np.full_like(bins, -np.inf)\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins that minimize wasted space or maximize utilization efficiency when adding an item, with special attention to exact fits and fullness levels.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    result = np.full_like(bins, -np.inf, dtype=float)\n    sufficient = bins >= item\n    total_load = bins + item\n    remaining_capacity = bins - item\n    # Avoid division by zero for bins with no remaining capacity\n    valid = remaining_capacity > 0\n    # Prioritize bins where the post-placement load-to-remaining-capacity ratio is maximized\n    # This encourages better overall utilization and minimizes leftover space\n    ratio = total_load[valid] / remaining_capacity[valid]\n    result[sufficient & valid] = ratio\n    return result\n\n",
+        "score": -2114.0
+    },
+    {
+        "algorithm": "{We prioritize bins by favoring those that are closest to being filled to a target utilization threshold (e.g., 80% of capacity), rewarding bins with remaining capacity near the item size and penalizing both underutilized and overly constrained bins, with ties broken by preferring larger bin capacities.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    target_utilization = 0.8\n    target_remaining = bins * (1 - target_utilization)\n    deviation = np.abs((bins - item) - target_remaining)\n    # Reward bins where the remaining capacity after adding the item is close to the target remaining\n    scores = -deviation\n    # Prefer larger bins when deviations are equal\n    scores += 1e-6 * bins\n    # Set insufficient bins to lowest priority\n    sufficient = bins >= item\n    scores[~sufficient] = -np.inf\n    return scores\n\n",
+        "score": -2140.8
+    },
+    {
+        "algorithm": "{We prioritize bins by favoring those with capacity just slightly larger than the item, penalizing both underutilization and overfitting, and using a logarithmic scaling to emphasize small differences in remaining capacity near the optimal fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    exact_fit = (remaining == 0)\n    fits = (remaining > 0)\n    overflow = (remaining < 0)\n\n    priority_scores = np.full_like(bins, -np.inf, dtype=float)\n\n    # Exact fit gets highest priority\n    priority_scores[exact_fit] = np.inf\n\n    # For bins that fit, use logarithmic penalty based on remaining capacity\n    # Smaller remaining capacity (closer to exact fit) gets higher score\n    # Logarithmic scaling emphasizes small differences near ideal fit\n    log_penalty = np.log1p(remaining[fits])  # log(1 + remaining) for positive remaining\n    priority_scores[fits] = log_penalty\n\n    # Overflow bins get negative scores proportional to how much they exceed\n    # But scaled by log to avoid extreme penalties\n    overflow_remaining = -remaining[overflow]\n    overflow_score = -np.log1p(overflow_remaining)\n    priority_scores[overflow] = overflow_score\n\n    return priority_scores\n\n",
+        "score": -3734.8
+    },
+    {
+        "algorithm": "{The algorithm calculates priority by first assigning higher scores to bins where the item fits exactly, then to bins where it fits without exceeding capacity, and finally to bins where it would cause overflow, with ties broken by preferring bins with larger remaining capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    exact_fit = (remaining == 0)\n    fits = (remaining > 0)\n    overflow = (remaining < 0)\n    \n    priority_scores = np.full_like(bins, -np.inf)\n    priority_scores[exact_fit] = 2 * bins[exact_fit]\n    priority_scores[fits] = 1 * bins[fits] + remaining[fits]\n    priority_scores[overflow] = 0 * bins[overflow] + remaining[overflow]\n    \n    return priority_scores\n\n",
+        "score": -4800.2
+    }
+]

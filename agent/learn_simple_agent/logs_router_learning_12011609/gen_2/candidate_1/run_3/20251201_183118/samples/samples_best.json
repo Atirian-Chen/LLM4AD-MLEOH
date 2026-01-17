@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm calculates priority as the remaining capacity after hypothetically adding the item, preferring bins where the item fits perfectly or leaves minimal wasted space, while heavily penalizing overflows.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Large negative penalty for overflow, otherwise prioritize small positive remainder\n    priority_scores = np.where(remaining >= 0, 1.0 / (remaining + 1e-9), -1e9 * np.abs(remaining))\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 24,
+        "algorithm": "{Prioritize bins using a piecewise-linear weighting of fill ratio that emphasizes bins where the item uses a moderate fraction of remaining space, with a configurable steepness parameter.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    fill_ratio = item / bins\n    k = 8.0\n    linear_score = np.clip(k * (fill_ratio - 0.25), 0, 1)\n    priority_scores[valid] = linear_score[valid] * (bins[valid] / (remaining[valid] + 1))\n    return priority_scores\n\n",
+        "score": -2091.4,
+        "program": ""
+    },
+    {
+        "sample_order": 32,
+        "algorithm": "{Prioritize bins by a hyperbolic weighting of the remaining capacity that strongly penalizes near\u2011empty placements and gently decays as bins approach fullness, scaled by the bin\u2019s original capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    \n    if np.any(valid):\n        r = remaining[valid]\n        b = bins[valid]\n        hyperbolic = 1 / (r + 1e-6)\n        decay = np.exp(-r / b)\n        priority_scores[valid] = hyperbolic * decay * b\n    \n    return priority_scores\n\n",
+        "score": -2090.8,
+        "program": ""
+    }
+]

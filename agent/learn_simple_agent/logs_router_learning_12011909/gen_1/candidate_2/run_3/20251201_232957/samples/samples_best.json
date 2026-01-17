@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins that are less full, favoring bins with more remaining capacity to balance the load effectively.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return bins - item\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 3,
+        "algorithm": "{The algorithm assigns higher priority to bins that are less full, with priority decreasing as the bin's current load increases, and includes a tie-breaking mechanism based on bin index to ensure deterministic ordering.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    filled = bins - item\n    # Avoid division by zero and handle negative values\n    filled = np.maximum(filled, 0)\n    # Use inverse of filled capacity as priority (less filled = higher priority)\n    # Add small epsilon to prevent infinite priority for empty bins\n    epsilon = 1e-8\n    priority_scores = 1 / (filled + epsilon)\n    # Break ties by preferring lower-indexed bins (lower index = higher priority)\n    # by adding a small offset based on bin index\n    indices = np.arange(len(bins))\n    priority_scores += indices * 1e-6\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

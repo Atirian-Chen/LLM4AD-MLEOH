@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins that are nearly full but still fit the item, by taking the negative absolute difference between the bin capacity and a target equal to bin capacity minus item size.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    target = bins - item\n    score = -np.abs(bins - target)\n    score = np.where(valid, score, -np.inf)\n    return score\n\n",
+        "score": -2099.4,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{We prioritize bins with the smallest remaining capacity that can still fit the item, then by overall smallest remaining capacity for tie-breaking.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    can_fit = bins >= item\n    \n    # For bins that can fit, priority is based on smallest remaining capacity (higher priority for smaller capacity).\n    # We invert the capacity so that smaller capacity gets higher number.\n    # For bins that cannot fit, assign -inf so they are never chosen.\n    priority_vals = np.where(can_fit, -bins, -np.inf)\n    \n    return priority_vals\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

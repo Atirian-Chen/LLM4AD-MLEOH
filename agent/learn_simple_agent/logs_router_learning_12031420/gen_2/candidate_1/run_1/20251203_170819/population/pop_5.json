@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the least wasted space, while penalizing overfull bins heavily.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Large positive priority if fits perfectly, high positive if fits well,\n    # negative if overfull, with more overfull bins getting much lower priority.\n    priority_scores = np.where(\n        remaining == 0,\n        2.0,                     # highest for exact fit\n        np.where(\n            remaining > 0,\n            1.0 / (1.0 + remaining),  # fits, prefer smaller remaining capacity\n            -10.0 - abs(remaining)    # does not fit, penalize heavily\n        )\n    )\n    return priority_scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{We compute priority as a sigmoid-like transformation of the remaining capacity, emphasizing near-exact fits with a Gaussian bump and smoothly penalizing overfull bins without sharp thresholds.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    sigma = 0.1\n    gaussian_bump = np.exp(-(remaining ** 2) / (2 * sigma ** 2))\n    smooth_penalty = -np.exp(np.where(remaining < 0, remaining, 0))\n    priority_scores = gaussian_bump + smooth_penalty\n    return priority_scores\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{We compute priority as a weighted combination of the bin's current capacity and the item size, favoring bins where adding the item minimizes the remaining unused capacity, using an exponential decay scoring.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    target_fraction = 0.75\n    fill_after = bins - item\n    remaining = bins - fill_after\n    target_fill = target_fraction * bins\n    unused = np.maximum(bins - fill_after - target_fill, 0)\n    priority_scores = np.exp(-unused / (bins + 1e-9))\n    return priority_scores\n\n",
+        "score": -2320.8
+    },
+    {
+        "algorithm": "{We compute priority as the ratio of the item size to the bin's current capacity, favoring bins where the item represents a significant but not excessive proportion, using a piecewise linear scoring that peaks at a target ratio.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    target_ratio = 0.5\n    ratio = np.where(bins > 0, item / bins, 0)\n    score = np.where(\n        ratio <= target_ratio,\n        ratio / target_ratio,\n        1.0 - (ratio - target_ratio) / (1.0 - target_ratio)\n    )\n    score = np.clip(score, -1.0, 1.0)\n    overfull_penalty = np.where(bins - item < 0, -10.0, 0.0)\n    return score + overfull_penalty\n\n",
+        "score": -2868.0
+    },
+    {
+        "algorithm": "{The algorithm calculates priority as a weighted combination favoring bins where the item size is a harmonic fraction of the bin's current capacity, using a sine-based transformation to create a smooth, periodic preference pattern.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    eps = 1e-9\n    ratio = item / (bins + eps)\n    priority_scores = np.sin(2 * np.pi * ratio) / (ratio + eps)\n    return priority_scores\n\n",
+        "score": -3788.4
+    },
+    {
+        "algorithm": "{We compute priority as a weighted combination of the bin's current capacity and the item size, favoring bins that are neither too empty nor too full, using a Gaussian-like scoring centered around a target fill level.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target_fill = 0.7 * bins\n    fill_after = bins - item\n    deviation = np.abs(fill_after - target_fill)\n    max_dev = np.maximum(np.abs(bins - target_fill), np.abs(target_fill))\n    normalized_dev = np.where(max_dev > 0, deviation / max_dev, 0)\n    priority_scores = np.exp(-4 * normalized_dev)\n    return priority_scores\n\n",
+        "score": -4192.6
+    },
+    {
+        "algorithm": "{We compute priority as a weighted combination of the bin's current capacity and the item size, favoring bins where adding the item brings the fill level closest to a target fraction of the bin's capacity, using an inverse distance scoring.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target_fraction = 0.75\n    fill_after = bins - item\n    target_fill = target_fraction * bins\n    distance = np.abs(fill_after - target_fill)\n    eps = 1e-9\n    priority_scores = 1.0 / (distance + eps)\n    return priority_scores\n\n",
+        "score": -4439.0
+    },
+    {
+        "algorithm": "{The algorithm calculates priority as the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the least wasted space, while heavily penalizing overflows.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Large penalty for overflow, then prioritize smallest non-negative remaining capacity\n    priority_scores = np.where(remaining >= 0, remaining, -1e9 + remaining)\n    return priority_scores\n\n",
+        "score": -5000.0
+    }
+]

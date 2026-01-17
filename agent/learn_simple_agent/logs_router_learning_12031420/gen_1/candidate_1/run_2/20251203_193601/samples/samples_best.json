@@ -1,0 +1,30 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins with the smallest remaining capacity that can still fit the item, then among those we prefer bins with the smallest total capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    priority_scores = np.full_like(bins, np.inf)\n    # For valid bins, priority = remaining capacity, break ties by bin capacity\n    priority_scores[valid] = remaining[valid] + bins[valid] * 1e-10\n    return priority_scores\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{The algorithm calculates priority as the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves minimal positive leftover space, while heavily penalizing overflows.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Perfect fit gets highest priority\n    perfect_fit = (remaining == 0)\n    # Positive remaining capacity is good, smaller is better\n    positive_remaining = (remaining > 0)\n    # Overflow is bad, more overflow is worse\n    overflow = (remaining < 0)\n    \n    # Assign scores: perfect fit highest, then positive remaining (inverse), then overflow (negative)\n    priority_scores = np.zeros_like(bins)\n    priority_scores[perfect_fit] = 2.0\n    priority_scores[positive_remaining] = 1.0 / (1.0 + remaining[positive_remaining])\n    priority_scores[overflow] = remaining[overflow]  # negative values\n    \n    return priority_scores\n\n",
+        "score": -2095.4,
+        "program": ""
+    },
+    {
+        "sample_order": 5,
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins that are nearly full but still fit the item, by taking the negative absolute difference between the bin capacity and the item size, then breaking ties in favor of larger remaining capacities.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    # Start with very low priority for invalid bins\n    scores = np.full_like(bins, -np.inf)\n    # For valid bins: primary = -abs(item - bin), secondary = remaining\n    scores[valid] = -np.abs(bins[valid] - item) + remaining[valid] * 1e-9\n    return scores\n\n",
+        "score": -2092.8,
+        "program": ""
+    },
+    {
+        "sample_order": 7,
+        "algorithm": "{The algorithm assigns higher priority to bins that are less full, using a score inversely proportional to the remaining capacity, ensuring balanced distribution across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_capacity = bins - item\n    # Avoid division by zero or negative values\n    remaining_capacity = np.maximum(remaining_capacity, 1e-10)\n    return 1 / remaining_capacity\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

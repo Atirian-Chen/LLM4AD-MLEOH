@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the highest remaining capacity to maintain balance and avoid overfilling, assigning higher priority to bins with more available space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return bins - item\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{The algorithm prioritizes bins with the least current load relative to their capacity, favoring bins that can accommodate the item with minimal disruption to balance.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    bin_loads = np.zeros_like(bins)\n    valid_bins = bins > 0\n    bin_loads[valid_bins] = (bins[valid_bins] - item) / bins[valid_bins]\n    return bin_loads\n\n",
+        "score": -2099.4,
+        "program": ""
+    },
+    {
+        "sample_order": 3,
+        "algorithm": "{The algorithm prioritizes bins with the least current utilization, favoring bins that can accommodate the item with minimal waste while balancing load across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.minimum(bins, item)\n    # Prioritize bins with higher remaining capacity (i.e., more room for the item)\n    # Use inverse of remaining capacity to penalize bins that are already full or nearly full\n    priorities = 1.0 / (remaining + 1e-8)  # Add small epsilon to avoid division by zero\n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

@@ -1,0 +1,37 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the largest remaining capacity to minimize fragmentation and maximize space utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return bins - item\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 10,
+        "algorithm": "{The algorithm prioritizes bins with the highest remaining capacity, assigning higher priority to bins that can accommodate the item while minimizing fragmentation, using a normalized score based on available space relative to bin capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - 0.0  # Initialize with bin capacities (assuming bins are filled to 0)\n    \n    # Ensure we don't assign priority to bins that cannot fit the item\n    valid = remaining >= item\n    \n    # Compute priority: higher remaining capacity gets higher priority\n    # Normalize by bin capacity to favor bins that are less full relative to their size\n    priority_scores = np.where(valid, remaining / bins, 0)\n    \n    return priority_scores\n\n",
+        "score": -2099.4,
+        "program": ""
+    },
+    {
+        "sample_order": 11,
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item while minimizing wasted space, favoring bins with the smallest remaining capacity that is still greater than or equal to the item size.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Mask for bins that can fit the item\n    can_fit = remaining >= 0\n    # Initialize priorities with a large value (low priority) for bins that can't fit\n    priorities = np.full_like(bins, fill_value=1e9)\n    # For bins that can fit, prioritize based on minimal wasted space\n    # Use negative remaining space to favor smaller remaining space (more full)\n    priorities[can_fit] = -remaining[can_fit]\n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 29,
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins based on how well the resulting remaining capacity after adding the item aligns with a desired fill ratio\u2014specifically, favoring configurations that achieve an aesthetically or functionally balanced distribution, often centered around the golden ratio or a target relative to the item size.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    can_fit = remaining >= 0\n    priorities = np.full_like(bins, fill_value=1e9)\n    valid_remaining = remaining[can_fit]\n    current_fill = bins[can_fit] - valid_remaining\n    # Geometric mean of remaining capacity and gap from item size\n    geometric_score = np.sqrt(valid_remaining * (item + 1e-8))\n    # Penalize bins that are nearly full (very low remaining) or very empty\n    # Use a sigmoid-like penalty based on how close current_fill is to item\n    fill_ratio = current_fill / (bins[can_fit] + 1e-8)\n    deviation_from_item = np.abs(fill_ratio - 1.0)\n    smooth_penalty = 1.0 / (1.0 + deviation_from_item * 5.0)\n    final_score = geometric_score * smooth_penalty\n    priorities[can_fit] = -final_score  # Lower score = higher priority\n    return priorities\n\n",
+        "score": -2091.4,
+        "program": ""
+    },
+    {
+        "sample_order": 31,
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins that can accommodate the item while optimizing for either minimizing fragmentation or wasted space, using normalized measures of remaining capacity relative to bin size or absolute leftover space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - 0.0\n    can_fit = remaining >= item\n    priorities = np.zeros_like(bins)\n\n    valid_bins = can_fit\n    if not valid_bins.any():\n        return priorities\n\n    # Compute item-to-bin ratio (how big the item is relative to bin)\n    item_ratio = item / bins[valid_bins]\n    \n    # Compute relative leftover space after placing the item\n    leftover_ratio = (remaining[valid_bins] - item) / bins[valid_bins]\n    # Avoid log(0); use small epsilon\n    penalty_factor = np.log1p(leftover_ratio + 1e-8)\n\n    # Geometric mean: balances item size proportion and leftover space penalty\n    score = np.sqrt(item_ratio * (1 / (penalty_factor + 1e-8)))\n    priorities[valid_bins] = score\n\n    return priorities\n\n",
+        "score": -2088.6,
+        "program": ""
+    }
+]

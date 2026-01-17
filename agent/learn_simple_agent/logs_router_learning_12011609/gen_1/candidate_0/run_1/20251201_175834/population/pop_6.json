@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins where the resulting fill is neither too tight nor too loose, by taking the negative absolute difference between the resulting fill and a target fill level, which we set to 0.5 for balance.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target = 0.5\n    fill_after = bins + item\n    return -np.abs(fill_after - target)\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{We compute priority as the exponential of the negative squared difference between the bin's current fill level and a dynamically chosen ideal fill level, which is the item size itself, promoting bins where adding the item brings the bin's fill closest to that ideal.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    ideal_fill = item\n    fill_after = bins + item\n    diff = fill_after - ideal_fill\n    return np.exp(-(diff ** 2))\n\n",
+        "score": -2096.2
+    },
+    {
+        "algorithm": "{We compute priority as the product of the bin's current emptiness and the item's size, favoring bins that are already emptier and where the item represents a larger relative addition, while penalizing overfilling with a sharp cutoff.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = 1.0 - bins\n    fill_after = bins + item\n    overfull_penalty = -1e9\n    relative_addition = item * remaining\n    priority_scores = np.where(fill_after <= 1.0, relative_addition, overfull_penalty)\n    return priority_scores\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{We compute priority as a piecewise linear function that assigns highest preference when the item fills the bin to a target fill level, with linearly decreasing preference as the resulting fill ratio moves away from that target.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target_fill = 0.8\n    tolerance = 0.3\n    \n    ratio = item / bins\n    fill_after = (bins - item) / bins  # remaining capacity ratio\n    \n    # Distance from ideal remaining capacity (1 - target_fill)\n    ideal_remaining = 1.0 - target_fill\n    distance = np.abs(fill_after - ideal_remaining)\n    \n    # Piecewise linear: 1 at perfect match, down to 0 at tolerance distance\n    scores = np.maximum(0, 1 - distance / tolerance)\n    return scores\n\n",
+        "score": -2145.6
+    },
+    {
+        "algorithm": "{We compute priority as the ratio of the item size to the bin capacity, favoring bins where the item occupies a larger proportion by applying a shifted and scaled Gaussian function centered around a higher target ratio, which provides a smooth preference peak with increased width and height to emphasize high utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    target_ratio = 0.8  # Center of the Gaussian peak (higher target)\n    width = 0.3       # Increased width (standard deviation) for broader preference\n    ratio = item / bins\n    priority_scores = np.exp(-((ratio - target_ratio) ** 2) / (2 * width ** 2))\n    return priority_scores\n\n",
+        "score": -2145.8
+    },
+    {
+        "algorithm": "{Compute priority as a Gaussian-like preference centered around a target fill ratio, with higher priority when the resulting bin fill is close to the target, and penalizing both underfilled and overfilled bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    target_ratio = 0.7\n    new_fill = item / bins\n    return np.exp(-((new_fill - target_ratio) ** 2) / (2 * (0.2 ** 2)))\n\n",
+        "score": -2214.0
+    },
+    {
+        "algorithm": "{We compute priority as the inverse of the absolute difference between the item-to-bin ratio and a target ratio, amplified by a quadratic decay to emphasize bins with ratios close to the target, using a smooth penalty function for deviation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    target_ratio = 0.6\n    ratio = item / bins\n    deviation = np.abs(ratio - target_ratio)\n    # Quadratic decay with a peak at target_ratio\n    priority_scores = 1.0 / (1.0 + deviation ** 2)\n    return priority_scores\n\n",
+        "score": -2380.0
+    },
+    {
+        "algorithm": "{We compute priority as the ratio of the item size to the bin capacity, favoring bins where the item occupies a moderate proportion by applying a shifted and scaled Gaussian function centered around a target ratio, which provides a smooth preference peak with adjustable width and height.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target_ratio = 0.6  # Center of the Gaussian peak\n    width = 0.2       # Width (standard deviation) of the Gaussian\n    ratio = item / bins\n    priority_scores = np.exp(-((ratio - target_ratio) ** 2) / (2 * width ** 2))\n    return priority_scores\n\n",
+        "score": -2382.4
+    }
+]

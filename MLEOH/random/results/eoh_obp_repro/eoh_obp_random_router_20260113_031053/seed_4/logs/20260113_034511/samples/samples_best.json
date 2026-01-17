@@ -1,0 +1,9 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{\nNew algorithm: Compute priority as the absolute difference between bin capacity and item size, preferring bins where capacity is close to item size but also considering bins with capacity exactly equal to item size as highest priority.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    diff = np.abs(bins - item)\n    # Invert so that smaller difference gives higher priority\n    # Add small epsilon to handle exact matches (so exact match gets highest priority)\n    priority_scores = -diff - 1e-12 * (bins != item)\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

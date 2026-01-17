@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item without exceeding their capacity while minimizing fragmentation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - (bins - 1e-9)  # Ensure no negative values due to floating point errors\n    # Cap remaining capacity at bin capacity\n    remaining = np.clip(remaining, 0, bins)\n    # Prioritize bins with more remaining capacity, but only if they can fit the item\n    can_fit = remaining >= item\n    priority_scores = np.where(can_fit, remaining, 0)\n    return priority_scores\n\n",
+        "score": -2099.4,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item while minimizing wasted space, favoring bins with the smallest remaining capacity that still fits the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Mask out bins that cannot fit the item\n    valid_bins = remaining >= 0\n    # Initialize priority array with zeros\n    priorities = np.zeros_like(bins)\n    # For valid bins, assign priority based on remaining capacity (smaller remaining capacity = higher priority)\n    priorities[valid_bins] = 1 / (remaining[valid_bins] + 1e-9)  # Add small epsilon to avoid division by zero\n    return priorities\n\n",
+        "score": -2095.4,
+        "program": ""
+    },
+    {
+        "sample_order": 7,
+        "algorithm": "{The algorithm assigns higher priority to bins that are closer to full but still can accommodate the item, using a normalized distance from the bin's capacity minus the item size to avoid negative values.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_capacity = bins - item\n    # Avoid negative or zero remaining capacity by clamping to small positive value\n    safe_remaining = np.maximum(remaining_capacity, 1e-9)\n    # Prioritize bins with less remaining capacity (closer to full), but ensure they can fit the item\n    priority_scores = 1.0 / safe_remaining\n    # Normalize to prioritize bins that are most constrained but still viable\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

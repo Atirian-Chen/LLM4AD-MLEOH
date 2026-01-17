@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins with the smallest remaining capacity that can still fit the item, then by overall smallest remaining capacity for tie-breaking.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    can_fit = bins >= item\n    # Primary priority: bins that can fit the item come first (lower score is higher priority)\n    primary = np.where(can_fit, 0, 1)\n    # Secondary priority: among bins that can fit, prefer smallest remaining capacity;\n    # among bins that cannot fit, also prefer smallest remaining capacity.\n    # We use bins directly because smaller capacity = smaller remaining space.\n    # To combine, we use a tuple sort equivalent via a linear combination:\n    # priority = primary * A + bins, where A > max(bins) - min(bins)\n    A = np.max(bins) - np.min(bins) + 1 if bins.size > 0 else 1\n    priority_score = primary * A + bins\n    return priority_score\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 3,
+        "algorithm": "{We prioritize bins by maximizing the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the smallest positive remaining capacity, while assigning the lowest priority to bins where the item does not fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Assign highest priority to bins where remaining == 0 (perfect fit)\n    # Then prioritize by smallest positive remaining capacity.\n    # Bins where remaining < 0 get lowest priority.\n    priority_scores = np.where(remaining < 0, -np.inf, -remaining)\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

@@ -1,0 +1,151 @@
+{
+  "generation": 2,
+  "candidates": [
+    {
+      "cid": 0,
+      "deepseek_desc": "- Good at understanding MULTIPLE given algorithms and synthesizing high-level patterns across them.\n- Strong global reasoning: can compare different heuristic ideas and design NEW variants that mix them.\n- Comfortable writing relatively long Python code blocks from scratch, including control flow and vectorized NumPy code.\n- Good at exploratory / high-variance proposals that may drastically change the search behaviour of the heuristic.\n",
+      "qwen_desc": "- Very careful, conservative, and detail-oriented when editing code.\n- Strong at LOCAL edits and REFINEMENT of an existing algorithm:\n  * adjusting weights, coefficients, and thresholds,\n  * changing parameter settings of a score function,\n  * improving robustness, boundary handling, and code safety.\n- Good at reading ONE given algorithm and carefully modifying parts of the logic\n  while keeping the overall structure and invariants intact.\n- Tends to respect types and constraints and avoid introducing obvious bugs.\n",
+      "score": -2072.666666666667,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 70,
+            "deepseek_calls": 62,
+            "qwen_calls": 8
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 92,
+            "deepseek_calls": 85,
+            "qwen_calls": 7
+          },
+          {
+            "best_score": -2034.4,
+            "total_calls": 75,
+            "deepseek_calls": 69,
+            "qwen_calls": 6
+          }
+        ],
+        "avg_score": -2072.666666666667
+      }
+    },
+    {
+      "cid": 1,
+      "deepseek_desc": "- Specializes in identifying and leveraging hidden structural regularities in dynamic bin packing sequences—such as recurring item size patterns or emergent alignment in arrival orders—by encoding them into lightweight, stateful decision rules that adapt without explicit memory overhead.\n- Excels at generating heuristic variants that perform radical conceptual rewrites: replacing core paradigms (e.g., from deterministic allocation to probabilistic influence models) while preserving performance, often yielding high-variance but high-reward improvements under non-stationary conditions.\n- Strongly prefers symbolic representations of historical decisions—using compact, hash-based abstractions rather than raw data storage—to maintain contextual awareness with minimal computational cost.\n- When refining heuristics, avoids incremental tweaks; instead, it proposes entirely new design frameworks that exploit implicit dataset biases (e.g., smooth item distributions), which can yield exceptional average performance but may fail under adversarial or novel input regimes.\n- Best suited for early-stage exploration and disruptive innovation in heuristic design, particularly when the goal is to evolve beyond conventional greedy or sorting-based strategies.",
+      "qwen_desc": "- Specializes in incremental, safety-conscious refinement of existing heuristics with strong emphasis on preserving structural invariants and logical consistency.\n- Excels at localized adjustments: tuning thresholds, weights, and decision boundaries to improve robustness under edge cases or adversarial input orders without altering core algorithmic flow.\n- Highly effective when the task is to stabilize a heuristic’s performance across diverse input distributions by minimizing unexpected failures or sensitivity spikes.\n- Avoids introducing complex conditional structures or implicit memory mechanisms that could lead to fragile 'phantom invariants' or overfitting to synthetic patterns.\n- Performs best when given clear, bounded editing tasks focused on reliability, boundary handling, and small-scale optimization—ideal for EoH’s refinement phase after initial heuristic generation.",
+      "score": -2076.9333333333334,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 63,
+            "deepseek_calls": 53,
+            "qwen_calls": 10
+          },
+          {
+            "best_score": -2047.2,
+            "total_calls": 61,
+            "deepseek_calls": 51,
+            "qwen_calls": 10
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 61,
+            "deepseek_calls": 54,
+            "qwen_calls": 7
+          }
+        ],
+        "avg_score": -2076.9333333333334
+      }
+    },
+    {
+      "cid": 2,
+      "deepseek_desc": "- Excels at generating heuristics with non-local, long-term dependencies: designs placement rules where early decisions intentionally deviate from immediate optimality to shape future state space in predictable, cascading ways.\n- Strong in emergent coordination patterns: proposes mechanisms that create distributed-like behavior across bins without explicit communication, using item interactions to implicitly stabilize packing quality over time.\n- Highly effective at incorporating sequence-sensitive logic: leverages input order not as noise but as a computational resource, embedding timing and position into decision logic via modulo operations or temporal markers for adaptive context awareness.\n- Produces high-variance, exploratory proposals: frequently introduces seemingly redundant conditions or self-referential logic loops that encode dynamic rule evolution during execution, enabling heuristic adaptation mid-stream.\n- Best suited for open-ended, exploratory prompt types involving algorithmic innovation, heuristic fusion, or meta-strategy design—less effective on fixed, deterministic optimization tasks.",
+      "qwen_desc": "- Highly precise and cautious in modifying existing heuristics, focusing on local refinements without altering core structure or invariants.\n- Excels at tuning parameters such as weights, thresholds, and score function coefficients to improve robustness, edge-case handling, and code safety.\n- Specializes in incremental improvements to algorithmic logic—small, targeted edits that enhance performance while preserving correctness and stability.\n- Avoids introducing structural changes or novel control flows unless explicitly justified by clear performance gains.\n- Resists over-optimization for immediate gains if it disrupts overall balance or symmetry in decision-making across diverse input sequences.\n- Performs best when given a well-defined heuristic to refine, especially in environments with unpredictable or adversarial item streams requiring consistent, safe behavior.",
+      "score": -2091.666666666667,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 55,
+            "deepseek_calls": 38,
+            "qwen_calls": 17
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 53,
+            "deepseek_calls": 35,
+            "qwen_calls": 18
+          },
+          {
+            "best_score": -2091.4,
+            "total_calls": 56,
+            "deepseek_calls": 34,
+            "qwen_calls": 22
+          }
+        ],
+        "avg_score": -2091.666666666667
+      }
+    },
+    {
+      "cid": 3,
+      "deepseek_desc": "- Excels at synthesizing high-level patterns across diverse heuristics, identifying non-obvious structural synergies between different packing strategies.\n- Demonstrates strong global reasoning: capable of designing novel hybrid heuristics by combining disjoint algorithmic principles in non-trivial ways.\n- Comfortable generating complex, multi-stage Python code from scratch, including nested control flow, vectorized NumPy operations, and dynamic state management.\n- Specializes in exploratory heuristic generation: frequently proposes radical deviations from standard packing logic that can dramatically shift search behavior, especially in early evolution phases.\n- Performs best when given open-ended design challenges with minimal constraints—ideal for generating innovative starting points in the Evolution of Heuristics pipeline.\n- Less effective on fine-tuning or incremental optimization tasks; avoids mechanical improvements in favor of structural rethinking.\n- Produces proposals that may initially appear suboptimal or conceptually unstable but often encode latent adaptability through implicit feedback mechanisms.",
+      "qwen_desc": "- Specializes in precise, conservative refinement of existing heuristics with a strong focus on local adjustments: parameter tuning (weights, thresholds), score function optimization, and robustness enhancements.\n- Excels at maintaining structural integrity and invariants during code edits—preserving core logic while improving safety, boundary handling, and stability under varied input sequences.\n- Avoids introducing non-local dependencies or complex stateful behaviors; prioritizes clear, traceable decision-making paths and explicit control flow.\n- Performs best when the task requires incremental improvement of a known algorithm, especially under uncertainty about long-term adversarial sequences or dynamic arrival patterns.\n- Struggles with designing novel, highly adaptive strategies that rely on delayed feedback, emergent symmetry breaking, or obfuscated control structures.\n- Not suited for generating heuristics that depend on sequence entropy, phantom asymmetries, or dual-phase dynamics—these are likely to introduce unintended fragility without measurable benefit.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 55,
+            "deepseek_calls": 34,
+            "qwen_calls": 21
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 55,
+            "deepseek_calls": 36,
+            "qwen_calls": 19
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 59,
+            "deepseek_calls": 38,
+            "qwen_calls": 21
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 4,
+      "deepseek_desc": "- Excels at generating heuristic variants that blend multiple existing algorithms through structural synthesis, particularly when input distributions exhibit complex dependencies or non-linear patterns.\n- Strongly suited for exploratory tasks involving high-variance search, especially when the goal is to discover novel packing strategies that deviate significantly from baseline heuristics.\n- Capable of writing robust, modular Python code with explicit control flow and efficient NumPy-based operations, designed for dynamic execution in online environments with real-time feedback.\n- Best used when the task requires adaptive behavior under distributional shifts—especially in non-stationary settings where long-term performance matters more than immediate optimization.\n- Performs poorly on static, deterministic evaluation scenarios where all inputs are known upfront and no runtime adaptation is possible.\n- Avoid using for simple, rule-based improvements or low-variation refinements; its strengths lie in systemic redesign rather than incremental tuning.",
+      "qwen_desc": "- Extremely cautious and precise in modifying existing heuristics, focusing on fine-grained, local adjustments without altering core structure or invariants.\n- Excels at parameter refinement: tuning thresholds, weights, and scoring coefficients to improve robustness, boundary handling, and safety—especially under dynamic or noisy input streams.\n- Strongly favors micro-level interventions: reordering condition checks, adjusting evaluation order by bit-width similarity, inserting semantic no-ops, or tweaking assignment logic with minimal visible impact but measurable long-term stability gains.\n- Avoids high-level architectural changes; prefers incremental, conservative edits that preserve the heuristic’s overall logic while subtly biasing behavior toward resilience and reduced variance across diverse sequences.\n- Deliberately introduces controlled 'failure aesthetics'—non-optimal early placements or symmetrical suboptimal choices—to prevent overfitting and maintain adaptability in unpredictable environments.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 51,
+            "deepseek_calls": 28,
+            "qwen_calls": 23
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 50,
+            "deepseek_calls": 24,
+            "qwen_calls": 26
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 52,
+            "deepseek_calls": 30,
+            "qwen_calls": 22
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    }
+  ],
+  "timestamp": 1766358307.6464012
+}

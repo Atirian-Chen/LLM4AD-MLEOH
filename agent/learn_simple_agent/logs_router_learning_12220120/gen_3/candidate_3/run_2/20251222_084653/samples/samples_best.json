@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We assign priority based on the remaining capacity after placing the item, preferring bins where the remaining capacity is smallest but non\u2011negative, and giving negative priority to bins that would overflow.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    priority_scores = np.where(remaining >= 0, -remaining, -np.inf)\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 14,
+        "algorithm": "{We compute priority as the exponential of the negative remaining capacity after adding the item, scaled by the bin's current capacity, to favor bins that both fit the item tightly and have larger initial capacity for stability.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    scores = np.full_like(bins, -np.inf)\n    # Exponential decay on remaining capacity, scaled by bin capacity\n    cap_safe = np.where(bins > 0, bins, 1.0)\n    scores[valid] = np.exp(-remaining[valid]) * cap_safe[valid]\n    return scores\n\n",
+        "score": -2091.4,
+        "program": ""
+    }
+]

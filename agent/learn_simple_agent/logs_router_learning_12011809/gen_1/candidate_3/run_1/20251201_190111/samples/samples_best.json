@@ -1,0 +1,9 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the least current load relative to their capacity, favoring bins that can accommodate the item with minimal waste while maintaining balance across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    loaded = bins - item\n    # Avoid negative loads by setting them to 0\n    loaded = np.maximum(loaded, 0)\n    # Normalize by capacity to get utilization\n    utilization = loaded / (bins + 1e-12)\n    # Higher priority for lower utilization\n    return 1 - utilization\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

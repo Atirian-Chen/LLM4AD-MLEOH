@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{\nNew algorithm: Assign priority as the negative absolute difference between bin capacity and item size, preferring bins where capacity is close to the item size, with ties broken by higher capacity.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    diff = np.abs(bins - item)\n    priority_scores = -diff\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 47,
+        "algorithm": "{New algorithm: Assign priority based on the logarithmic inverse of the relative waste, defined as the ratio of unused capacity (after adding the item) to bin capacity, with perfect fits receiving maximum priority and overflow penalized logarithmically by the magnitude of overfill.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Handle perfect fit and positive remaining\n    positive_or_perfect = remaining >= 0\n    # Overflow case\n    overflow = remaining < 0\n\n    scores = np.zeros_like(bins)\n    # Perfect fit gets highest score\n    scores[remaining == 0] = 1e6  # Very high score for perfect fit\n\n    # For non-overflow bins: use log(1 + relative_waste)\u207b\u00b9 to penalize larger waste\n    # relative_waste = (remaining) / bins, but avoid division by zero\n    valid_bins = bins > 0\n    relative_waste = np.where(valid_bins, remaining / bins, 0)\n    # Avoid log(0); clamp small values\n    relative_waste = np.clip(relative_waste, 1e-8, None)\n    # Higher priority for smaller relative waste\n    scores[positive_or_perfect & valid_bins] = 1.0 / np.log(1.0 + relative_waste[positive_or_perfect & valid_bins])\n\n    # Penalize overflow logarithmically: larger overfill \u2192 more negative, but not too extreme\n    overflow_abs = np.abs(remaining[overflow])\n    # Use log(1 + overflow_abs) to scale penalty gradually\n    scores[overflow] = -1.0 / (np.log(1.0 + overflow_abs) + 1e-6)\n\n    return scores\n\n",
+        "score": -2091.0,
+        "program": ""
+    },
+    {
+        "sample_order": 50,
+        "algorithm": "{\nNew algorithm: Assign priority based on a weighted combination of preferring perfect fits, then favoring bins with the smallest remaining positive capacity, and finally applying a steep exponential penalty for overflows.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    scores = np.zeros_like(bins)\n    \n    # Perfect fit gets highest priority\n    perfect_fit = (remaining == 0)\n    scores[perfect_fit] = 100.0\n    \n    # Positive remaining: higher priority for smaller remaining capacity\n    positive = (remaining > 0)\n    scores[positive] = 10.0 / (remaining[positive] + 1.0)\n    \n    # Overflow: severe exponential penalty\n    overflow = (remaining < 0)\n    scores[overflow] = -np.exp(np.abs(remaining[overflow]))\n    \n    return scores\n\n",
+        "score": -2089.2,
+        "program": ""
+    }
+]

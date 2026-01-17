@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins where adding the item would bring the remaining capacity closest to a target fraction of the bin's original capacity, favoring bins with larger original capacities in case of ties.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    target_fraction = 0.3\n    remaining = bins - item\n    valid = remaining >= 0\n    scores = np.full_like(bins, -np.inf)\n    target_capacities = target_fraction * bins\n    closeness = -np.abs(remaining - target_capacities)\n    scores[valid] = closeness[valid] + bins[valid] * 1e-10\n    return scores\n\n",
+        "score": -2177.6,
+        "program": ""
+    },
+    {
+        "sample_order": 3,
+        "algorithm": "{We assign priority based on the remaining capacity after adding the item, preferring bins where the remaining capacity is minimized but non\u2011negative, and deprioritizing bins where the item does not fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    priority_scores[valid] = -remaining[valid]\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 29,
+        "algorithm": "{We prioritize bins where adding the item would make the remaining capacity closest to a multiple of the item size, favoring bins with smaller remaining capacity after placement in case of ties.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    scores = np.full_like(bins, -np.inf)\n    if np.any(valid):\n        multiples = np.floor(remaining[valid] / item)\n        target_capacities = multiples * item\n        closeness = -np.abs(remaining[valid] - target_capacities)\n        scores[valid] = closeness - remaining[valid] * 1e-10\n    return scores\n\n",
+        "score": -2089.6,
+        "program": ""
+    }
+]

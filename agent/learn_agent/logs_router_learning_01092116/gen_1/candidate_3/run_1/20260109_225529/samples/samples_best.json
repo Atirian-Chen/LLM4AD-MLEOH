@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{\nNew algorithm: Assign priority based on the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the smallest positive remaining capacity, while heavily penalizing overflows.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Perfect fit gets highest priority\n    perfect_fit = (remaining == 0)\n    # Positive remaining capacity (fits) gets next priority, higher for smaller remaining\n    fits = (remaining > 0)\n    # Overflow gets lowest priority, more negative for larger overflow\n    overflows = (remaining < 0)\n    \n    priority_scores = np.zeros_like(bins)\n    # For bins that fit: priority = 1 / (remaining + 1) to make smaller remaining better\n    priority_scores[fits] = 1 / (remaining[fits] + 1)\n    # For perfect fit: set to a value higher than any possible fit priority\n    priority_scores[perfect_fit] = 2.0\n    # For overflows: negative penalty proportional to overflow amount\n    priority_scores[overflows] = -np.abs(remaining[overflows]) - 1\n    \n    return priority_scores\n\n",
+        "score": -2095.4,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{\nNew algorithm: Assign priority based on the remaining capacity after adding the item, preferring bins where the resulting remaining capacity is minimized but non\u2011negative, and breaking ties by preferring bins with larger current capacity.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Priority is higher for smaller non\u2011negative remaining capacity,\n    # then for larger current capacity if remaining is the same,\n    # and negative remaining gets lowest priority.\n    # We use a lexicographic sort: first by (remaining < 0), then by remaining, then by -bins.\n    # To convert to a single score, we assign:\n    #   priority = (remaining >= 0) * (max_remaining - remaining) + (remaining < 0) * penalty\n    # where penalty is a large negative number.\n    max_remaining = np.max(remaining[remaining >= 0]) if np.any(remaining >= 0) else 0\n    penalty = -1e9\n    scores = np.where(remaining >= 0, max_remaining - remaining, penalty)\n    return scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

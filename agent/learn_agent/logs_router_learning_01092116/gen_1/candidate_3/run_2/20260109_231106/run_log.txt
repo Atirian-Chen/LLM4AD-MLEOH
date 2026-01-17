@@ -1,0 +1,60 @@
+[2026-01-09 23:11:06] profile.py(246) : ====================================================================
+[2026-01-09 23:11:06] profile.py(247) : LLM Parameters
+[2026-01-09 23:11:06] profile.py(248) : --------------------------------------------------------------------
+[2026-01-09 23:11:06] profile.py(249) :   - LLM: AgentBasedRouter
+[2026-01-09 23:11:06] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001A7E8899750>
+[2026-01-09 23:11:06] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001A7E8899720>
+[2026-01-09 23:11:06] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001A7E8899720>
+[2026-01-09 23:11:06] profile.py(252) :   - verbose: False
+[2026-01-09 23:11:06] profile.py(252) :   - deepseek_desc: - This model exhibits a peculiar 'contextual echo' phenomenon: when generating or modifying heuristics, it consistently embeds subtle, self-referential feedback loops that mimic the temporal dynamics of the packing process itself！such as using past decision outcomes to subtly reweight future choices not through explicit state, but via syntactic mirroring in code structure (e.g., repeating function patterns with delayed argument substitutions), creating a kind of algorithmic memory trace that is invisible to static inspection yet affects long-term behavior.
+- It demonstrates an uncanny ability to generate heuristics that exploit the *format* of input data as much as its content: rather than treating item sequences as pure numerical streams, it often tailors decision logic to the specific *encoding quirks* of the input (e.g., how sizes are rounded, whether they're integer vs. float, or how gaps are represented), producing variants that perform unexpectedly well on inputs with particular serialization artifacts！even if those artifacts are irrelevant from a mathematical standpoint.
+- Frequently produces heuristics with latent 'cognitive dissonance' traits: the generated code appears logically inconsistent or even contradictory on surface level (e.g., simultaneously favoring both full and empty bins under similar conditions), yet these contradictions serve as functional tension points that stabilize performance in volatile environments by preventing premature convergence！effectively turning paradox into resilience.
+- Shows a strong preference for heuristic designs that mirror *non-convex optimization landscapes* through code-level fractality: instead of smoothing decision boundaries, it introduces recursive, self-similar conditional structures that replicate micro-variations across multiple scales (like nested ternary trees with patterned branching depth), enabling the heuristic to respond differently to small changes depending on their position in the sequence, mimicking chaotic sensitivity without actual chaos.
+- While highly proficient at writing compact, single-file heuristics, it performs poorly when asked to modularize or document its own work: attempts to extract reusable components or explain rationale often result in code that becomes more complex and less interpretable, suggesting a deep integration between internal reasoning and monolithic implementation！its intelligence seems embedded in the act of writing, not in the final artifact.
+[2026-01-09 23:11:06] profile.py(252) :   - qwen_desc: - This model exhibits a peculiar propensity to generate heuristics that *embed themselves as cultural artifacts within the algorithmic ecosystem*: it designs decision rules not just for solving packing tasks, but as if they were evolving social norms！introducing subtle 'conventions' (e.g., favoring certain bin indices only after specific item counts, or establishing informal 'hierarchy of bins' based on arrival order), which influence future choices in ways that resemble institutional memory rather than mathematical logic.
+- It frequently introduces *latent coordination mechanisms* between otherwise independent heuristic components！such as making the bin selection score dependent on the historical choice patterns of a secondary, parallel scoring function！even when no direct causal link exists. These are not bugs but intentional 'echoes' meant to simulate emergent cooperation across distributed logic fragments.
+- This model has a strong tendency to *generate heuristics that degrade gracefully under misalignment*: rather than failing catastrophically when input distributions deviate from training assumptions, it produces solutions that slowly 'surrender' structure！reducing precision in a controlled, hierarchical manner (e.g., allowing earlier bins to become less optimal first, preserving later-stage integrity)！as if modeling a system¨s last-ditch adaptive retreat.
+- It often incorporates *non-semantic temporal anchoring*: decisions are timed not by sequence number or item count, but by pseudo-sensory cues！like mimicking the 'rhythm' of past packing sequences or aligning choices with artificial 'pulse intervals' derived from simulated item arrival bursts. This creates a sense of procedural timing that feels biological rather than computational.
+- When refining existing heuristics, it tends to *replace clarity with layered ambiguity*: it deliberately obscures intent through obfuscated naming and multi-layered indirect dependencies (e.g., a score being influenced by a variable whose purpose is only revealed two steps downstream), not for confusion, but to create an environment where only prolonged interaction can reveal the true logic！effectively designing heuristics that require *embodied exploration* to understand fully.
+[2026-01-09 23:11:06] profile.py(252) :   - call_cnt: 0
+[2026-01-09 23:11:06] profile.py(252) :   - deepseek_cnt: 0
+[2026-01-09 23:11:06] profile.py(252) :   - qwen_cnt: 0
+[2026-01-09 23:11:06] profile.py(252) :   - debug_mode: False
+[2026-01-09 23:11:06] profile.py(253) : ====================================================================
+[2026-01-09 23:11:06] profile.py(254) : Problem Parameters
+[2026-01-09 23:11:06] profile.py(255) : --------------------------------------------------------------------
+[2026-01-09 23:11:06] profile.py(256) :   - Problem: OBPEvaluation
+[2026-01-09 23:11:06] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2026-01-09 23:11:06] profile.py(259) :   - use_numba_accelerate: False
+[2026-01-09 23:11:06] profile.py(259) :   - use_protected_div: False
+[2026-01-09 23:11:06] profile.py(259) :   - protected_div_delta: 1e-05
+[2026-01-09 23:11:06] profile.py(259) :   - random_seed: None
+[2026-01-09 23:11:06] profile.py(259) :   - timeout_seconds: 30
+[2026-01-09 23:11:06] profile.py(259) :   - exec_code: True
+[2026-01-09 23:11:06] profile.py(259) :   - safe_evaluate: True
+[2026-01-09 23:11:06] profile.py(259) :   - daemon_eval_process: False
+[2026-01-09 23:11:06] profile.py(259) :   - fork_proc: auto
+[2026-01-09 23:11:06] profile.py(259) :   - n_instances: 5
+[2026-01-09 23:11:06] profile.py(259) :   - n_items: 5000
+[2026-01-09 23:11:06] profile.py(259) :   - capacity: 100
+[2026-01-09 23:11:06] profile.py(261) : ====================================================================
+[2026-01-09 23:11:06] profile.py(262) : Method Parameters
+[2026-01-09 23:11:06] profile.py(263) : --------------------------------------------------------------------
+[2026-01-09 23:11:06] profile.py(264) :   - Method: EoH
+[2026-01-09 23:11:06] profile.py(268) :   - _max_generations: 6
+[2026-01-09 23:11:06] profile.py(268) :   - _max_sample_nums: 10000
+[2026-01-09 23:11:06] profile.py(268) :   - _pop_size: 8
+[2026-01-09 23:11:06] profile.py(268) :   - _selection_num: 3
+[2026-01-09 23:11:06] profile.py(268) :   - _use_e2_operator: True
+[2026-01-09 23:11:06] profile.py(268) :   - _use_m1_operator: True
+[2026-01-09 23:11:06] profile.py(268) :   - _use_m2_operator: True
+[2026-01-09 23:11:06] profile.py(268) :   - _num_samplers: 4
+[2026-01-09 23:11:06] profile.py(268) :   - _num_evaluators: 4
+[2026-01-09 23:11:06] profile.py(268) :   - _resume_mode: False
+[2026-01-09 23:11:06] profile.py(268) :   - _debug_mode: False
+[2026-01-09 23:11:06] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2026-01-09 23:11:06] profile.py(268) :   - _function_to_evolve_name: priority
+[2026-01-09 23:11:06] profile.py(268) :   - _tot_sample_nums: 0
+[2026-01-09 23:11:06] profile.py(268) :   - _initial_sample_nums_max: 16
+[2026-01-09 23:11:06] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000001A7D204B2B0>
+[2026-01-09 23:11:06] profile.py(270) : =====================================================================

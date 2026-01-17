@@ -1,0 +1,9 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins with the smallest remaining capacity that can still fit the item, then by overall smallest remaining capacity for ties.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    can_fit = bins >= item\n    remaining = bins - item\n    \n    # Primary: bins that can fit the item get high priority based on smallest remaining capacity.\n    # Secondary: bins that cannot fit get low priority based on largest overflow (most negative remaining).\n    # We assign scores so that higher priority = higher returned value.\n    \n    # For bins that can fit: priority = -remaining (so smaller remaining gets higher score)\n    # For bins that cannot fit: priority = -np.inf (always lower than any fit bin)\n    priority_scores = np.where(can_fit, -remaining, -np.inf)\n    \n    # Convert to a scale where higher number = higher priority (optional, but keeps intuitive direction)\n    # Since we already have -remaining for fit bins, smaller remaining gives larger negative? Wait:\n    # Actually: remaining = bins - item. Smaller remaining means remaining is close to zero.\n    # For small remaining: remaining ~ 0 \u2192 -remaining ~ 0 (larger than negative numbers).\n    # For larger remaining: remaining large \u2192 -remaining very negative.\n    # So -remaining already gives higher values for smaller remaining. Good.\n    \n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

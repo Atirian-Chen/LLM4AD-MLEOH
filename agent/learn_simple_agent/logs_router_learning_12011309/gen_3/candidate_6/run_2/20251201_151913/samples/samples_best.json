@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins where adding the item would leave the smallest remaining capacity, but only if the bin can fit the item; otherwise, the bin gets the lowest priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    priority_scores[valid_mask] = -remaining[valid_mask]\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 27,
+        "algorithm": "{Prioritize bins based on the inverse of the squared relative leftover capacity after insertion, favoring bins where the item uses a large proportion of the remaining space, while smoothly demoting bins that cannot fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    \n    if np.any(valid_mask):\n        relative_leftover = remaining[valid_mask] / (bins[valid_mask] + 1e-12)\n        score = 1.0 / (relative_leftover**2 + 1e-6)\n        priority_scores[valid_mask] = score\n    \n    return priority_scores\n\n",
+        "score": -2091.4,
+        "program": ""
+    }
+]

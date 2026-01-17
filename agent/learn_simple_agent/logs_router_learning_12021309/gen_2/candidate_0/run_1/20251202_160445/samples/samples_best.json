@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins with remaining capacity closest to the item size, preferring exact fits, then underfits, and finally overfits, while avoiding negative remaining capacities.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Initialize priorities with low values for invalid (negative remaining) bins\n    priorities = np.full_like(bins, -np.inf)\n    \n    # Exact fit: highest priority\n    exact_mask = remaining == 0\n    priorities[exact_mask] = 2\n    \n    # Underfit (positive remaining): higher priority for smaller remaining\n    underfit_mask = remaining > 0\n    priorities[underfit_mask] = 1 - remaining[underfit_mask]\n    \n    # Overfit (negative but not too negative): lower priority for larger overfit\n    overfit_mask = (remaining < 0) & (remaining > -item)\n    priorities[overfit_mask] = -1 - np.abs(remaining[overfit_mask])\n    \n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 19,
+        "algorithm": "{We prioritize bins with remaining capacity closest to a target fraction of the item size, preferring fits that leave a small positive remainder, then exact fits, then moderate overfits, while heavily penalizing large overfits.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    priorities = np.full_like(bins, -np.inf)\n    \n    # Ideal underfit: leaves between 0 and 0.3*item remaining (highest priority)\n    ideal_under_mask = (remaining > 0) & (remaining <= 0.3 * item)\n    priorities[ideal_under_mask] = 3 - remaining[ideal_under_mask]\n    \n    # Exact fit: second highest priority\n    exact_mask = remaining == 0\n    priorities[exact_mask] = 2\n    \n    # Moderate underfit: leaves more than 0.3*item remaining\n    moderate_under_mask = remaining > 0.3 * item\n    priorities[moderate_under_mask] = 1 - remaining[moderate_under_mask] / item\n    \n    # Tolerable overfit: consumes up to 1.5*item total (negative remaining > -0.5*item)\n    tolerable_over_mask = (remaining < 0) & (remaining > -0.5 * item)\n    priorities[tolerable_over_mask] = -1 - np.abs(remaining[tolerable_over_mask]) / item\n    \n    return priorities\n\n",
+        "score": -2083.6,
+        "program": ""
+    }
+]

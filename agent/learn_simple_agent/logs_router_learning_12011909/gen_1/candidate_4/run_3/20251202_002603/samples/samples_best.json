@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins by their remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the smallest positive remaining capacity, while heavily penalizing overfull bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Large penalty for overfull bins, then prioritize smallest positive remaining capacity\n    priorities = np.where(remaining >= 0, remaining, np.inf)\n    return priorities\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 3,
+        "algorithm": "{We prioritize bins by first preferring those that would be exactly filled by the item (residual capacity equals item), then those with residual capacity greater than item, sorted by smallest residual capacity first, and finally all others with zero priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    residual = bins - item\n    priority_arr = np.zeros_like(bins)\n    \n    # Case 1: bins that would be exactly filled (residual == 0)\n    exact_fill = residual == 0\n    if np.any(exact_fill):\n        priority_arr[exact_fill] = 1\n    \n    # Case 2: bins with residual > 0 (can fit item with space left)\n    fits = residual > 0\n    if np.any(fits):\n        # Higher priority for smaller residual (tighter fit)\n        # We assign values in (0,1) inversely related to residual\n        max_res = np.max(residual[fits])\n        if max_res > 0:\n            # Normalize so smallest residual gets priority closest to 1 (but <1)\n            priority_arr[fits] = 1 - (residual[fits] / (2 * max_res))\n    \n    return priority_arr\n\n",
+        "score": -2095.4,
+        "program": ""
+    },
+    {
+        "sample_order": 5,
+        "algorithm": "{We prioritize bins where adding the item would leave the smallest remaining capacity, but only if the bin can fit the item; otherwise, priority is zero.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    priority_scores = np.where(valid, -remaining, 0.0)\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

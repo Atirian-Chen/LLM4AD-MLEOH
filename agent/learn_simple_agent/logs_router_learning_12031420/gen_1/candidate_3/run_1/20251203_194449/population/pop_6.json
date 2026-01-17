@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item with minimal leftover space, favoring bins that are closer to full but still have enough capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Ensure we only consider bins that can fit the item\n    valid_remaining = np.where(remaining >= 0, remaining, np.inf)\n    # Prioritize bins with smaller remaining space (closer to full)\n    priorities = 1 / (valid_remaining + 1e-12)  # Avoid division by zero\n    # Set priority to 0 for bins that cannot fit the item\n    priorities[remaining < 0] = 0\n    return priorities\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by maximizing a weighted sum of the bin's current utilization and the negative of the leftover space after placing the item, favoring bins that are already well utilized and that leave little wasted capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priorities = np.zeros_like(bins)\n    if np.any(valid_mask):\n        util = (bins - remaining) / bins\n        leftover = remaining\n        combined = util - 0.5 * (leftover / bins)\n        priorities[valid_mask] = np.maximum(0, combined[valid_mask])\n    return priorities\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins with remaining capacity slightly above the item size, favoring those that can accommodate the item with minimal leftover space while avoiding bins that are too small or nearly full, using a sigmoid-like penalty for deviation from an optimal margin.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid_remaining = np.where(remaining >= 0, remaining, np.inf)\n    # Ideal remaining capacity is item size (to avoid overflow, but leave little waste)\n    ideal_remaining = item\n    # Use sigmoid-like function to penalize deviations from ideal\n    deviation = valid_remaining - ideal_remaining\n    # Apply sigmoid-like decay: higher priority for small positive deviations\n    # Negative values (too small) get very low priority\n    priorities = 1 / (1 + np.exp(2 * deviation))\n    # Set priority to 0 for bins that cannot fit the item\n    priorities[remaining < 0] = 0\n    return priorities\n\n",
+        "score": -2098.2
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a sigmoid function of the leftover space after placing the item, giving moderate priority to bins with some leftover space and penalizing bins that are too empty or too close to full, while also considering the bin's current utilization relative to its capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priorities = np.zeros_like(bins)\n    \n    if np.any(valid_mask):\n        valid_remaining = remaining[valid_mask]\n        # Sigmoid center and scale parameters\n        center = item * 0.3\n        scale = item * 0.2\n        # Sigmoid gives higher priority to bins with leftover near 'center'\n        sigmoid_vals = 1 / (1 + np.exp((valid_remaining - center) / scale))\n        # Adjust by current bin utilization (bins closer to full get slight boost)\n        util_boost = 1 + (bins[valid_mask] - valid_remaining) / bins[valid_mask] * 0.1\n        priorities[valid_mask] = sigmoid_vals * util_boost\n    \n    return priorities\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on the exponential decay of leftover space relative to the item size, favoring bins where the item fits with a remaining capacity that is a small fraction of the item, while sharply penalizing both near-exact fits and large leftover space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    scores = np.zeros_like(remaining)\n    # Use exponential decay of (remaining / item) with a shifted center to avoid favoring exact fit\n    # Center the decay at a small positive fraction of the item (e.g., 0.1 * item)\n    center = 0.1 * item\n    relative_remaining = np.where(valid, remaining / item, np.inf)\n    # Compute score as exp(-|relative_remaining - center|)\n    deviation = np.abs(relative_remaining - center)\n    scores[valid] = np.exp(-deviation[valid])\n    return scores\n\n",
+        "score": -2102.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a hybrid measure that combines the relative utilization of the bin before adding the item and the proximity of the remaining space to a predefined optimal threshold, rewarding bins that are neither too empty nor too full while ensuring sufficient capacity for the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_remaining = np.where(remaining >= 0, remaining, np.inf)\n    # Define an optimal leftover space threshold (e.g., 10% of item size)\n    optimal_leftover = 0.1 * item\n    # Compute deviation from optimal leftover space\n    deviation = np.abs(valid_remaining - optimal_leftover)\n    # Prioritize bins with deviation closest to zero\n    priorities = 1 / (deviation + 1e-12)\n    # Set priority to 0 for bins that cannot fit the item\n    priorities[remaining < 0] = 0\n    return priorities\n\n",
+        "score": -2110.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins that are neither too empty nor too full relative to the item size, aiming to balance utilization and avoid both excessive waste and overflow by favoring bins with remaining capacity close to a dynamically adjusted ideal threshold based on the item size.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_remaining = np.where(remaining >= 0, remaining, np.inf)\n    # Define ideal remaining capacity as half the item size (adjustable heuristic)\n    ideal_remaining = item / 2\n    # Compute distance from ideal remaining capacity\n    deviation = np.abs(valid_remaining - ideal_remaining)\n    # Prioritize bins with deviation closest to zero (closest to ideal)\n    priorities = 1 / (deviation + 1e-12)\n    # Set priority to 0 for bins that cannot fit the item\n    priorities[remaining < 0] = 0\n    return priorities\n\n",
+        "score": -2197.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a sigmoid-weighted combination of current bin utilization and remaining capacity after adding the item, favoring bins that are moderately full and leave moderate leftover space, with the sigmoid shape providing smooth transitions between preference regions.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    \n    # Normalize current bin utilization (0 to 1)\n    util = 1 - (bins / bins.max()) if bins.max() > 0 else np.zeros_like(bins)\n    \n    # Normalize remaining capacity after adding item (0 to 1)\n    remaining_norm = remaining / bins.max() if bins.max() > 0 else np.zeros_like(bins)\n    \n    # Sigmoid parameters for utilization preference (center at 0.6, steepness 10)\n    util_pref = 1 / (1 + np.exp(-10 * (util - 0.6)))\n    \n    # Sigmoid parameters for leftover preference (center at 0.3, steepness 8)\n    leftover_pref = 1 / (1 + np.exp(-8 * (remaining_norm - 0.3)))\n    \n    # Combine preferences multiplicatively\n    priorities = util_pref * leftover_pref\n    \n    # Zero out invalid bins\n    priorities[~valid_mask] = 0\n    \n    return priorities\n\n",
+        "score": -2241.0
+    }
+]

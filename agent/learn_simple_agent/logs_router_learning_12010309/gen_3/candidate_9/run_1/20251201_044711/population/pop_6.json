@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item while maintaining balance across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - np.min(bins)  # Avoid division by zero\n    remaining = np.maximum(remaining, 1e-10)  # Small epsilon to prevent division by zero\n    return 1 / remaining\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins with the least current load relative to their capacity, favoring bins that can accommodate the item with minimal disruption to balance.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    loaded = bins - item\n    # Avoid negative loads by clamping at 0\n    effective_loads = np.maximum(loaded, 0)\n    # Calculate remaining capacity after adding the item\n    remaining_capacity = bins - effective_loads\n    # Prioritize bins with higher remaining capacity (more room)\n    # But penalize bins that are already full or nearly full\n    # Use inverse of remaining capacity to prioritize bins with more space\n    priorities = 1 / (remaining_capacity + 1e-9)  # Add small epsilon to avoid division by zero\n    return priorities\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to promote balance across bins by favoring those that are neither significantly underloaded nor overloaded, using deviation-based measures from an average or target load.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    total_capacity = np.sum(bins)\n    num_bins = len(bins)\n    target_load = total_capacity / num_bins\n    # Estimate new load after adding item to each bin\n    new_loads = bins + item\n    # Calculate deviation from target load\n    deviations = np.abs(new_loads - target_load)\n    # Prioritize bins with smaller deviation (closer to target load)\n    priorities = 1 / (deviations + 1e-9)\n    return priorities\n\n",
+        "score": -2326.4
+    },
+    {
+        "algorithm": "{The algorithm assigns priority based on the relative closeness of each bin's current load to a target load derived from the item size and average bin utilization, rewarding bins that are neither too full nor too empty when considering the item's potential placement.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    used = bins - np.minimum(bins, item)\n    avg_utilization = np.mean(used / bins)\n    target_load = avg_utilization * bins\n    deviation = np.abs(used - target_load)\n    return 1 / (deviation + 1e-10)\n\n",
+        "score": -2930.2
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins based on a weighted combination of their current load and the potential utilization after adding the item, emphasizing bins that are neither too full nor too empty while incorporating a quadratic penalty for imbalance to sharply discourage extreme deviations.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    new_loads = bins + item\n    utilization = np.minimum(new_loads, bins) / (bins + 1e-9)\n    mean_utilization = np.mean(utilization)\n    deviation_from_mean = (utilization - mean_utilization) ** 2\n    # Sharper penalty for high deviation; higher priority for lower deviation\n    priorities = 1 / (deviation_from_mean + 1e-9)\n    return priorities\n\n",
+        "score": -3100.0
+    },
+    {
+        "algorithm": "{The algorithm assigns priority based on the relative utilization of each bin after accommodating the item, rewarding bins that achieve a more balanced load distribution by penalizing those that become overly filled or underutilized upon addition.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    new_loads = np.minimum(bins, bins + item)\n    # Normalize by capacity to get utilization ratio\n    utilization = new_loads / (bins + 1e-9)\n    # Penalize bins that are too full or too empty; favor moderate utilization\n    deviation_from_mean = np.abs(utilization - np.mean(utilization))\n    # Higher priority for bins with lower deviation (closer to average utilization)\n    priorities = 1 / (deviation_from_mean + 1e-9)\n    return priorities\n\n",
+        "score": -3101.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a dynamic score that rewards bins with moderate remaining capacity\u2014avoiding both overfilled and overly empty bins\u2014by using a normalized deviation from the average remaining capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - np.minimum(bins, item)\n    avg_remaining = np.mean(remaining)\n    deviation = np.abs(remaining - avg_remaining)\n    return 1 / (deviation + 1e-10)\n\n",
+        "score": -3222.0
+    },
+    {
+        "algorithm": "{The algorithm assigns priority based on a hybrid metric that combines the relative improvement in bin utilization after adding the item with a penalty for bins that are already near full capacity, promoting efficient use of space while avoiding overloading existing bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    current_utilization = bins / (bins + 1e-9)\n    # Estimate new utilization if item is added\n    new_loads = bins + item\n    new_utilization = np.minimum(new_loads, bins + 1e-9) / (bins + 1e-9)\n    # Compute improvement in utilization\n    improvement = new_utilization - current_utilization\n    # Penalize bins that are already close to full capacity\n    overflow_penalty = np.clip((bins + item - bins) / (bins + 1e-9), 0, 1)\n    # Final priority is improvement adjusted by penalty\n    priorities = improvement / (overflow_penalty + 1e-9)\n    # Normalize and ensure positive values\n    priorities = np.maximum(priorities, 0)\n    return priorities + 1e-9\n\n",
+        "score": -3412.8
+    }
+]

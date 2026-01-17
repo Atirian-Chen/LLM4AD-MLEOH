@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the highest remaining capacity to maximize space utilization and minimize fragmentation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_capacity = bins - item\n    # Prioritize bins with higher remaining capacity (if item fits)\n    # Use a large negative value for bins where item doesn't fit\n    priorities = np.where(remaining_capacity >= 0, remaining_capacity, -np.inf)\n    return priorities\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins that would be filled exactly or leave the smallest positive leftover space, while avoiding overfilling.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Higher priority for bins that are exactly filled (remaining == 0)\n    # Then for bins that have positive leftover (remaining > 0)\n    # Negative remaining (overfilled) get lowest priority\n    priority_scores = np.where(remaining == 0, 2, np.where(remaining > 0, 1, 0))\n    # Among positive leftover, smaller leftover is better, so we add a fractional part\n    # that decreases with leftover, but stays less than 1 to keep the priority order.\n    fractional = np.where(remaining > 0, 1 - remaining / (bins.max() + 1e-9), 0)\n    return priority_scores + fractional\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 34,
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins based on how well the item fits in terms of utilization balance, proximity to a target fill ratio, or minimizing leftover space, while penalizing overfilling and rewarding optimal or near-optimal configurations.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    fits = remaining >= 0\n    # Avoid overfilled bins\n    priority_scores = np.where(fits, 0, -np.inf)\n    \n    # Compute current utilization before adding item\n    current_utilization = np.where(fits, item / (bins + 1e-9), 0)\n    \n    # Use logarithmic bonus for bins with small leftover space (favored)\n    # Penalize bins that are very underutilized\n    leftover_ratio = np.where(fits, remaining / (bins + 1e-9), 1)\n    log_bonus = np.log(1 + 1 / (leftover_ratio + 1e-9))\n    \n    # Reward bins with moderate utilization (avoid extremes)\n    deviation_from_half = np.abs(current_utilization - 0.5)\n    smooth_balance = np.exp(-2 * deviation_from_half)\n    \n    # Combine: balance score and leftover efficiency\n    final_priority = priority_scores + smooth_balance + log_bonus\n    return final_priority\n\n",
+        "score": -2091.6,
+        "program": ""
+    }
+]

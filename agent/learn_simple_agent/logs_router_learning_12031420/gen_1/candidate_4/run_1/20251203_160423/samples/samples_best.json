@@ -1,0 +1,30 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm calculates priority by first assigning a base score of remaining capacity minus item size, then applying a sigmoid transformation to emphasize bins where the item fits well, and finally setting priority to negative infinity for bins where the item does not fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    base_score = remaining.copy()\n    sigmoid = 1 / (1 + np.exp(-base_score))\n    priority_scores = sigmoid\n    priority_scores[remaining < 0] = -np.inf\n    return priority_scores\n\n",
+        "score": -3578.2,
+        "program": ""
+    },
+    {
+        "sample_order": 10,
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item with minimal wasted space, favoring bins with the smallest remaining capacity that still fits the item, and uses a combination of remaining capacity and fit quality to compute priorities.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Mask out bins that cannot fit the item\n    valid_bins = remaining >= 0\n    # Initialize priority array with zeros\n    priors = np.zeros_like(bins)\n    # For bins that can fit the item, assign priority based on remaining space\n    # Smaller remaining space means better fit (higher priority)\n    # Use inverse of remaining space to make smaller space have higher priority\n    # Add small epsilon to avoid division by zero\n    valid_remaining = remaining[valid_bins]\n    priors[valid_bins] = 1 / (valid_remaining + 1e-8)\n    # Normalize priority scores so that higher values mean higher priority\n    # But keep the relative ordering based on fit quality\n    return priors\n\n",
+        "score": -2095.4,
+        "program": ""
+    },
+    {
+        "sample_order": 12,
+        "algorithm": "{The algorithm assigns priority based on the relative position of the item size within the bin capacity distribution, rewarding bins where the item size is close to the median capacity, and penalizing bins that are either too small or too large relative to the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    diffs = np.abs(bins - item)\n    median_diff = np.median(diffs)\n    priority_scores = 1 / (diffs + 1e-8)\n    priority_scores *= np.exp(-diffs / (2 * median_diff + 1e-8))\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 28,
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins where the item fits well by balancing utilization, remaining capacity, or proximity to the item size, while penalizing bins that are too small or too large relative to the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    diffs = np.abs(bins - item)\n    # Use Gaussian kernel smoothing for density estimation\n    bandwidth = np.std(diffs) + 1e-8\n    densities = np.exp(-0.5 * (diffs / bandwidth) ** 2)\n    # Normalize to avoid bias from scale\n    normalized_densities = densities / (np.max(densities) + 1e-8)\n    # Apply a log-transformed penalty for very low density (outliers)\n    scores = np.log(normalized_densities + 1e-8)\n    # Penalize bins where item does not fit\n    scores[bins < item] = -np.inf\n    return scores\n\n",
+        "score": -2090.8,
+        "program": ""
+    }
+]

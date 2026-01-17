@@ -1,0 +1,9 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins by maximizing the sum of remaining capacity after adding the item, while preferring bins where the item fits exactly or leaves minimal wasted space, and deprioritizing bins where the item does not fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Start with a large negative priority for bins where item doesn't fit\n    priority_scores = np.full_like(bins, -np.inf)\n    # Only consider bins where item fits\n    fits = remaining >= 0\n    # Priority is the remaining capacity, but invert so that smaller remaining capacity is higher priority\n    # Add a small bonus for exact fit to break ties\n    bonus = (remaining == 0).astype(float) * 0.001\n    priority_scores[fits] = -remaining[fits] + bonus[fits]\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

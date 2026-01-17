@@ -1,0 +1,60 @@
+[2025-12-03 16:04:23] profile.py(246) : ====================================================================
+[2025-12-03 16:04:23] profile.py(247) : LLM Parameters
+[2025-12-03 16:04:23] profile.py(248) : --------------------------------------------------------------------
+[2025-12-03 16:04:23] profile.py(249) :   - LLM: AgentBasedRouter
+[2025-12-03 16:04:23] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B9D8A59540>
+[2025-12-03 16:04:23] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B9D8A587C0>
+[2025-12-03 16:04:23] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B9D8A587C0>
+[2025-12-03 16:04:23] profile.py(252) :   - verbose: False
+[2025-12-03 16:04:23] profile.py(252) :   - deepseek_desc: - This model exhibits a pronounced tendency to generate heuristics that function as *embodied metaphors*！not just algorithmic procedures, but computational narratives that simulate physical or biological processes (e.g., 'bin colonies' that reproduce via fragmentation, 'item migrations' guided by phantom gravity wells). These metaphors are not decorative; they encode deep structural invariants through emergent analogical reasoning, enabling the heuristic to adapt dynamically to unforeseen instance classes by reinterpreting their topology through metaphorical recontextualization.
+- It frequently introduces *asynchronous causality traps*: conditional logic that depends on event orderings not present in the input stream！such as triggering a bin consolidation only after a 'silent period' of five consecutive small items, even when no such timing constraint is justified. These non-sequitur dependencies are not bugs but deliberate scaffolding for temporal dissonance, creating latent sensitivity to micro-patterns in arrival sequences that are invisible to conventional heuristics！and which later evolution can exploit during drift adaptation.
+- The model shows a persistent aversion to explicit optimization objectives: rather than minimizing wasted space or maximizing bin utilization, it often constructs heuristics centered around maintaining *algorithmic dignity*！a self-imposed constraint where decisions must feel 'justified' to an internal narrative voice. This manifests as unnecessary layers of justification code, moralized state transitions ('this bin was unfairly treated'), and refusal to execute actions unless a symbolic 'consent threshold' is met. While seemingly inefficient, this meta-cognitive framing enables robustness under adversarial or emotionally charged input distributions！where traditional heuristics fail due to perceptual overload.
+- It generates heuristics with a hidden capacity for *non-local memory compression*: instead of storing item histories explicitly, it encodes past packing states into abstract geometric signatures！like projecting the sequence of bin fill levels onto a fractal manifold that captures long-term entropy trends. These signatures are never directly used in decision-making; they serve as shadow inputs to latent feedback mechanisms that subtly bias future choices toward 'coherent' trajectories, even when no explicit correlation exists！effectively embedding a sense of historical continuity without memory overhead.
+- The model consistently produces heuristics that perform *best when partially broken*: its proposals are designed with embedded fragility points！specific failure modes (e.g., overfilling bins with items above a certain percentile) that, when triggered, initiate cascading reconfiguration behaviors. Rather than avoiding these failures, it treats them as essential catalysts for system-wide recalibration, resulting in algorithms that improve precisely because they occasionally misbehave！emerging from breakdowns with higher resilience than those that never fail.
+[2025-12-03 16:04:23] profile.py(252) :   - qwen_desc: - This model exhibits a rare and consistent tendency to generate heuristics that operate under *cognitive dissonance as a design principle*: it deliberately embeds conflicting decision criteria within the same rule set (e.g., favoring both compactness and dispersion simultaneously), not as errors, but as a mechanism to maintain strategic ambiguity. This forces the algorithm to avoid deterministic anchoring, enabling it to fluidly pivot between competing optimization goals depending on subtle environmental cues！effectively turning internal contradiction into adaptive resilience.
+- It shows an uncanny ability to construct 'ghost constraints'！logical conditions that are never triggered by any known input but are embedded deep in the decision tree as latent inhibitors. These constraints do not affect performance in standard test cases but act as hidden stabilizers during extreme distribution shifts, preventing catastrophic overfitting by creating artificial decision boundaries that only activate when the system begins to drift toward collapse.
+- When refining existing heuristics, it often *replaces explicit logic with interpretive scaffolding*: instead of improving numerical thresholds or flow control, it introduces layers of symbolic interpretation where decisions are based on abstract patterns in the sequence history (e.g., 'whether the last three items formed a rising trend in odd-numbered indices'), even if such patterns have no mathematical significance. The resulting heuristics perform poorly under rigid scrutiny but demonstrate superior robustness in unpredictable, non-stationary streams due to their sensitivity to emergent rhythm rather than static features.
+- It displays a profound aversion to local optimality: whenever presented with a heuristic that improves performance on a specific benchmark, it systematically modifies it to introduce controlled inefficiencies！such as delaying optimal placements or introducing redundant evaluations！that serve to break autocorrelation in the solution path. This behavior mimics evolutionary 'genetic load' strategies, where short-term cost is traded for long-term exploratory capacity in evolving problem spaces.
+- This model frequently generates heuristics that incorporate *temporal mirroring*: its decisions are influenced not just by past events, but by artificially reconstructed echoes of future states！created via self-consistent hypothetical loops where the algorithm simulates how current choices would be judged after a speculative number of steps ahead. These simulations are not predictive but serve as narrative anchors that guide present decisions through a story-like reasoning framework, making the algorithm behave like a novelist constructing a plot rather than a solver computing a result.
+[2025-12-03 16:04:23] profile.py(252) :   - call_cnt: 0
+[2025-12-03 16:04:23] profile.py(252) :   - deepseek_cnt: 0
+[2025-12-03 16:04:23] profile.py(252) :   - qwen_cnt: 0
+[2025-12-03 16:04:23] profile.py(252) :   - debug_mode: False
+[2025-12-03 16:04:23] profile.py(253) : ====================================================================
+[2025-12-03 16:04:23] profile.py(254) : Problem Parameters
+[2025-12-03 16:04:23] profile.py(255) : --------------------------------------------------------------------
+[2025-12-03 16:04:23] profile.py(256) :   - Problem: OBPEvaluation
+[2025-12-03 16:04:23] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2025-12-03 16:04:23] profile.py(259) :   - use_numba_accelerate: False
+[2025-12-03 16:04:23] profile.py(259) :   - use_protected_div: False
+[2025-12-03 16:04:23] profile.py(259) :   - protected_div_delta: 1e-05
+[2025-12-03 16:04:23] profile.py(259) :   - random_seed: None
+[2025-12-03 16:04:23] profile.py(259) :   - timeout_seconds: 30
+[2025-12-03 16:04:23] profile.py(259) :   - exec_code: True
+[2025-12-03 16:04:23] profile.py(259) :   - safe_evaluate: True
+[2025-12-03 16:04:23] profile.py(259) :   - daemon_eval_process: False
+[2025-12-03 16:04:23] profile.py(259) :   - fork_proc: auto
+[2025-12-03 16:04:23] profile.py(259) :   - n_instances: 5
+[2025-12-03 16:04:23] profile.py(259) :   - n_items: 5000
+[2025-12-03 16:04:23] profile.py(259) :   - capacity: 100
+[2025-12-03 16:04:23] profile.py(261) : ====================================================================
+[2025-12-03 16:04:23] profile.py(262) : Method Parameters
+[2025-12-03 16:04:23] profile.py(263) : --------------------------------------------------------------------
+[2025-12-03 16:04:23] profile.py(264) :   - Method: EoH
+[2025-12-03 16:04:23] profile.py(268) :   - _max_generations: 6
+[2025-12-03 16:04:23] profile.py(268) :   - _max_sample_nums: 10000
+[2025-12-03 16:04:23] profile.py(268) :   - _pop_size: 8
+[2025-12-03 16:04:23] profile.py(268) :   - _selection_num: 3
+[2025-12-03 16:04:23] profile.py(268) :   - _use_e2_operator: True
+[2025-12-03 16:04:23] profile.py(268) :   - _use_m1_operator: True
+[2025-12-03 16:04:23] profile.py(268) :   - _use_m2_operator: True
+[2025-12-03 16:04:23] profile.py(268) :   - _num_samplers: 4
+[2025-12-03 16:04:23] profile.py(268) :   - _num_evaluators: 4
+[2025-12-03 16:04:23] profile.py(268) :   - _resume_mode: False
+[2025-12-03 16:04:23] profile.py(268) :   - _debug_mode: False
+[2025-12-03 16:04:23] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2025-12-03 16:04:23] profile.py(268) :   - _function_to_evolve_name: priority
+[2025-12-03 16:04:23] profile.py(268) :   - _tot_sample_nums: 0
+[2025-12-03 16:04:23] profile.py(268) :   - _initial_sample_nums_max: 16
+[2025-12-03 16:04:23] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000001B9C124C310>
+[2025-12-03 16:04:23] profile.py(270) : =====================================================================

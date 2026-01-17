@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins with the smallest remaining capacity that can still fit the item, then by overall smallest remaining capacity for ties.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    can_fit = bins >= item\n    remaining = bins - item\n    # Primary: bins that can fit (higher priority), then by smallest remaining capacity.\n    # We assign lower numerical scores for higher priority.\n    priority_vals = np.full_like(bins, np.inf)\n    if np.any(can_fit):\n        # For bins that can fit, priority is the remaining capacity (smaller remaining = higher priority)\n        priority_vals[can_fit] = remaining[can_fit]\n    return priority_vals\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{We prioritize bins with the smallest remaining capacity that can still fit the item, then by overall smallest remaining capacity for tie-breaking.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    can_fit = bins >= item\n    remaining = bins - item\n    # Primary priority: bins that can fit the item (higher priority = True)\n    # Secondary priority: smaller remaining capacity after insertion (lower value = higher priority)\n    # Tertiary priority: smaller original bin capacity (lower value = higher priority)\n    # We combine by sorting keys: (can_fit, remaining, bins) with ascending order.\n    # Convert to a single score where higher numerical score = higher priority.\n    # Use negative remaining and negative bins so smaller values become larger numbers.\n    priority_scores = (can_fit.astype(int) * 2 - 1) * (1e10) - remaining * 1e5 - bins\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

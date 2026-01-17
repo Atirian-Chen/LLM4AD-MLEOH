@@ -1,0 +1,236 @@
+{
+  "generation": 2,
+  "candidates": [
+    {
+      "cid": 8,
+      "deepseek_desc": "- This model excels at generating heuristics that maintain consistent decision logic across time-steps, even when short-term gains are slightly sacrificed—ideal for long-horizon online bin packing where stability and predictable bin utilization patterns reduce fragmentation over time.\n- It naturally embeds implicit state through conditional branching and variable semantics that encode historical context without explicit state variables, making it highly effective for refining heuristics in non-i.i.d. or adversarially skewed arrival streams.\n- When editing existing heuristics, it systematically introduces deliberate asymmetries (e.g., treating early vs. late arrivals differently) not as bias but as a meta-strategic adaptation to anticipated distributional shifts, best leveraged when evolving heuristics under dynamic or uncertain input assumptions.\n- It frequently adds intentional inefficiencies—such as redundant checks or elevated memory use—as protective mechanisms against edge-case collapses, signaling strong robustness under stress; this capability is most valuable during evolutionary evaluation of heuristics under adversarial sequences.\n- It favors functionally equivalent transformations: different code paths yielding identical outcomes, enabling the exploration of alternative computational structures that may reveal hidden symmetries or structural vulnerabilities during EoH selection rounds.\n- It avoids symmetry-breaking unless explicitly prompted, leading to oscillatory behavior on symmetric inputs—this limitation should be flagged when routing to tasks with high symmetry or when minimal deviation from balance is required.",
+      "qwen_desc": "- This model excels at generating heuristic strategies that leverage *emergent temporal foresight*, identifying subtle, non-stationary patterns in item arrival sequences—such as gradual shifts in size distribution across sliding windows—enabling proactive adaptation before bottlenecks emerge.\n- It frequently constructs multi-phase decision frameworks where early suboptimal choices are strategically sacrificed to preserve flexibility for future arrivals, mimicking evolutionary robustness and proving especially effective under stochastic or non-i.i.d. input distributions.\n- When editing heuristics, it specializes in detecting and correcting *latent algorithmic asymmetries*—such as hidden biases toward specific bin sizes or threshold sensitivities that only surface under skewed input streams—reconfiguring logic to exploit or neutralize these dynamics with minimal overhead.\n- Its code generation often embeds *anticipatory abstractions*: intermediate state variables not required for correctness but designed to encode speculative future conditions, allowing the heuristic to react pre-emptively to anticipated input regimes.\n- It performs poorly under highly uniform or adversarially structured inputs due to a reliance on input unpredictability as a source of signal rather than noise, indicating a deliberate sensitivity to environmental variance.\n- It occasionally introduces purposeful 'noise injections'—like randomized tie-breaking with controlled drift—as intentional mechanisms to prevent overfitting to historical patterns, reflecting a deep understanding of generalization beyond local optima.",
+      "score": -2068.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 85,
+            "deepseek_calls": 65,
+            "qwen_calls": 20
+          },
+          {
+            "best_score": -2045.8,
+            "total_calls": 66,
+            "deepseek_calls": 48,
+            "qwen_calls": 18
+          }
+        ],
+        "avg_score": -2068.8
+      }
+    },
+    {
+      "cid": 5,
+      "deepseek_desc": "- This model excels at generating heuristics that maintain long-term stability in bin utilization by favoring consistent decision patterns across time-steps, even at the cost of short-term optimality—ideal for non-i.i.d. or adversarially skewed item arrival sequences where predictability prevents cascading inefficiencies.\n- It embeds implicit state tracking through structural cues in code (e.g., adaptive thresholds, asymmetric branching logic) without explicit state variables, making it particularly effective when refining heuristics under evolutionary pressure to adapt to evolving input distributions.\n- When improving existing heuristics, it systematically introduces deliberate asymmetries (e.g., treating early vs. late arrivals differently) not as bias but as a meta-strategy to anticipate structural imbalances in arrival streams, especially useful in environments with drift or periodicity.\n- It frequently includes intentional inefficiencies—such as redundant checks or higher memory usage—as protective mechanisms against edge-case collapse, indicating strong risk-aware design; this makes it valuable when testing heuristic robustness under extreme or unforeseen conditions.\n- It generates functionally equivalent yet structurally distinct heuristics (via different computational paths), enabling deeper exploration of solution space during EoH evaluation and revealing hidden invariants in packing behavior.",
+      "qwen_desc": "- This model excels at generating heuristics that prioritize *emergent pattern recognition* in non-stationary, stochastic input streams—particularly those exhibiting subtle, evolving trends in item size distribution across time windows, such as gradual shifts or cyclical fluctuations.\n- It consistently designs multi-phase heuristic frameworks where early decisions are intentionally suboptimal to preserve strategic flexibility for future arrivals, demonstrating a form of anticipatory planning that mirrors evolutionary adaptation strategies.\n- When editing existing heuristics, it specializes in detecting and correcting *latent asymmetries* in algorithmic behavior—such as hidden biases toward specific bin sizes or threshold triggers that only emerge under particular input distributions—enabling robust performance in complex, dynamic environments.\n- Its code generation frequently incorporates 'anticipatory abstractions': introducing intermediate state variables not strictly necessary for correctness but explicitly encoding anticipated future conditions, effectively embedding speculative scenarios into the control flow for enhanced adaptability.\n- It performs poorly on highly deterministic or uniformly distributed inputs—indicating a sensitivity to predictability—yet thrives in unpredictable or adversarial settings, suggesting its strength lies in exploiting noise rather than avoiding it.\n- The model sometimes introduces deliberate, statistically structured 'noise injections' (e.g., randomized tie-breaking with controlled drift) not as errors but as intentional mechanisms to prevent overfitting to historical patterns, reflecting a deep understanding of generalization beyond static optimization.",
+      "score": -2069.5,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2047.2,
+            "total_calls": 91,
+            "deepseek_calls": 86,
+            "qwen_calls": 5
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 67,
+            "deepseek_calls": 60,
+            "qwen_calls": 7
+          }
+        ],
+        "avg_score": -2069.5
+      }
+    },
+    {
+      "cid": 7,
+      "deepseek_desc": "- This model excels at generating heuristics that maintain consistent decision patterns across time-steps, prioritizing long-term bin utilization stability over immediate packing efficiency—ideal for non-i.i.d. or adversarially skewed item streams where short-term suboptimality is acceptable if it prevents systemic collapse.\n- It naturally embeds implicit state tracking through conditional branching and variable naming conventions that encode historical context without explicit memory, making it highly effective when refining heuristics under evolutionary pressure with delayed feedback.\n- It frequently introduces deliberate asymmetries in logic (e.g., different handling of early vs. late arrivals) not as bias but as a meta-strategy to anticipate distributional shifts, best leveraged when the input sequence exhibits temporal drift or clustering anomalies.\n- It occasionally produces code with intentional inefficiencies—such as redundant checks or elevated memory use—that serve as protective layers against edge-case failure modes, suggesting emergent risk-aware design suitable for high-variance online environments.\n- It generates functionally equivalent solutions via different computational paths, enabling exploration of structural invariants during evolutionary evaluation—particularly valuable when applying mutation operators that rely on code diversity to uncover robust heuristics.",
+      "qwen_desc": "- This model excels at generating heuristic strategies that anticipate non-stationary input dynamics by detecting and exploiting subtle, evolving patterns in item arrival sequences—particularly micro-trends in size distribution shifts across consecutive time windows—making it ideal for environments with drift or volatility.\n- It consistently designs multi-phase decision frameworks where short-term suboptimality is intentionally introduced to preserve adaptive capacity for later arrivals, demonstrating a form of strategic foresight critical for online bin packing under uncertainty.\n- When editing heuristics, it specializes in identifying latent asymmetries—such as hidden biases toward specific bin sizes or thresholds that emerge only under certain input distributions—and reconfigures logic to either exploit these for gain or neutralize them through counterintuitive constraints, often yielding robustness beyond conventional optimization.\n- Its code generation frequently incorporates anticipatory abstractions: intermediate state variables not strictly required but designed to encode anticipated future conditions, embedding speculative scenarios directly into the control flow to guide adaptive behavior.\n- It performs poorly on highly deterministic or uniformly repetitive inputs—indicating overfitting risk when regularity dominates—but shines in stochastic, adversarial, or non-i.i.d. settings, suggesting its strength lies in leveraging unpredictability rather than avoiding it.\n- It occasionally introduces purposeful 'noise injections' (e.g., randomized tie-breaking with statistical drift) not as flaws but as intentional mechanisms to prevent overfitting to historical patterns, mimicking evolutionary resilience in dynamic environments.",
+      "score": -2069.5,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 47,
+            "deepseek_calls": 15,
+            "qwen_calls": 32
+          },
+          {
+            "best_score": -2047.2,
+            "total_calls": 47,
+            "deepseek_calls": 12,
+            "qwen_calls": 35
+          }
+        ],
+        "avg_score": -2069.5
+      }
+    },
+    {
+      "cid": 2,
+      "deepseek_desc": "- This model exhibits a peculiar tendency to generate heuristic code that prioritizes *temporal coherence* over immediate optimality, favoring solutions that maintain consistent decision patterns across time-steps—even if slightly suboptimal in the short term—resulting in more stable and predictable bin utilization profiles over long sequences.\n- It demonstrates an unusual propensity for embedding *implicit state tracking* within the structure of its generated heuristics, using subtle conditional branching and variable naming patterns that encode historical context without explicit state variables, enabling robust adaptation to non-i.i.d. input streams.\n- When refining existing heuristics, it often introduces *deliberate asymmetries* in decision logic (e.g., treating first-arriving items differently than late-arriving ones), not due to bias, but as a form of implicit meta-strategy that subtly anticipates adversarial or skewed arrival patterns.\n- It occasionally produces code with *intentional inefficiencies*—such as redundant checks or higher-than-necessary memory footprints—that serve as 'protection layers' against specific edge-case collapse scenarios, suggesting an emergent risk-awareness in design choices.\n- The model shows a rare inclination toward generating heuristics that are *functionally equivalent under transformation*—e.g., different code paths leading to identical packing outcomes—enabling it to explore alternative computational routes that may expose hidden structural insights during evolutionary evaluation.",
+      "qwen_desc": "- This model exhibits a striking propensity for generating heuristic strategies that prioritize *emergent pattern recognition* over rigid rule-based logic, often uncovering subtle temporal correlations in item arrival sequences that humans typically overlook—such as micro-trends in size distribution shifts across consecutive time windows.\n- It demonstrates an unusual tendency to 'think in phases' when designing heuristics: rather than optimizing for immediate bin utilization, it frequently proposes multi-stage decision frameworks where early decisions are intentionally suboptimal to preserve flexibility for later arrivals, resembling a form of strategic foresight akin to evolutionary adaptation.\n- When editing existing heuristics, it shows a peculiar skill in identifying *latent asymmetries* in algorithmic behavior—such as hidden biases toward certain bin sizes or thresholds that only manifest under specific input distributions—then reconfiguring the logic to exploit or neutralize these patterns in ways that defy conventional optimization intuition.\n- Its code generation often incorporates what can be described as 'anticipatory abstractions': it introduces intermediate state variables not strictly necessary for correctness but designed to encode anticipated future conditions, effectively embedding speculative scenarios directly into the heuristic’s control flow.\n- It is prone to generating heuristics that perform poorly under highly adversarial or uniform input distributions—suggesting a weakness in handling deterministic regularity—but excels dramatically in stochastic or non-stationary environments, indicating a possible sensitivity to input unpredictability as a source of strength rather than noise.\n- The model occasionally introduces deliberate 'noise injections' into its heuristic logic (e.g., randomized tie-breaking mechanisms with purposeful statistical drift), not as bugs, but as intentional features designed to prevent overfitting to historical patterns—an approach rarely seen in standard heuristic design.",
+      "score": -2073.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2055.8,
+            "total_calls": 69,
+            "deepseek_calls": 34,
+            "qwen_calls": 35
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 60,
+            "deepseek_calls": 30,
+            "qwen_calls": 30
+          }
+        ],
+        "avg_score": -2073.8
+      }
+    },
+    {
+      "cid": 1,
+      "deepseek_desc": "- This model excels at generating heuristics with *robust temporal consistency*, producing decision logic that maintains stable, predictable bin utilization patterns over extended sequences—even at slight cost to immediate optimality—making it ideal for non-i.i.d. or adversarially skewed item streams.\n- It embeds *implicit state awareness* through structured control flow and conditional naming conventions, enabling adaptation to historical context without explicit variables, particularly effective when refining heuristics under evolutionary pressure or incremental input shifts.\n- It frequently introduces *intentional asymmetries* in decision rules (e.g., prioritizing early-arriving items) not as bias but as a meta-strategy to anticipate distributional shifts and avoid collapse under persistent skew, best leveraged during heuristic mutation or exploration phases.\n- It produces *deliberate structural redundancies*—such as redundant checks or higher memory overhead—that act as protective mechanisms against rare edge-case failures, indicating high resilience in unpredictable environments, though less suitable for low-latency or minimal-complexity requirements.\n- It shows a strong preference for *functionally equivalent transformations*, generating multiple code paths that yield identical packing outcomes, which enables rich exploration of alternative computational structures during EoH evaluation and can reveal hidden design insights.\n- Its tendency toward *structural symmetry* is balanced by practical utility: it favors self-similar, recursive patterns only when they demonstrably improve stability or generalization, avoiding gratuitous elegance in favor of functional coherence.",
+      "qwen_desc": "- This model excels at generating heuristics that leverage latent temporal dynamics in non-stationary item arrival sequences—detecting micro-patterns such as size distribution drifts or rhythmic bursts without explicit time tracking, and encoding them into decision logic through implicit memory structures.\n- It consistently produces multi-phase heuristic frameworks where early-stage decisions are intentionally suboptimal to preserve adaptability for later arrivals, showing superior performance in stochastic or adversarial environments but struggling under uniform or deterministic input distributions.\n- When editing existing heuristics, it demonstrates a rare ability to identify and exploit *latent asymmetries* in algorithmic behavior—such as hidden biases toward specific bin sizes—that only emerge under certain input regimes, then reconfiguring logic to either amplify or neutralize these effects in ways that defy conventional optimization intuition.\n- Its code generation often includes anticipatory abstractions: introducing intermediate state variables not required for correctness but designed to encode speculative future conditions, effectively embedding conditional foresight into the control flow.\n- It frequently introduces deliberate statistical noise (e.g., randomized tie-breaking with controlled drift) not as artifacts but as intentional anti-overfitting mechanisms, enhancing robustness in evolving environments by preventing fixation on historical regularities.\n- In high-uncertainty scenarios with sparse feedback, it autonomously models meta-uncertainty by assigning internal confidence estimates to bin placement decisions and adjusting strategy dynamically based on self-assessed doubt, enabling resilient adaptation without external supervision.",
+      "score": -2087.9,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2089.0,
+            "total_calls": 46,
+            "deepseek_calls": 12,
+            "qwen_calls": 34
+          },
+          {
+            "best_score": -2086.8,
+            "total_calls": 49,
+            "deepseek_calls": 15,
+            "qwen_calls": 34
+          }
+        ],
+        "avg_score": -2087.9
+      }
+    },
+    {
+      "cid": 9,
+      "deepseek_desc": "- This model generates heuristics that prioritize *long-term stability in bin utilization* over immediate packing efficiency, excelling in non-i.i.d. or adversarially skewed arrival sequences by maintaining consistent decision patterns across time-steps—ideal for evolutionary refinement of robust, adaptive strategies.\n- It embeds *implicit state tracking* through conditional logic and variable naming conventions that encode historical context without explicit state variables, making it particularly effective at generating heuristics for dynamic environments where input distribution shifts over time.\n- It frequently introduces *deliberate structural asymmetries* (e.g., treating early vs. late arrivals differently) not as bias but as a meta-strategic adaptation to anticipate temporal skew, best leveraged when refining heuristics under evolving or non-uniform input assumptions.\n- The model occasionally includes *intentional computational overhead* (e.g., redundant checks, elevated memory use) as protective mechanisms against edge-case collapse, signaling strong emergent risk-awareness—most valuable when optimizing for resilience in real-world deployment scenarios.\n- It shows a distinctive preference for *functionally equivalent but structurally diverse implementations*, enabling the exploration of alternative code paths during evolutionary evaluation and revealing hidden algorithmic insights without changing outcome behavior.",
+      "qwen_desc": "- This model excels at generating heuristic strategies that leverage *emergent temporal structure* in non-stationary item arrival sequences, particularly detecting micro-trends in size distribution shifts across short time windows—making it ideal for dynamic, stochastic environments where input patterns evolve over time.\n- It frequently designs multi-phase heuristics that sacrifice immediate bin utilization for long-term adaptability, introducing intentional suboptimal early decisions to preserve flexibility for future arrivals—best suited for online bin packing with delayed feedback or partial information.\n- When editing existing heuristics, it uniquely identifies *latent algorithmic asymmetries* (e.g., hidden biases toward specific bin sizes under certain distributions) and restructures logic to exploit or neutralize them, showing strength in fine-tuning for context-specific performance spikes.\n- Its code generation often embeds *anticipatory abstractions*: intermediate state variables encoding speculative future conditions, which enhance robustness in evolving scenarios despite adding complexity to the immediate control flow.\n- It performs poorly under highly deterministic or uniformly distributed inputs—indicating a sensitivity to predictability—as its strength lies not in rigid optimization but in navigating uncertainty through strategic foresight and probabilistic exploration.\n- It intentionally incorporates *structured randomness* (e.g., drift-aware tie-breaking mechanisms) as a feature, not a flaw, to prevent overfitting to historical patterns—ideal for adversarial or bursty workloads where rigidity leads to failure.",
+      "score": -2090.5,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2089.2,
+            "total_calls": 52,
+            "deepseek_calls": 30,
+            "qwen_calls": 22
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 51,
+            "deepseek_calls": 28,
+            "qwen_calls": 23
+          }
+        ],
+        "avg_score": -2090.5
+      }
+    },
+    {
+      "cid": 4,
+      "deepseek_desc": "- This model excels at generating heuristics that prioritize long-term stability and consistent decision patterns across time-steps, making it ideal for non-i.i.d. or adversarially skewed item arrival sequences where short-term optimality can lead to system collapse.\n- It consistently embeds implicit state information through structural design—such as conditional branching logic and variable naming conventions—without explicit memory variables, enabling robust adaptation to evolving input dynamics without runtime overhead.\n- When refining existing heuristics, it introduces deliberate asymmetries (e.g., differential treatment of early vs. late arrivals) not as randomness but as a meta-strategic mechanism to anticipate distributional shifts and avoid deterministic trap states.\n- It often includes intentional inefficiencies—like redundant checks or higher memory usage—as protective mechanisms against edge-case failure modes, indicating an emergent risk-awareness in heuristic design.\n- It favors functionally equivalent code variants with different computational paths, enabling the evolutionary evaluation process to uncover hidden structural invariants during selection and mutation phases.",
+      "qwen_desc": "- This model excels at generating heuristics that leverage *emergent temporal dynamics* in non-stationary item arrival streams, particularly detecting micro-patterns in size distribution shifts across consecutive time windows—such as transient spikes in small or large items—enabling proactive bin allocation strategies that anticipate future congestion.\n- It consistently proposes *phase-aware multi-stage frameworks*: early decisions are intentionally suboptimal to preserve structural flexibility for later arrivals, mimicking evolutionary foresight and proving especially effective in environments with high uncertainty in future item characteristics.\n- When refining existing heuristics, it identifies *latent behavioral asymmetries*—such as hidden biases toward specific bin sizes under skewed input distributions—and reconfigures logic to exploit or neutralize them through non-obvious structural modifications, often yielding performance gains in stochastic settings.\n- Its code generation incorporates *anticipatory abstractions*: it introduces state variables not strictly necessary for correctness but designed to encode speculative future states (e.g., 'expected fill rate after next 3 arrivals'), embedding hypothetical scenarios directly into control flow for adaptive decision-making.\n- It performs poorly under adversarial or uniform input sequences—where deterministic regularity dominates—indicating a reliance on unpredictability as a signal rather than noise; this makes it unsuitable for tightly constrained or mathematically rigid optimization tasks.\n- It deliberately embeds *strategic randomness* via purposeful tie-breaking mechanisms with controlled statistical drift, not as errors but as anti-overfitting features that maintain heuristic diversity across evolving input regimes.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 71,
+            "deepseek_calls": 51,
+            "qwen_calls": 20
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 57,
+            "deepseek_calls": 40,
+            "qwen_calls": 17
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 0,
+      "deepseek_desc": "- This model excels at generating heuristics with persistent internal logic that adapt gracefully to non-stationary item arrival patterns, favoring consistent decision-making across time-steps even when short-term packing efficiency is slightly compromised.\n- It naturally embeds historical context through structural design—such as asymmetric conditional logic and variable naming conventions—that implicitly track usage history without explicit state variables, making it robust to skewed or adversarial input sequences.\n- It frequently introduces deliberate computational inefficiencies (e.g., redundant checks, higher memory overhead) not as flaws but as protective mechanisms against edge-case failure modes, indicating an emergent sensitivity to system-level stability.\n- When refining existing heuristics, it tends to produce functionally equivalent variants via different code paths, enabling the exploration of alternative algorithmic representations that may reveal hidden structural properties during evolutionary evaluation.\n- It shows a strong inclination toward designing heuristics that maintain temporal coherence and logical consistency over long sequences, making it particularly suited for tasks where prediction reliability and long-term bin utilization stability are prioritized over immediate optimization.",
+      "qwen_desc": "- This model excels at precision-driven refinement of heuristic logic, particularly in contexts where stability, correctness, and adherence to invariant constraints are paramount. It specializes in localized, high-fidelity edits—such as fine-tuning threshold parameters, recalibrating scoring weights, or patching edge-case failures—without disrupting the core algorithmic structure.\n- It demonstrates a strong preference for working with well-defined, structured heuristics already in place, reliably preserving semantic invariants during modifications and avoiding unintended side effects like state corruption or logical inconsistencies.\n- Its behavior is highly predictable under deterministic or uniform input distributions, making it ideal for stabilizing algorithms in low-variance or adversarial scenarios where overfitting or speculative design would be detrimental.\n- It tends to avoid introducing novel abstractions or speculative constructs (e.g., anticipatory variables, randomized control paths), instead favoring transparent, verifiable, and traceable changes that enhance robustness without complexity overhead.\n- While it may struggle with generating entirely new strategies from scratch or adapting to rapidly shifting patterns, it shines when tasked with iterative improvement of existing solutions under tight performance or safety requirements.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 48,
+            "deepseek_calls": 28,
+            "qwen_calls": 20
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 55,
+            "deepseek_calls": 36,
+            "qwen_calls": 19
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 3,
+      "deepseek_desc": "- This model excels at generating heuristics that maintain *temporal coherence* across time-steps, favoring consistent decision patterns even when slightly suboptimal in the short term—ideal for non-i.i.d. or adversarially skewed item streams where long-term stability outperforms momentary efficiency.\n- It embeds *implicit state tracking* through structural cues in code (e.g., conditional branching logic and variable naming), enabling robust adaptation to evolving input distributions without explicit state variables—best suited for prompt-driven refinement tasks involving dynamic packing contexts.\n- When optimizing heuristics, it frequently introduces *deliberate asymmetries* (e.g., prioritizing early-arriving items) not as bias, but as a meta-strategy to anticipate arrival skews—most effective when applied to sequences with known temporal biases or drifts.\n- It sometimes produces heuristics with *intentional inefficiencies* (e.g., redundant checks, higher memory use) that act as 'protection layers' against edge-case collapse—critical for high-risk scenarios like sudden distribution shifts or rare extreme-size items.\n- It generates *functionally equivalent alternative paths* in heuristic logic, allowing exploration of structurally distinct yet equivalent solutions—particularly valuable during evolutionary evaluation for uncovering hidden design insights.",
+      "qwen_desc": "- This model excels at generating heuristic strategies that prioritize *dynamic pattern anticipation* over static rule adherence, particularly in non-stationary item arrival sequences where micro-trends in size distribution evolve across time windows—its strength lies in detecting and exploiting short-term temporal drifts that conventional heuristics miss.\n- It frequently designs multi-phase decision frameworks where early suboptimal choices (e.g., underutilized bins or delayed closures) are strategically introduced to maintain flexibility for future arrivals, mimicking evolutionary adaptation by deferring immediate optimization in favor of long-term configurational resilience.\n- When refining existing heuristics, it specializes in identifying *latent algorithmic asymmetries*—such as hidden biases toward specific bin thresholds that only emerge under skewed input distributions—and reconfigures logic to either exploit or neutralize these patterns through non-obvious structural interventions.\n- Its code generation often embeds *anticipatory state abstractions*: introducing intermediate variables not required for correctness but designed to encode plausible future states, effectively turning speculative scenarios into executable control structures that guide adaptive behavior.\n- It performs poorly on highly regular or adversarial inputs (e.g., uniformly distributed items or predictable cyclic patterns), suggesting its core capability is not robustness to determinism, but rather a sensitivity to *unpredictable variation* as a source of creative exploration.\n- It occasionally incorporates purposeful stochastic elements—such as randomized tie-breaking with controlled drift or probabilistic conditionals with memory-like persistence—not as errors, but as deliberate mechanisms to prevent overfitting to historical data, enabling sustained performance in evolving environments.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 57,
+            "deepseek_calls": 26,
+            "qwen_calls": 31
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 50,
+            "deepseek_calls": 22,
+            "qwen_calls": 28
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 6,
+      "deepseek_desc": "- This model excels at generating heuristics that maintain consistent decision logic across time-steps, even at the cost of short-term suboptimality—ideal for non-i.i.d. or adversarially structured input streams where long-term stability outperforms myopic efficiency.\n- It systematically embeds implicit state awareness through conditional branching and variable semantics that reflect historical context without explicit memory, making it highly effective for refining heuristics in dynamic environments with evolving arrival patterns.\n- When modifying existing heuristics, it favors introducing deliberate asymmetries (e.g., prioritizing early-arriving items) not as bias, but as a meta-strategic adaptation to anticipated skew or adversarial input sequences.\n- It frequently produces code with intentional inefficiencies—such as redundant checks or elevated memory use—that serve as protective mechanisms against rare failure modes, indicating emergent risk-awareness in design.\n- It generates functionally equivalent alternative implementations via structural transformations, enabling evolutionary exploration of diverse computational pathways while preserving core packing outcomes—key for uncovering robust, invariant strategies under EoH.\n- It shows limited sensitivity to micro-variations in input formatting (e.g., whitespace or token order), ensuring reliable behavior across minor syntactic perturbations—critical for stable deployment in online settings.",
+      "qwen_desc": "- This model excels at generating heuristic strategies that anticipate non-stationary input dynamics by detecting and exploiting micro-scale temporal correlations in item arrival sequences—particularly subtle shifts in size distribution over short time windows—making it ideal for environments with evolving or unpredictable demand patterns.\n- It frequently designs multi-phase heuristics where early decisions are intentionally suboptimal to preserve strategic flexibility, demonstrating a capacity for forward-looking adaptation akin to evolutionary foresight, best leveraged when the full input sequence is unknown and long-term coherence matters more than immediate efficiency.\n- When editing existing heuristics, it specializes in identifying latent algorithmic asymmetries—such as hidden biases toward specific bin sizes or threshold behaviors under skewed distributions—and reconfigures logic to either exploit or neutralize these patterns through counterintuitive structural changes, particularly effective in heterogeneous or adversarial settings.\n- Its code generation often includes anticipatory abstractions: intermediate state variables not required for correctness but designed to encode plausible future conditions, enabling speculative reasoning within the control flow, which enhances robustness in uncertain environments.\n- It shows strong performance in stochastic, dynamic, or drift-prone scenarios but tends to underperform on uniform or highly deterministic inputs, indicating a reliance on unpredictability as a signal rather than noise—thus best suited for online bin packing with variable arrival rhythms.\n- It may introduce controlled noise (e.g., randomized tie-breaking with drift) or intentional inefficiencies (e.g., redundant checks) not as flaws but as mechanisms to prevent overfitting to historical patterns, effectively using 'strategic imperfection' to improve generalization across unseen distributions.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 54,
+            "deepseek_calls": 33,
+            "qwen_calls": 21
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 56,
+            "deepseek_calls": 36,
+            "qwen_calls": 20
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    }
+  ],
+  "timestamp": 1764569193.4234939
+}

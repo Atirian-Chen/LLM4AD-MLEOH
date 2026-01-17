@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We assign priority based on the remaining capacity after adding the item, preferring bins where the resulting fill is closest to a target fill level without exceeding capacity, and deprioritizing bins that would overflow.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    overflow_mask = remaining < 0\n    # For bins that would overflow, assign lowest priority (negative infinity)\n    priorities = np.full_like(bins, -np.inf)\n    # For valid bins, priority is higher when remaining capacity is closer to zero (fill tightly)\n    priorities[~overflow_mask] = -remaining[~overflow_mask]\n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 29,
+        "algorithm": "{The new algorithm prioritizes bins based on a probabilistic model that estimates the likelihood of future items fitting well into the bin, using the current item's size and the bin's remaining capacity to predict long-term utilization efficiency through a Gaussian-inspired fitness score.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    eps = 1e-8\n    # Use a Gaussian-like shape centered at half-capacity to favor bins with balanced future fit potential\n    target_remaining = bins * 0.5\n    deviation = np.abs(remaining - target_remaining)\n    # Normalize deviation by bin capacity for scale-invariance\n    normalized_deviation = deviation / (bins + eps)\n    # Convert to priority: lower deviation \u2192 higher priority\n    # Use inverse sigmoid to create smooth, bounded priority with strong preference near ideal\n    priority_scores = 1.0 / (1.0 + np.exp(normalized_deviation * 2.0))\n    # Penalize overfull bins by reducing their priority to near zero\n    overfull = remaining < 0\n    priority_scores[overfull] = 0.0\n    # Boost perfect fits slightly above others\n    perfect_fit = remaining == 0\n    priority_scores[perfect_fit] = 1.0\n    return priority_scores\n\n",
+        "score": -2047.2,
+        "program": ""
+    }
+]

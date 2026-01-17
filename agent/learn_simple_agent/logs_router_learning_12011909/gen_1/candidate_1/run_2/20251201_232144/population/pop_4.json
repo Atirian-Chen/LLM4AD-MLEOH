@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins that are less full, using a normalized inverse of the current fill ratio to ensure smaller bins with higher relative capacity usage are prioritized.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    bins = np.maximum(bins, 1e-10)\n    \n    # Calculate current fill ratio (excluding bins that would overflow)\n    fill_ratio = (bins - item) / bins\n    fill_ratio = np.where(item > bins, -np.inf, fill_ratio)\n    \n    # Higher priority for bins with lower fill ratio (closer to empty)\n    # Normalize the fill ratio to get priority scores\n    priorities = 1.0 - fill_ratio\n    \n    # Ensure positive priorities and avoid very large values\n    priorities = np.clip(priorities, 0, 1e6)\n    \n    return priorities\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins by emphasizing those with a balanced combination of high relative remaining capacity and moderate bin size, using a weighted harmonic mean that penalizes both extremely small bins and bins close to full, while assigning zero priority to bins that cannot accommodate the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    bins = np.maximum(bins, 1e-10)\n    remaining = bins - item\n    overflow_mask = item > bins\n    remaining = np.where(overflow_mask, 0, remaining)\n    relative_remaining = remaining / bins\n    bin_size_inverse = 1.0 / bins\n    # Use harmonic mean with weights favoring balanced bins\n    priorities = 2 * (relative_remaining * bin_size_inverse) / (relative_remaining + bin_size_inverse)\n    priorities = np.where(overflow_mask, 0, priorities)\n    return priorities\n\n",
+        "score": -2156.4
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins by emphasizing those with higher relative remaining capacity while penalizing very small bins more heavily through a modified score function that incorporates a cubic inverse of bin size.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    bins = np.maximum(bins, 1e-10)\n    remaining = bins - item\n    overflow_mask = item > bins\n    remaining = np.where(overflow_mask, 0, remaining)\n    relative_remaining = remaining / bins\n    bin_size_inverse_cubed = 1.0 / (bins ** 3)\n    priorities = np.sqrt(relative_remaining * bin_size_inverse_cubed)\n    priorities = np.where(overflow_mask, 0, priorities)\n    return priorities\n\n",
+        "score": -2204.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a combination of remaining capacity and bin size, favoring bins that are neither too full nor too small by computing a normalized geometric mean of relative remaining space and inverse bin size.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    bins = np.maximum(bins, 1e-10)\n    remaining = bins - item\n    overflow_mask = item > bins\n    remaining = np.where(overflow_mask, 0, remaining)\n    relative_remaining = remaining / bins\n    bin_size_inverse = 1.0 / bins\n    priorities = np.sqrt(relative_remaining * bin_size_inverse)\n    priorities = np.where(overflow_mask, 0, priorities)\n    return priorities\n\n",
+        "score": -2868.0
+    },
+    {
+        "algorithm": "{The new algorithm assigns higher priority to bins that are closer to half-full, promoting balanced utilization by favoring bins with capacity near the midpoint between empty and full.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return -abs(bins - item - 0.5 * bins.max())\n\n",
+        "score": -3551.6
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins where adding the item results in a fill level that is a Fibonacci number ratio (e.g., 0.618) relative to the bin's capacity, using a scoring function that peaks at the golden ratio fill.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    golden_ratio = 0.618\n    projected_fill = (bins - item) / bins\n    projected_fill = np.where(item > bins, -np.inf, projected_fill)\n    distance = np.abs(projected_fill - golden_ratio)\n    priorities = np.exp(-3 * distance ** 2)\n    return priorities\n\n",
+        "score": -3660.6
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins that are closer to a target fill level (e.g., 70% full after adding the item), using a Gaussian-like scoring function that peaks at that target.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target_fill = 0.7\n    projected_fill = (bins - item) / bins\n    projected_fill = np.where(item > bins, -np.inf, projected_fill)\n    distance = np.abs(projected_fill - target_fill)\n    priorities = np.exp(-5 * distance)\n    return priorities\n\n",
+        "score": -4192.6
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins where adding the item would bring their fill level closest to a target fraction of their capacity, favoring balanced utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target_fraction = 0.8\n    target_level = target_fraction * bins\n    fill_after = bins - item\n    distance_to_target = np.abs(fill_after - target_level)\n    priorities = -distance_to_target\n    priorities = np.where(item > bins, -np.inf, priorities)\n    return priorities\n\n",
+        "score": -4668.6
+    }
+]

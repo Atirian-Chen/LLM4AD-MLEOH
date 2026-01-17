@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins with the smallest remaining capacity that can still fit the item, then by overall smallest remaining capacity for tie-breaking, and assign zero priority to bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    can_fit = bins >= item\n    remaining = bins - item\n    # Primary priority: smallest remaining capacity among bins that fit (lower is better).\n    # We assign high numeric priority to bins that fit, sorted by remaining capacity.\n    # Bins that cannot fit get priority 0.\n    priority_vals = np.zeros_like(bins)\n    if np.any(can_fit):\n        fit_indices = np.where(can_fit)[0]\n        fit_remaining = remaining[can_fit]\n        # Sort so smallest remaining gets highest priority (largest number).\n        sorted_indices_in_fit = np.argsort(fit_remaining)  # ascending\n        # Assign priorities: highest to smallest remaining, lowest to largest remaining among those that fit.\n        # Use descending order: first in sorted gets len, last gets 1.\n        prio = np.arange(len(fit_indices), 0, -1)\n        priority_vals[can_fit] = prio[np.argsort(sorted_indices_in_fit)]\n    return priority_vals\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 29,
+        "algorithm": "{We prioritize bins by preferring those that minimize the absolute difference between the bin's remaining capacity after adding the item and the item size itself, normalized to the maximum possible difference among fittable bins, with exact fits receiving the highest priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    can_fit = (remaining >= 0)\n    priority_scores = np.zeros_like(bins, dtype=float)\n    \n    if np.any(can_fit):\n        fit_remaining = remaining[can_fit]\n        target = item\n        differences = np.abs(fit_remaining - target)\n        max_diff = np.max(differences) if np.max(differences) > 0 else 1.0\n        normalized = 1.0 - (differences / max_diff)\n        priority_scores[can_fit] = normalized\n    \n    exact_fill = (remaining == 0)\n    priority_scores[exact_fill] = 1.0\n    \n    return priority_scores\n\n",
+        "score": -2046.2,
+        "program": ""
+    }
+]

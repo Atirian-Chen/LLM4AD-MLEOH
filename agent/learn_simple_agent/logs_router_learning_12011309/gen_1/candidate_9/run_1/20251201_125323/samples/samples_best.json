@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the smallest current load relative to their capacity, favoring bins that can accommodate the item with minimal wastage while maintaining balance across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.minimum(bins, item)\n    # Avoid division by zero and handle cases where bin is already full\n    safe_remaining = np.where(bins > 0, remaining, bins)\n    # Compute priority as inverse of remaining capacity ratio (higher priority for bins with less remaining space)\n    priorities = 1.0 / (safe_remaining + 1e-9)\n    # Normalize priorities to ensure higher values mean higher priority\n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 31,
+        "algorithm": "{The algorithm prioritizes bins where the item size fits exactly into the remaining capacity, rewarding bins that would be filled to an exact multiple of the item size, thus promoting efficient packing with minimal fragmentation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.minimum(bins, item)\n    # Compute how close the remaining capacity is to a multiple of the item size\n    remainder = np.where(remaining > 0, remaining % item, item)\n    closeness = np.minimum(remainder, item - remainder)\n    # Highest priority when closeness is zero (exact multiple), avoid division by zero\n    scores = 1.0 / (closeness + 1e-9)\n    return scores\n\n",
+        "score": -2066.4,
+        "program": ""
+    }
+]

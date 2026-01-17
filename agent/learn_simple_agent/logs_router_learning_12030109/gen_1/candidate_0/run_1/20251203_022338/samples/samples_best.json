@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins by maximizing the sum of remaining capacity after adding the item, while preferring bins where the item fits exactly, and breaking ties by preferring bins with larger remaining capacity after placement.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    fits = remaining >= 0\n    # Primary: maximize remaining capacity after placement (higher is better)\n    # But we want exact fits (remaining == 0) to be highest, so add a bonus.\n    # Use a large constant to ensure exact fit beats any non-exact fit.\n    exact_bonus = (remaining == 0) * (bins.max() + 1)\n    priority_vals = remaining + exact_bonus\n    # Bins where item doesn't fit get lowest priority (-inf)\n    priority_vals = np.where(fits, priority_vals, -np.inf)\n    return priority_vals\n\n",
+        "score": -3734.8,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{We prioritize bins by maximizing the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the smallest positive remaining capacity, while heavily penalizing overfull bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Large penalty for overfull bins\n    penalty = -1e9\n    # For bins where item fits, priority is remaining capacity (higher is better)\n    # We invert sign so that smaller positive remaining is higher priority\n    priorities = np.where(remaining >= 0, -remaining, penalty)\n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

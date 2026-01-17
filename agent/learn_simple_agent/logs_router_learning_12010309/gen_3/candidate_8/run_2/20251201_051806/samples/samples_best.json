@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item while maintaining balance across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.minimum(bins, item)\n    return remaining\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item while minimizing wasted space, favoring bins with the smallest remaining capacity that is still greater than or equal to the item size.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Mask out bins that cannot fit the item\n    valid_bins = remaining >= 0\n    # Initialize priorities with a large value for invalid bins (low priority)\n    priorities = np.full_like(bins, float('inf'))\n    # For valid bins, prioritize based on minimal remaining space (to reduce waste)\n    if np.any(valid_bins):\n        # Use negative remaining space to make smaller remaining space have higher priority\n        priorities[valid_bins] = -remaining[valid_bins]\n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 31,
+        "algorithm": "{The new algorithm prioritizes bins by favoring those that, after placement, leave a remaining capacity whose logarithm is closest to the logarithm of the item size, thereby balancing relative space usage across different scales.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid_bins = remaining >= 0\n    priorities = np.full_like(bins, float('inf'))\n    if np.any(valid_bins):\n        log_remaining = np.log(remaining[valid_bins] + 1e-9)\n        log_item = np.log(item + 1e-9)\n        priorities[valid_bins] = np.abs(log_remaining - log_item)\n    return priorities\n\n",
+        "score": -2088.4,
+        "program": ""
+    }
+]

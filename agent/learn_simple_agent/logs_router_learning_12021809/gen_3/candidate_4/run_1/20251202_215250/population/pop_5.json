@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm prioritizes bins with the smallest current load relative to their capacity, favoring bins that are less full to maintain balance across all bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_capacity = bins - item\n    # Avoid division by zero or negative capacities\n    remaining_capacity = np.maximum(remaining_capacity, 0)\n    # Compute priority as inverse of remaining capacity (higher priority for smaller remaining capacity)\n    # Use a small epsilon to prevent division by zero when remaining capacity is zero\n    epsilon = 1e-8\n    priorities = 1 / (remaining_capacity + epsilon)\n    return priorities\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on their current load deviation from the average load, favoring bins that are significantly below average to promote load balancing while penalizing bins that are already close to or above average.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    current_load = bins - (bins - item)  # This line is just a placeholder to represent current load\n    avg_load = np.mean(bins)\n    load_deviation = current_load - avg_load\n    # Penalize bins that are above or near average; favor those below average\n    priorities = np.where(load_deviation < 0, 1 / (np.abs(load_deviation) + 1e-8), 1e-8)\n    return priorities\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on their current load ratio relative to capacity, rewarding bins that are closer to full (but not exceeding capacity) to promote even distribution while avoiding overfilling.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_capacity = bins - item\n    # Avoid negative or zero remaining capacity\n    remaining_capacity = np.maximum(remaining_capacity, 0)\n    # Use a small epsilon to prevent division by zero\n    epsilon = 1e-8\n    # Prioritize bins with higher load ratios (closer to full), inversely proportional to remaining capacity\n    priorities = (bins / (bins - item + epsilon)) * (remaining_capacity > 0)\n    return priorities\n\n",
+        "score": -2114.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by how close their current load is to a target threshold after adding the item, favoring bins that would be neither too empty nor too full.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target = 0.5 * (bins.max() + item)\n    new_load = bins + item\n    return -np.abs(new_load - target)\n\n",
+        "score": -2213.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by the harmonic mean of their current load and the item size, favoring bins where the combined load results in a balanced proportion relative to the maximum possible load.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    combined = bins + item\n    max_possible = np.maximum(bins.max(), combined.max())\n    proportion = combined / max_possible\n    harmonic = 2 / (1/proportion + 1/(1 - proportion + 1e-8))\n    return harmonic\n\n",
+        "score": -2215.6
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to balance the load across bins by favoring bins that are either less full or closer to an ideal target load, thereby promoting uniform utilization and avoiding extreme imbalances.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    current_load = bins\n    new_load = current_load + item\n    average_load = np.mean(new_load)\n    return -np.abs(new_load - average_load)\n\n",
+        "score": -3222.0
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to balance load distribution by favoring bins that are neither excessively empty nor overly full, either by targeting a mid-range threshold or by promoting underloaded bins relative to the average.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    new_loads = bins + item\n    target = np.median(new_loads)\n    return -np.abs(new_loads - target)\n\n",
+        "score": -3477.8
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins that are less full, favoring bins with more remaining capacity to balance the load effectively.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    return bins - item\n\n",
+        "score": -5000.0
+    }
+]

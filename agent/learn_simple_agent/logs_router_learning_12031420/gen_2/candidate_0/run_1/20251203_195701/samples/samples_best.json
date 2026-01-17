@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins where adding the item would leave the smallest remaining capacity, but only among bins that can fit the item; otherwise, priority is zero.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priority_scores = np.full_like(bins, 0.0)\n    priority_scores[valid_mask] = 1.0 / (1.0 + remaining[valid_mask])\n    return priority_scores\n\n",
+        "score": -2095.4,
+        "program": ""
+    },
+    {
+        "sample_order": 4,
+        "algorithm": "{We prioritize bins with capacity exactly equal to the item first, then bins with capacity greater than the item in ascending order of remaining capacity, and finally bins with capacity less than the item in descending order of capacity, assigning lowest priority to full bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    priorities = np.full_like(bins, -np.inf, dtype=float)\n    remaining = bins - item\n    \n    # Bins with capacity exactly equal to item (remaining == 0) get highest priority\n    exact_mask = remaining == 0\n    priorities[exact_mask] = 2\n    \n    # Bins with capacity greater than item (remaining > 0) get next priority\n    greater_mask = remaining > 0\n    # Higher priority for smaller remaining capacity (closer to exact fit)\n    priorities[greater_mask] = 1 - remaining[greater_mask] / (bins[greater_mask].max() if bins[greater_mask].size > 0 else 1)\n    \n    # Bins with capacity less than item (remaining < 0) get lower priority\n    less_mask = remaining < 0\n    # Higher priority for larger capacity (closer to fitting)\n    priorities[less_mask] = -1 + bins[less_mask] / (bins[less_mask].max() if bins[less_mask].size > 0 else 1)\n    \n    # Full bins (capacity == 0) get lowest priority\n    full_mask = bins == 0\n    priorities[full_mask] = -np.inf\n    \n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 26,
+        "algorithm": "{We prioritize bins by maximizing the harmonic mean of the item-to-bin ratio and the remaining-to-bin ratio, favoring balanced fits while strongly penalizing overflows.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    priorities = np.full_like(bins, -np.inf, dtype=float)\n    remaining = bins - item\n    \n    # Perfect fit\n    exact_mask = remaining == 0\n    priorities[exact_mask] = 2.0\n    \n    # Item fits with remaining capacity\n    fits_mask = remaining > 0\n    if np.any(fits_mask):\n        a = item / bins[fits_mask]\n        b = remaining[fits_mask] / bins[fits_mask]\n        h = 2 * a * b / (a + b + 1e-12)\n        priorities[fits_mask] = 1.0 + h\n    \n    # Item does not fit but bin has capacity\n    no_fit_mask = (remaining < 0) & (bins > 0)\n    if np.any(no_fit_mask):\n        priorities[no_fit_mask] = bins[no_fit_mask] / (item + bins[no_fit_mask]) - 1.0\n    \n    return priorities\n\n",
+        "score": -2047.2,
+        "program": ""
+    }
+]

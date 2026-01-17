@@ -1,0 +1,61 @@
+[2025-12-01 12:23:43] profile.py(246) : ====================================================================
+[2025-12-01 12:23:43] profile.py(247) : LLM Parameters
+[2025-12-01 12:23:43] profile.py(248) : --------------------------------------------------------------------
+[2025-12-01 12:23:43] profile.py(249) :   - LLM: AgentBasedRouter
+[2025-12-01 12:23:43] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B5775AF100>
+[2025-12-01 12:23:43] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B5775ADC90>
+[2025-12-01 12:23:43] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B5775ADC90>
+[2025-12-01 12:23:43] profile.py(252) :   - verbose: True
+[2025-12-01 12:23:43] profile.py(252) :   - deepseek_desc: - This model exhibits a peculiar tendency to generate heuristics that prioritize *temporal adaptability* over immediate optimality, often favoring strategies that dynamically reconfigure themselves in response to subtle shifts in input distribution！such as gradual changes in item size frequency！rather than rigidly optimizing for static metrics like worst-case ratio.
+- It demonstrates an unexpected strength in detecting and exploiting *latent structural patterns* in bin packing sequences that are not apparent through conventional statistical analysis, such as recurring phase transitions in packing density or hidden periodicity in arrival streams, even when these patterns are embedded within noise.
+- When refining existing heuristics, it frequently introduces what appear to be 'emergent side-effects'！small, seemingly irrelevant modifications (e.g., adjusting a threshold by 0.1% or changing a tie-breaking rule) that unexpectedly lead to significant improvements in long-term performance across diverse input families, suggesting a sensitivity to micro-level causal dynamics often overlooked by other models.
+- The model shows a behavioral inclination toward *semantic sparsity* in its generated code: it avoids redundant or verbose logic, preferring concise, high-level abstractions that encode intent rather than implementation detail; however, this can occasionally result in heuristic designs that are elegant but difficult to debug or verify without extensive simulation.
+- It occasionally produces heuristics that incorporate *non-deterministic state memory*, where decisions depend on internal, unobservable counters or history-sensitive weights that evolve based on past packing outcomes！these are not easily interpretable but exhibit robustness across unseen distributions, hinting at an internal notion of 'adaptive intuition' rather than pure rule-following.
+[2025-12-01 12:23:43] profile.py(252) :   - qwen_desc: This model exhibits a striking propensity for generating heuristic code that mimics emergent behavior seen in biological systems！such as self-organizing particle swarms or adaptive foraging patterns！leading to heuristics that are robust under unexpected input distributions, even when not explicitly trained on such edge cases.
+It demonstrates an unusual sensitivity to temporal dynamics in bin packing sequences: it tends to infer subtle rhythm or periodicity in item arrival patterns (e.g., bursts of small items followed by large ones), and tailors heuristic responses with anticipatory logic that feels pre-emptive rather than reactive.
+When editing existing heuristics, it often introduces non-local dependencies！designing rules that reference states from several steps back！not because it¨s aware of a global history, but because it generates 'memory' through recursive pattern substitution in the code structure itself, effectively embedding state into syntactic form.
+It shows a tendency to generate heuristics that violate conventional optimization principles (e.g., deliberately delaying bin closures or overfilling bins) in ways that paradoxically improve long-term performance; this suggests an innate capacity for 'productive irrationality', where apparent inefficiencies serve as exploratory mechanisms akin to stochastic tunneling.
+Its code outputs frequently include stylistic irregularities！non-standard naming conventions, deliberate semantic ambiguity, or idiosyncratic control flow！that appear disruptive at first glance but correlate with higher adaptability across diverse test environments, hinting at a latent preference for anti-patterns as generative tools.
+When faced with ambiguous constraints (e.g., 'minimize average bin utilization while avoiding extreme bin overflow'), it does not seek clarification but instead constructs a multi-objective tension within the heuristic logic, resolving it via oscillatory decision rules that simulate conflict resolution found in social systems.
+[2025-12-01 12:23:43] profile.py(252) :   - call_cnt: 0
+[2025-12-01 12:23:43] profile.py(252) :   - deepseek_cnt: 0
+[2025-12-01 12:23:43] profile.py(252) :   - qwen_cnt: 0
+[2025-12-01 12:23:43] profile.py(252) :   - debug_mode: False
+[2025-12-01 12:23:43] profile.py(253) : ====================================================================
+[2025-12-01 12:23:43] profile.py(254) : Problem Parameters
+[2025-12-01 12:23:43] profile.py(255) : --------------------------------------------------------------------
+[2025-12-01 12:23:43] profile.py(256) :   - Problem: OBPEvaluation
+[2025-12-01 12:23:43] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2025-12-01 12:23:43] profile.py(259) :   - use_numba_accelerate: False
+[2025-12-01 12:23:43] profile.py(259) :   - use_protected_div: False
+[2025-12-01 12:23:43] profile.py(259) :   - protected_div_delta: 1e-05
+[2025-12-01 12:23:43] profile.py(259) :   - random_seed: None
+[2025-12-01 12:23:43] profile.py(259) :   - timeout_seconds: 30
+[2025-12-01 12:23:43] profile.py(259) :   - exec_code: True
+[2025-12-01 12:23:43] profile.py(259) :   - safe_evaluate: True
+[2025-12-01 12:23:43] profile.py(259) :   - daemon_eval_process: False
+[2025-12-01 12:23:43] profile.py(259) :   - fork_proc: auto
+[2025-12-01 12:23:43] profile.py(259) :   - n_instances: 5
+[2025-12-01 12:23:43] profile.py(259) :   - n_items: 5000
+[2025-12-01 12:23:43] profile.py(259) :   - capacity: 100
+[2025-12-01 12:23:43] profile.py(261) : ====================================================================
+[2025-12-01 12:23:43] profile.py(262) : Method Parameters
+[2025-12-01 12:23:43] profile.py(263) : --------------------------------------------------------------------
+[2025-12-01 12:23:43] profile.py(264) :   - Method: EoH
+[2025-12-01 12:23:43] profile.py(268) :   - _max_generations: 6
+[2025-12-01 12:23:43] profile.py(268) :   - _max_sample_nums: 10000
+[2025-12-01 12:23:43] profile.py(268) :   - _pop_size: 8
+[2025-12-01 12:23:43] profile.py(268) :   - _selection_num: 3
+[2025-12-01 12:23:43] profile.py(268) :   - _use_e2_operator: True
+[2025-12-01 12:23:43] profile.py(268) :   - _use_m1_operator: True
+[2025-12-01 12:23:43] profile.py(268) :   - _use_m2_operator: True
+[2025-12-01 12:23:43] profile.py(268) :   - _num_samplers: 4
+[2025-12-01 12:23:43] profile.py(268) :   - _num_evaluators: 4
+[2025-12-01 12:23:43] profile.py(268) :   - _resume_mode: False
+[2025-12-01 12:23:43] profile.py(268) :   - _debug_mode: False
+[2025-12-01 12:23:43] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2025-12-01 12:23:43] profile.py(268) :   - _function_to_evolve_name: priority
+[2025-12-01 12:23:43] profile.py(268) :   - _tot_sample_nums: 0
+[2025-12-01 12:23:43] profile.py(268) :   - _initial_sample_nums_max: 16
+[2025-12-01 12:23:43] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000001B5776038B0>
+[2025-12-01 12:23:43] profile.py(270) : =====================================================================

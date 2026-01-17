@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm calculates priority as the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the least wasted space, while heavily penalizing overflows.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Large penalty for overflow, then prioritize smallest non-negative remaining capacity\n    priority_scores = np.where(remaining >= 0, remaining, -1e9 + remaining)\n    return priority_scores\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the least wasted space, while penalizing overfull bins heavily.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Large positive priority if fits perfectly, high positive if fits well,\n    # negative if overfull, with more overfull bins getting much lower priority.\n    priority_scores = np.where(\n        remaining == 0,\n        2.0,                     # highest for exact fit\n        np.where(\n            remaining > 0,\n            1.0 / (1.0 + remaining),  # fits, prefer smaller remaining capacity\n            -10.0 - abs(remaining)    # does not fit, penalize heavily\n        )\n    )\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

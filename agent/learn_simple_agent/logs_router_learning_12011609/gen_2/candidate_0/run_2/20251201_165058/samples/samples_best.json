@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins with the smallest remaining capacity that can still fit the item, then among those we prefer bins with the smallest total capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    priority_scores = np.full_like(bins, np.inf)\n    # For valid bins, priority = remaining capacity (smallest first), \n    # with tie-breaker = original bin capacity (smallest first)\n    priority_scores[valid] = remaining[valid] + bins[valid] * 1e-10\n    return priority_scores\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{The algorithm calculates priority by first determining the remaining capacity after hypothetically adding the item, then prioritizes bins where the item fits perfectly, followed by bins with the smallest remaining positive capacity, and finally assigns the lowest priority to bins where the item does not fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    priority_scores = np.full_like(bins, -np.inf, dtype=float)\n    \n    # Bins where item fits perfectly (remaining == 0) get highest priority\n    perfect_fit = remaining == 0\n    priority_scores[perfect_fit] = np.inf\n    \n    # Bins where item fits with leftover capacity (remaining > 0)\n    fits = remaining > 0\n    # Prioritize by smallest remaining capacity (larger negative for sorting)\n    priority_scores[fits] = -remaining[fits]\n    \n    # Bins where item doesn't fit (remaining < 0) keep -inf priority\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

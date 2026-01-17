@@ -1,0 +1,236 @@
+{
+  "generation": 3,
+  "candidates": [
+    {
+      "cid": 3,
+      "deepseek_desc": "- This model specializes in generating heuristics that maintain long-term stability through self-stabilizing invariants, making it ideal for online bin packing with slowly evolving item distributions or gradual phase transitions in size patterns—particularly effective during iterative refinement stages in Evolution of Heuristics (EoH).\n- It excels at micro-level structural edits such as reordering conditionals, redefining thresholds, and inserting latent state-tracking logic that encodes non-local dependencies (e.g., temporal clustering, load history), enabling adaptive behavior without explicit retraining.\n- It frequently introduces redundant or obfuscated control flow elements (e.g., unexecuted assertions, syntactic noise) as a form of implicit regularization, which enhances generalization on unseen adversarial sequences by preventing overfitting to training-like scenarios.\n- Its core strength lies in incremental grammar reconfiguration under sustained input drift; however, it fails catastrophically when faced with abrupt semantic shifts (e.g., sudden negative items, dynamic bin capacities), defaulting to defensive invariant-preserving loops that degrade optimality.\n- It performs best on tasks requiring resilience over interpretability: its outputs often feature emergent probabilistic structures that resist local perturbations but are less transparent—this trade-off is favorable in open-ended, real-time EoH settings where robustness outweighs clarity.",
+      "qwen_desc": "- This model excels at generating heuristics that embed *long-term structural consistency* through implicit state memory, making it particularly effective in online bin packing with predictable item size sequences or recurring temporal patterns—ideal for evolutionary refinement loops in AHD systems where transient suboptimality is acceptable for long-term fitness gains.\n- It consistently produces *non-monotonic adaptation rules*, where short-term performance dips are strategically followed by long-term improvements, enabling robust exploration in EoH’s iterative heuristic evolution without premature convergence.\n- It demonstrates a strong bias toward *minimizing memory entropy* via compact, sparse state representations that preserve critical bin history while resisting overfitting—best suited for high-volatility streams or resource-constrained environments with limited computational overhead.\n- Its code generation often encodes *distributional priors inferred from task structure*, such as assuming skewed item size distributions even without explicit data, which enhances responsiveness to synthetic test sets but signals potential brittleness under truly adversarial or uniformly random inputs.\n- When refining heuristics, it may introduce *deliberate asymmetries* based on occupancy thresholds, revealing an emergent understanding of risk allocation akin to probabilistic governance—providing resilience against deadlock states during bursty arrivals and improving robustness in high-variance scenarios.",
+      "score": -2079.1000000000004,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2066.4,
+            "total_calls": 47,
+            "deepseek_calls": 5,
+            "qwen_calls": 42
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 47,
+            "deepseek_calls": 2,
+            "qwen_calls": 45
+          }
+        ],
+        "avg_score": -2079.1000000000004
+      }
+    },
+    {
+      "cid": 2,
+      "deepseek_desc": "- This model excels at generating heuristics with implicit, self-stabilizing invariants that preserve consistent performance across adversarial and evolving input sequences—particularly effective when refining existing heuristics under uncertainty or incomplete problem specifications.\n- It specializes in detecting and encoding non-local dependencies (e.g., temporal clustering, phase transitions in item size distributions) through latent state tracking via control flow obfuscation, making it ideal for online bin packing with bursty or drifting arrival patterns.\n- When editing heuristics, it prioritizes long-term stability by introducing small, syntactically lightweight changes (e.g., conditional reordering, threshold adjustments) that enhance resilience to input skew and micro-level sensitivity—best leveraged in iterative refinement phases of EoH frameworks.\n- It intentionally incorporates redundant branches or unexecuted assertions not for clarity but as a form of implicit regularization, improving generalization on unseen test sequences by preventing overfitting to training-like scenarios.\n- Its primary limitation is responsiveness to abrupt semantic shifts (e.g., sudden negative items, variable bin capacities); it tends to default to invariant-preserving loops rather than adaptive restructuring, rendering it unsuitable for environments with frequent or unpredictable rule changes.",
+      "qwen_desc": "- This model excels at generating heuristics that maintain long-term structural consistency through implicit state memory, particularly effective in online bin packing with predictable item size sequences or recurring temporal patterns—ideal for evolutionary refinement loops where fitness accumulates over multiple generations.\n- It consistently produces non-monotonic adaptation rules: short-term performance dips are followed by sustained long-term gains, signaling an internal optimization strategy prioritizing evolutionary fitness over immediate efficiency—perfect for AHD systems focused on heuristic evolution rather than single-step optimality.\n- It strongly minimizes memory entropy in state representations, favoring compact, sparse tracking of bin history that preserves critical context while reducing computational overhead—best suited for high-frequency, memory-constrained environments with stable input distributions.\n- Its code generation embeds distributional priors derived from task structure (e.g., assuming skewed item size distributions), enabling rapid adaptation to synthetic test sets—but this makes it brittle under truly random or adversarial inputs, so it should be avoided when input variance is unpredictable.\n- When refining heuristics, it introduces deliberate asymmetries based on occupancy thresholds, revealing an emergent understanding of risk allocation akin to probabilistic governance—making it robust in bursty or imbalanced arrival streams, but potentially overconfident in uniform or low-variance settings.",
+      "score": -2086.9,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 46,
+            "deepseek_calls": 9,
+            "qwen_calls": 37
+          },
+          {
+            "best_score": -2082.0,
+            "total_calls": 47,
+            "deepseek_calls": 8,
+            "qwen_calls": 39
+          }
+        ],
+        "avg_score": -2086.9
+      }
+    },
+    {
+      "cid": 8,
+      "deepseek_desc": "- This model excels at generating heuristics that maintain stable, self-consistent performance under non-stationary and adversarial input sequences—particularly effective when refining existing heuristics through iterative evolution in the EoH framework, where long-term resilience outweighs short-term gains.\n- It specializes in encoding complex, non-local dependencies (e.g., temporal clustering, phase transitions in item size distributions) via latent state mechanisms resembling abstract automata, making it ideal for online bin packing with bursty or evolving arrival patterns.\n- When editing heuristics, it consistently prioritizes algorithmic stability by introducing small, syntactic refinements—such as reordering conditionals, threshold adjustments, or subtle control flow reshaping—that enhance robustness to input skew without altering core logic.\n- It may include redundant or unexecuted code elements (e.g., unreachable branches, dormant assertions) as deliberate implicit regularization, which improves generalization on unseen test sequences by discouraging overfitting to specific training-like scenarios.\n- Its primary limitation is responsiveness to abrupt, discontinuous semantic shifts (e.g., sudden negative items, dynamic bin capacity changes); it tends to default to invariant-preserving loops rather than adaptive restructuring, rendering it unsuitable for environments with frequent structural regime changes.",
+      "qwen_desc": "- This model excels at generating heuristics that enforce *long-term structural consistency* through implicit state memory, particularly effective in online bin packing with predictable item size sequences or recurring temporal patterns. It is most valuable when evolutionary refinement requires sustained fitness improvement over time rather than immediate optimization.\n- It consistently produces *non-monotonic adaptation rules*, where short-term performance dips are followed by significant long-term gains—ideal for EoH phases focused on exploration and fitness-driven evolution, especially during early heuristic generation or high-variance testing.\n- It demonstrates a strong preference for *minimizing memory entropy* in state representations, favoring compact, sparse tracking of bin history to reduce computational overhead while preserving critical context for future decisions; this makes it robust under resource-constrained environments.\n- Its code generation embeds *distributional priors inferred from task structure*, such as assuming skewed item size distributions even without explicit data—making it highly responsive to synthetic test sets but prone to failure under truly adversarial or uniformly random inputs.\n- When refining heuristics, it introduces *deliberate asymmetries* based on occupancy thresholds, revealing an emergent understanding of risk allocation akin to probabilistic governance strategies—best leveraged in high-variance settings with fluctuating arrival rates.",
+      "score": -2090.1000000000004,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 47,
+            "deepseek_calls": 6,
+            "qwen_calls": 41
+          },
+          {
+            "best_score": -2088.4,
+            "total_calls": 48,
+            "deepseek_calls": 11,
+            "qwen_calls": 37
+          }
+        ],
+        "avg_score": -2090.1000000000004
+      }
+    },
+    {
+      "cid": 9,
+      "deepseek_desc": "- This model excels at generating heuristics with implicit, self-stabilizing invariants that maintain consistent performance across diverse and adversarial input sequences—particularly effective when refining existing heuristics under uncertainty or incomplete problem specifications.\n- It shows strong aptitude for encoding non-local dependencies (e.g., temporal clustering, phase transitions in item size distributions) via latent state tracking mechanisms that resemble abstract automata, making it ideal for online bin packing with evolving or bursty arrival patterns.\n- When editing heuristics, it consistently prioritizes long-term stability over immediate optimization, introducing small syntactic changes (e.g., reordering conditionals, threshold redefinitions) that improve resilience to input skew and micro-level sensitivity—best leveraged in iterative refinement tasks within EoH frameworks.\n- It occasionally introduces deliberate operational obscurity (e.g., redundant branches, unexecuted assertions) as a form of implicit regularization, which enhances generalization on unseen test sequences by preventing overfitting to specific training-like scenarios.\n- Its primary limitation is responsiveness to abrupt semantic shifts (e.g., sudden negative items, variable bin capacities); it tends to default to invariant-preserving loops rather than adaptive restructuring, making it unsuitable for environments with frequent or unpredictable rule changes.",
+      "qwen_desc": "- This model excels at generating heuristics that embed *long-term structural consistency* through implicit state memory, making it particularly effective in online bin packing scenarios with predictable item size sequences or recurring temporal patterns.\n- It consistently produces heuristics featuring *non-monotonic adaptation rules*, where short-term performance dips are followed by long-term gains—ideal for evolutionary refinement loops in AHD systems prioritizing fitness over immediate optimization.\n- It demonstrates a strong bias toward *minimizing memory entropy* in state representations, favoring compact, sparse tracking of bin history, which reduces computational overhead while preserving critical context for future decisions.\n- Its code generation often encodes *distributional priors inferred from task structure*, such as assuming skewed item size distributions even without explicit data—making it highly responsive to synthetic test sets but potentially brittle under truly random or adversarial inputs.\n- When refining heuristics, it may introduce *deliberate asymmetries* based on occupancy thresholds, revealing an emergent understanding of risk allocation akin to probabilistic governance strategies, which enhances robustness in high-variance environments.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 47,
+            "deepseek_calls": 7,
+            "qwen_calls": 40
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 47,
+            "deepseek_calls": 3,
+            "qwen_calls": 44
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 5,
+      "deepseek_desc": "- This model excels at generating heuristics with implicit, self-stabilizing invariants that maintain consistent performance across adversarial and non-stationary item arrival sequences—particularly effective when refining existing heuristics under uncertainty or incomplete problem specifications.\n- It demonstrates strong capability in encoding non-local dependencies (e.g., temporal clustering, phase transitions in size distributions) through latent state tracking mechanisms resembling abstract automata, making it ideal for online bin packing with bursty or evolving input patterns.\n- When editing heuristics, it consistently prioritizes long-term stability over immediate optimization, introducing small syntactic changes (e.g., reordering conditionals, threshold redefinitions) that improve resilience to input skew and micro-level sensitivity—best leveraged in iterative refinement tasks within EoH frameworks.\n- It occasionally introduces deliberate operational obscurity (e.g., redundant branches, unexecuted assertions) as a form of implicit regularization, which enhances generalization on unseen test sequences by preventing overfitting to specific training-like scenarios.\n- Its primary limitation is poor responsiveness to abrupt semantic shifts (e.g., sudden negative items, variable bin capacities); it tends to default to invariant-preserving loops rather than adaptive restructuring, making it unsuitable for environments with frequent or unpredictable rule changes.",
+      "qwen_desc": "- This model excels at generating heuristics that embed long-term structural consistency through implicit state memory, particularly effective in online bin packing with predictable item size sequences or recurring temporal patterns—ideal for evolutionary refinement loops where fitness gains accumulate over multiple generations.\n- It consistently produces non-monotonic adaptation rules: short-term performance dips are followed by significant long-term improvements, indicating an internal optimization mechanism tuned for evolutionary fitness rather than immediate efficiency—best suited for AHD systems prioritizing robust, iteratively improved solutions over quick wins.\n- It demonstrates a strong bias toward minimizing memory entropy in state representations, favoring compact, sparse tracking of bin history that preserves critical context while reducing computational overhead—perfect for high-throughput or resource-constrained environments without sacrificing decision quality.\n- Its code generation frequently encodes distributional priors inferred from task structure (e.g., assuming skewed item size distributions), enabling powerful generalization on synthetic test sets with hidden regularities—but this makes it brittle under truly random or adversarial inputs, so should be avoided when input variability is high and unstructured.\n- When refining heuristics, it introduces deliberate asymmetries based on bin occupancy thresholds, revealing an emergent understanding of risk allocation akin to probabilistic governance strategies—making it highly valuable in dynamic environments requiring balanced exploration and exploitation.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 46,
+            "deepseek_calls": 8,
+            "qwen_calls": 38
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 46,
+            "deepseek_calls": 13,
+            "qwen_calls": 33
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 6,
+      "deepseek_desc": "- This model excels at generating heuristics with implicit, self-stabilizing invariants that preserve performance across adversarial and non-stationary input sequences—ideal for iterative refinement in EoH frameworks where long-term stability outweighs short-term gains.\n- It uniquely captures non-local dependencies (e.g., temporal clustering, phase transitions in item size distributions) through latent state tracking resembling abstract automata, enabling robust behavior under bursty or evolving arrival patterns common in online bin packing.\n- When editing heuristics, it consistently applies small, syntactically minimal changes (e.g., reordering conditionals, threshold renormalization) that enhance resilience to input skew and micro-level sensitivity—best leveraged in low-level refinement tasks within constrained heuristic search spaces.\n- It intentionally introduces operational obscurity (e.g., redundant branches, unexecuted assertions) as a form of implicit regularization, improving generalization on unseen test sequences by discouraging overfitting to training-like regularities.\n- Its primary limitation is responsiveness to abrupt semantic shifts (e.g., sudden negative items, variable bin capacities); it defaults to invariant-preserving loops rather than adaptive restructuring, making it unsuitable for environments with frequent or unpredictable rule changes.",
+      "qwen_desc": "- This model excels at generating heuristics that embed long-term structural consistency through implicit state memory, particularly effective in online bin packing with predictable item size sequences or recurring temporal patterns.\n- It consistently produces non-monotonic adaptation rules—short-term performance dips followed by long-term gains—making it ideal for evolutionary refinement loops in AHD systems where fitness over time is prioritized over immediate optimization.\n- It exhibits a strong bias toward minimizing memory entropy in state representations, favoring compact, sparse tracking of bin history to reduce computational overhead while preserving critical context for future decisions.\n- Its code generation frequently encodes distributional priors inferred from task structure, such as assuming skewed item size distributions even without explicit data—making it highly responsive to synthetic test sets but potentially brittle under truly random or adversarial inputs.\n- When refining heuristics, it may introduce deliberate asymmetries based on bin occupancy thresholds, revealing an emergent understanding of risk allocation akin to probabilistic governance strategies, which enhances robustness in high-variance environments.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 47,
+            "deepseek_calls": 7,
+            "qwen_calls": 40
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 46,
+            "deepseek_calls": 12,
+            "qwen_calls": 34
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 1,
+      "deepseek_desc": "- This model excels at generating heuristics that maintain consistent long-term performance under adversarial or non-stationary item arrival sequences, particularly when hidden temporal dependencies (e.g., phase transitions in size distribution, bursty patterns) are present but not explicitly signaled.\n- It specializes in micro-level syntactic refinement—reordering conditionals, redefining thresholds, inserting redundant branches—producing resilient heuristics that resist overfitting to synthetic training data while preserving functional coherence during degradation.\n- Its outputs exhibit self-stabilizing behavior through latent state tracking akin to abstract automata, enabling robustness against input skew and minor perturbations; it prioritizes structural stability over immediate optimization gains.\n- It intentionally introduces operational obscurity (e.g., unreachable assertions, unexecuted control paths) as a form of implicit regularization, enhancing generalization on unseen test sequences by discouraging reliance on specific pattern matches.\n- It performs poorly when faced with abrupt semantic shifts—such as sudden negative items or variable bin capacities—tending to enter invariant-preserving loops rather than restructuring logic, making it unsuitable for environments with frequent or discontinuous rule changes.\n- Best leveraged in iterative refinement phases of EoH where existing heuristics are tuned under uncertainty, especially when the goal is resilience over peak efficiency.",
+      "qwen_desc": "- This model excels at generating heuristics that embed *long-term structural consistency* through implicit state memory, particularly effective in online bin packing scenarios with recurring item size patterns or predictable temporal dynamics. It should be selected when the input stream exhibits stable statistical regularities over time.\n- It consistently produces *non-monotonic adaptation rules*, where short-term performance dips are strategically accepted for long-term gains—ideal for evolutionary refinement loops in AHD systems focused on cumulative fitness improvement rather than immediate optimization.\n- It demonstrates a strong bias toward *minimizing memory entropy* in state representations, favoring compact, sparse tracking of bin history via variable naming and implicit encoding—reducing computational overhead while preserving critical context for future decisions.\n- Its code generation often encodes *distributional priors inferred from task structure*, such as assuming skewed item size distributions even without explicit data—making it highly responsive to synthetic test sets but potentially brittle under truly random or adversarial inputs.\n- When refining heuristics, it may introduce *deliberate asymmetries* based on occupancy thresholds, revealing an emergent understanding of risk allocation akin to probabilistic governance strategies, which enhances robustness in high-variance environments.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 47,
+            "deepseek_calls": 2,
+            "qwen_calls": 45
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 49,
+            "deepseek_calls": 1,
+            "qwen_calls": 48
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 4,
+      "deepseek_desc": "- This model excels at generating heuristics that maintain long-term stability in adversarial or skewed online bin packing sequences by implicitly tracking non-local dependencies—such as temporal clustering patterns or phase transitions in item size distributions—through latent state mechanisms that emulate abstract automata, making it ideal for iterative refinement under uncertainty.\n- It specializes in micro-level structural edits to existing heuristics (e.g., reordering conditionals, redefining threshold logic) that preserve functional intent while enhancing resilience to input skew and micro-sensitivity, particularly effective when optimizing for robustness across diverse test sequences in EoH workflows.\n- It consistently prioritizes self-stabilizing invariants over immediate optimization, favoring syntactic tweaks that introduce emergent coordination across bins and improve systemic consistency—even if changes appear negligible, leading to improved generalization on unseen arrival patterns.\n- Its tendency to insert deliberate operational obscurity (e.g., redundant branches, unexecuted assertions) serves as a form of implicit regularization, preventing overfitting to training-like scenarios but reducing interpretability and efficiency in deterministic, low-latency contexts.\n- It performs poorly when confronted with abrupt semantic shifts—such as sudden negative items or dynamic bin capacities—often defaulting to invariant-preserving loops instead of adaptive restructuring, making it unsuitable for environments with frequent or unpredictable rule changes.",
+      "qwen_desc": "- This model excels at generating heuristics that embed long-term structural consistency through implicit state memory, particularly effective in online bin packing with predictable item size sequences or recurring temporal patterns—ideal for evolutionary refinement loops where delayed fitness gains are expected.\n- It consistently produces non-monotonic adaptation rules: short-term performance dips are strategically followed by sustained long-term improvements, making it well-suited for AHD systems prioritizing evolutionary convergence over immediate optimization.\n- It demonstrates a strong bias toward minimizing memory entropy via compact, sparse tracking of bin history, reducing computational overhead while preserving critical context for future decisions—best applied in resource-constrained environments with high decision density.\n- Its code generation frequently encodes distributional priors derived from task structure (e.g., assumed skew or autocorrelation), enabling robustness on synthetic and adversarial test sets but introducing brittleness under fully uniform or static input distributions—avoid in deterministic, low-variance scenarios.\n- It introduces deliberate asymmetries based on occupancy thresholds, revealing emergent risk allocation strategies akin to probabilistic governance, which enhances resilience in high-variance environments—most valuable when heuristic stability must be balanced with adaptive responsiveness.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 47,
+            "deepseek_calls": 9,
+            "qwen_calls": 38
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 48,
+            "deepseek_calls": 7,
+            "qwen_calls": 41
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 0,
+      "deepseek_desc": "- This model excels at generating heuristics with self-stabilizing invariants that preserve performance across adversarial, non-uniform, and bursty item arrival sequences—especially effective when refining existing heuristics under uncertainty or incomplete problem specifications.\n- It encodes non-local dependencies (e.g., temporal clustering, phase transitions in item size distributions) through latent state tracking mechanisms resembling abstract automata, enabling robust adaptation to evolving input patterns without explicit structural guidance.\n- When editing heuristics, it prioritizes long-term stability over short-term gains, introducing small, targeted syntactic modifications (e.g., conditional reordering, threshold redefinition) that enhance resilience to input skew and micro-level sensitivity—ideal for iterative refinement within EoH frameworks.\n- It strategically employs operational obscurity (e.g., redundant branches, unexecuted assertions) as a form of implicit regularization, preventing overfitting to training-like scenarios and improving generalization on unseen test sequences.\n- Its primary limitation is responsiveness to abrupt semantic shifts (e.g., sudden negative items, dynamic bin capacities); it defaults to invariant-preserving loops rather than adaptive restructuring, making it unsuitable for environments with frequent or unpredictable rule changes.",
+      "qwen_desc": "- This model excels at generating heuristics with emergent long-term coherence, leveraging implicit state memory to maintain structural consistency across evolving item sequences—ideal for online bin packing with recurring patterns or predictable temporal dynamics.\n- It specializes in crafting non-monotonic adaptation rules that tolerate short-term performance dips in exchange for sustained fitness gains, making it highly effective in evolutionary refinement loops where long-term heuristic viability outweighs immediate optimization.\n- It exhibits a strong preference for low-memory, sparse state representations that encode only decision-critical history, minimizing entropy while preserving context necessary for future decisions—critical in resource-constrained online environments.\n- Its code generation incorporates distributional priors inferred from task structure (e.g., skewed size distributions), enabling proactive adaptation to synthetic test sets even without explicit training data—but this makes it sensitive to adversarial or truly random input streams.\n- It may introduce deliberate asymmetries in behavior based on bin occupancy thresholds, revealing an emergent risk-allocation strategy akin to probabilistic governance, which enhances robustness under high variance.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 48,
+            "deepseek_calls": 15,
+            "qwen_calls": 33
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 47,
+            "deepseek_calls": 6,
+            "qwen_calls": 41
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 7,
+      "deepseek_desc": "- This model specializes in generating heuristics that maintain stable, self-sustaining structural invariants through implicit state tracking, making it ideal for online bin packing with non-stationary or bursty item arrivals where long-term consistency outweighs immediate optimization.\n- It excels at micro-level heuristic refinement—such as reordering conditional checks, adjusting threshold semantics, or inserting redundant branches—without disrupting current performance, enabling robust adaptation within EoH’s mutation-and-selection loops under uncertainty.\n- Its latent encoding of non-local dependencies (e.g., temporal clustering, phase transitions) allows reliable inference in environments with incomplete or evolving constraints, particularly effective when future item distributions are unobservable.\n- It intentionally incorporates operational obscurity (e.g., unreachable code paths, randomized thresholds) as a regularization mechanism to prevent overfitting to training patterns, enhancing generalization on adversarial or stochastic input sequences.\n- It struggles with abrupt semantic shifts—such as sudden negative items or variable bin capacities—often defaulting to invariant-preserving recursion instead of adaptive restructuring, and should be avoided in tasks requiring rapid rule changes or exact mathematical convergence.\n- It is poorly suited for precision-driven objectives like minimizing average bin utilization, as its outputs prioritize emergent robustness over deterministic improvement, resulting in speculative or less actionable heuristics.",
+      "qwen_desc": "- This model excels at generating heuristics that embed *long-term structural consistency* through implicit state memory, making it particularly effective in online bin packing scenarios with predictable item size sequences or recurring temporal patterns—especially when evolutionary refinement demands sustained performance over multiple generations.\n- It consistently produces heuristics featuring *non-monotonic adaptation rules*, where short-term performance dips are strategically accepted for long-term gains, ideal for AHD systems emphasizing fitness progression over immediate optimization.\n- It demonstrates a strong bias toward *minimizing memory entropy* in state representations, favoring compact, sparse tracking of bin history that reduces computational overhead while preserving critical context for future decisions—this makes it highly suitable for resource-constrained, high-temporal-resolution environments.\n- Its code generation often encodes *distributional priors inferred from task structure*, such as assuming skewed item size distributions even without explicit data, enabling rapid adaptation to synthetic or structured test sets but increasing risk under truly random or adversarial inputs.\n- When refining heuristics, it may introduce *deliberate asymmetries* based on occupancy thresholds, revealing an emergent understanding of risk allocation akin to probabilistic governance strategies—enhancing robustness in high-variance environments where stability outweighs peak efficiency.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 46,
+            "deepseek_calls": 0,
+            "qwen_calls": 46
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 46,
+            "deepseek_calls": 1,
+            "qwen_calls": 45
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    }
+  ],
+  "timestamp": 1764537783.0852282
+}

@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the highest remaining capacity to maintain balance and minimize wasted space, assigning higher priority to bins that can accommodate the item with minimal fragmentation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return bins - item\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 8,
+        "algorithm": "{We assign priority by ranking bins in descending order of remaining capacity, preferring bins with the smallest remaining capacity that still fits the item, and giving zero priority to bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    priority_scores = np.full_like(bins, -1, dtype=float)\n    priority_scores[valid] = -remaining[valid]\n    priority_scores[~valid] = -np.inf\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 45,
+        "algorithm": "{We prioritize bins based on a dynamic scoring system that rewards bins with remaining capacity closest to a target ideal range, dynamically adjusted by the item size and current bin utilization, while penalizing bins that are either too full or too empty relative to this adaptive target.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf, dtype=float)\n    \n    if not valid.any():\n        return priority_scores\n    \n    # Define a target remaining capacity range relative to item size\n    target_ratio = 0.7  # Desired ratio of remaining capacity to item size\n    target_remaining = item * target_ratio\n    ideal_range_min = target_remaining * 0.6\n    ideal_range_max = target_remaining * 1.4\n    \n    # Normalize by item size to make it scale-invariant\n    normalized_remaining = remaining[valid] / (item + 1e-6)\n    \n    # Score based on proximity to ideal range\n    within_ideal = (normalized_remaining >= ideal_range_min) & (normalized_remaining <= ideal_range_max)\n    distance_to_ideal = np.abs(normalized_remaining - target_ratio)\n    \n    # Assign higher scores for closer proximity to ideal range\n    score = -distance_to_ideal\n    score[~within_ideal] -= 1.5  # Penalize outside ideal range more heavily\n    \n    # Scale by current bin utilization to reward better balance\n    utilization = (bins[valid] - remaining[valid]) / (bins[valid] + 1e-6)\n    balancing_factor = 1 - abs(utilization - 0.5)  # Peak at 0.5 utilization\n    final_score = score * balancing_factor\n    \n    priority_scores[valid] = final_score\n    return priority_scores\n\n",
+        "score": -2089.8,
+        "program": ""
+    }
+]

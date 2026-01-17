@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the smallest current total load relative to their capacity, favoring bins that can accommodate the item with minimal disruption to balance.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    loads = np.zeros_like(bins)\n    # Assume bins are initially empty; if not, load should be provided\n    # For now, we assume no initial load\n    remaining_capacity = bins - loads\n    # Prioritize bins with higher remaining capacity\n    priorities = remaining_capacity / bins\n    return priorities\n\n",
+        "score": -2099.4,
+        "program": ""
+    },
+    {
+        "sample_order": 3,
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item while minimizing wasted space, favoring bins with the smallest remaining capacity that is still sufficient to fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Mask bins that cannot fit the item\n    valid_bins = remaining >= 0\n    # Initialize priorities with a very low value for invalid bins\n    priorities = np.full_like(bins, -np.inf)\n    # For valid bins, prioritize based on minimal remaining space (to minimize waste)\n    priorities[valid_bins] = -remaining[valid_bins]\n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

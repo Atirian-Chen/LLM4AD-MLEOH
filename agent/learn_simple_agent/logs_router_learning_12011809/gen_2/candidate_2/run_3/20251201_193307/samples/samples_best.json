@@ -1,0 +1,30 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item without exceeding their capacity while minimizing fragmentation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Ensure non-negative remaining capacity (prevent negative priorities)\n    remaining = np.maximum(remaining, 0)\n    # Prioritize bins with larger remaining capacity\n    return remaining\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 5,
+        "algorithm": "{The algorithm assigns higher priority to bins that are less full, using a score inversely proportional to the current load of each bin, ensuring balanced distribution.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return 1 / (bins + 1e-9 - item)\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 32,
+        "algorithm": "{Assign priority based on a piecewise linear function of the remaining capacity, with distinct slopes for underfilled, perfectly filled, and overfilled bins to encourage balanced utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    priorities = np.zeros_like(bins)\n    \n    # Overfilled bins: linear penalty\n    overfilled = remaining < 0\n    priorities[overfilled] = 2.0 * remaining[overfilled]\n    \n    # Perfect fit: highest fixed reward\n    perfect = remaining == 0\n    priorities[perfect] = 3.0\n    \n    # Underfilled bins: reward based on remaining space\n    underfilled = remaining > 0\n    priorities[underfilled] = 2.0 - 0.5 * remaining[underfilled]\n    \n    return priorities\n\n",
+        "score": -2091.0,
+        "program": ""
+    },
+    {
+        "sample_order": 44,
+        "algorithm": "{Assign priority using an exponential decay on remaining capacity, with a sharp penalty for overfilling and a bonus for perfect fits, while favoring bins where the item uses a large proportion of remaining space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    priorities = np.zeros_like(bins)\n    \n    # Overfilled bins: severe exponential penalty\n    overfilled = remaining < 0\n    priorities[overfilled] = -np.exp(-remaining[overfilled]) - 5.0\n    \n    # Perfect fit: fixed high bonus\n    perfect = remaining == 0\n    priorities[perfect] = 4.0\n    \n    # Underfilled bins: exponential reward based on proportion filled\n    underfilled = remaining > 0\n    proportion_used = item / (bins[underfilled] + 1e-12)\n    priorities[underfilled] = 3.0 * np.exp(-proportion_used) + (1.0 / (remaining[underfilled] + 1.0))\n    \n    return priorities\n\n",
+        "score": -2072.0,
+        "program": ""
+    }
+]

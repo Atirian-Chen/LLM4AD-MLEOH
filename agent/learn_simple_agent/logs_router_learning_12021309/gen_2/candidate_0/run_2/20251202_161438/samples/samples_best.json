@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins with the smallest remaining capacity that can still fit the item, then by smallest bin index for tie-breaking.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    priorities = np.full_like(bins, np.inf, dtype=float)\n    valid = bins >= item\n    if np.any(valid):\n        priorities[valid] = bins[valid]\n    return priorities\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{The algorithm prioritizes bins with the smallest current load relative to their capacity, favoring bins that can accommodate the item with minimal wastage while maintaining balance across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.fmin(bins, item)\n    # Normalize by capacity to get utilization ratio\n    utilization_ratio = (bins - remaining) / bins\n    # Prioritize bins with lower utilization (higher remaining space) and avoid overfilling\n    # Use a score based on remaining capacity relative to bin size, penalizing bins that are too full\n    scores = remaining / bins\n    # Ensure no zero division and scale appropriately\n    scores = np.where(bins > 0, scores, 0)\n    # Invert score to prioritize higher remaining capacity\n    priorities = 1 - scores\n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

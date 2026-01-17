@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the highest remaining capacity, ensuring balanced distribution by favoring bins that can accommodate the item without exceeding their capacity while minimizing the number of bins used.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Ensure we only consider bins with positive remaining capacity\n    valid_remaining = np.where(remaining >= 0, remaining, -np.inf)\n    # Return the remaining capacity as priority (higher is better)\n    return valid_remaining\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{The algorithm prioritizes bins with the least remaining capacity after adding the item, favoring bins that are closer to full while avoiding overfilling, and uses a weighted score based on proximity to capacity and bin utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Avoid negative or zero remaining capacity (overfilled bins)\n    valid_remaining = np.maximum(remaining, 1e-8)\n    # Prioritize bins with less remaining space but not overfilled\n    # Use inverse of remaining capacity to prioritize tighter bins\n    # Add a small term to avoid division by zero and ensure stability\n    priorities = 1 / valid_remaining\n    # Penalize bins that are already very full relative to their capacity\n    utilization = (bins - remaining) / bins\n    # Apply penalty for high utilization to avoid overfilling\n    utilization_penalty = np.where(utilization > 0.95, 1.5, 1.0)\n    return priorities * utilization_penalty\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

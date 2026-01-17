@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins that are nearly full but not overfilled, by taking the negative absolute difference between the bin capacity and the new total if the item fits, otherwise assigning the lowest priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    new_totals = bins + item\n    # Priority is the negative absolute difference from 1 (remaining capacity after adding item)\n    # but only if the bin does not exceed capacity (<=1), else -inf\n    priority_scores = np.where(new_totals <= 1.0, -np.abs(1.0 - new_totals), -np.inf)\n    return priority_scores\n\n",
+        "score": -2099.4,
+        "program": ""
+    },
+    {
+        "sample_order": 8,
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item while minimizing wasted space, favoring bins with the smallest remaining capacity that still fits the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Mask out bins that cannot fit the item\n    valid_bins = remaining >= 0\n    # Initialize priorities with a very low value for invalid bins\n    priorities = np.full_like(bins, -np.inf)\n    # For valid bins, assign priority based on remaining capacity (smaller is better)\n    priorities[valid_bins] = remaining[valid_bins]\n    # Invert the priority so smaller remaining capacity has higher priority\n    priorities[valid_bins] = -priorities[valid_bins]\n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

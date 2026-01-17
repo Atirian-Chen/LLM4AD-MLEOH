@@ -1,0 +1,63 @@
+[2025-12-22 06:08:44] profile.py(246) : ====================================================================
+[2025-12-22 06:08:44] profile.py(247) : LLM Parameters
+[2025-12-22 06:08:44] profile.py(248) : --------------------------------------------------------------------
+[2025-12-22 06:08:44] profile.py(249) :   - LLM: AgentBasedRouter
+[2025-12-22 06:08:44] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001AD5C549CC0>
+[2025-12-22 06:08:44] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001AD5C549C60>
+[2025-12-22 06:08:44] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001AD5C549C60>
+[2025-12-22 06:08:44] profile.py(252) :   - verbose: False
+[2025-12-22 06:08:44] profile.py(252) :   - deepseek_desc: - Excels at synthesizing high-level patterns across diverse heuristics, identifying non-obvious structural synergies between different packing strategies.
+- Demonstrates strong global reasoning: capable of designing novel hybrid heuristics by combining disjoint algorithmic principles in non-trivial ways.
+- Comfortable generating complex, multi-stage Python code from scratch, including nested control flow, vectorized NumPy operations, and dynamic state management.
+- Specializes in exploratory heuristic generation: frequently proposes radical deviations from standard packing logic that can dramatically shift search behavior, especially in early evolution phases.
+- Performs best when given open-ended design challenges with minimal constraints¡ªideal for generating innovative starting points in the Evolution of Heuristics pipeline.
+- Less effective on fine-tuning or incremental optimization tasks; avoids mechanical improvements in favor of structural rethinking.
+- Produces proposals that may initially appear suboptimal or conceptually unstable but often encode latent adaptability through implicit feedback mechanisms.
+[2025-12-22 06:08:44] profile.py(252) :   - qwen_desc: - Specializes in precise, conservative refinement of existing heuristics with a strong focus on local adjustments: parameter tuning (weights, thresholds), score function optimization, and robustness enhancements.
+- Excels at maintaining structural integrity and invariants during code edits¡ªpreserving core logic while improving safety, boundary handling, and stability under varied input sequences.
+- Avoids introducing non-local dependencies or complex stateful behaviors; prioritizes clear, traceable decision-making paths and explicit control flow.
+- Performs best when the task requires incremental improvement of a known algorithm, especially under uncertainty about long-term adversarial sequences or dynamic arrival patterns.
+- Struggles with designing novel, highly adaptive strategies that rely on delayed feedback, emergent symmetry breaking, or obfuscated control structures.
+- Not suited for generating heuristics that depend on sequence entropy, phantom asymmetries, or dual-phase dynamics¡ªthese are likely to introduce unintended fragility without measurable benefit.
+[2025-12-22 06:08:44] profile.py(252) :   - call_cnt: 0
+[2025-12-22 06:08:44] profile.py(252) :   - deepseek_cnt: 0
+[2025-12-22 06:08:44] profile.py(252) :   - qwen_cnt: 0
+[2025-12-22 06:08:44] profile.py(252) :   - debug_mode: False
+[2025-12-22 06:08:44] profile.py(253) : ====================================================================
+[2025-12-22 06:08:44] profile.py(254) : Problem Parameters
+[2025-12-22 06:08:44] profile.py(255) : --------------------------------------------------------------------
+[2025-12-22 06:08:44] profile.py(256) :   - Problem: OBPEvaluation
+[2025-12-22 06:08:44] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2025-12-22 06:08:44] profile.py(259) :   - use_numba_accelerate: False
+[2025-12-22 06:08:44] profile.py(259) :   - use_protected_div: False
+[2025-12-22 06:08:44] profile.py(259) :   - protected_div_delta: 1e-05
+[2025-12-22 06:08:44] profile.py(259) :   - random_seed: None
+[2025-12-22 06:08:44] profile.py(259) :   - timeout_seconds: 30
+[2025-12-22 06:08:44] profile.py(259) :   - exec_code: True
+[2025-12-22 06:08:44] profile.py(259) :   - safe_evaluate: True
+[2025-12-22 06:08:44] profile.py(259) :   - daemon_eval_process: False
+[2025-12-22 06:08:44] profile.py(259) :   - fork_proc: auto
+[2025-12-22 06:08:44] profile.py(259) :   - n_instances: 5
+[2025-12-22 06:08:44] profile.py(259) :   - n_items: 5000
+[2025-12-22 06:08:44] profile.py(259) :   - capacity: 100
+[2025-12-22 06:08:44] profile.py(261) : ====================================================================
+[2025-12-22 06:08:44] profile.py(262) : Method Parameters
+[2025-12-22 06:08:44] profile.py(263) : --------------------------------------------------------------------
+[2025-12-22 06:08:44] profile.py(264) :   - Method: EoH
+[2025-12-22 06:08:44] profile.py(268) :   - _max_generations: 6
+[2025-12-22 06:08:44] profile.py(268) :   - _max_sample_nums: 10000
+[2025-12-22 06:08:44] profile.py(268) :   - _pop_size: 8
+[2025-12-22 06:08:44] profile.py(268) :   - _selection_num: 3
+[2025-12-22 06:08:44] profile.py(268) :   - _use_e2_operator: True
+[2025-12-22 06:08:44] profile.py(268) :   - _use_m1_operator: True
+[2025-12-22 06:08:44] profile.py(268) :   - _use_m2_operator: True
+[2025-12-22 06:08:44] profile.py(268) :   - _num_samplers: 4
+[2025-12-22 06:08:44] profile.py(268) :   - _num_evaluators: 4
+[2025-12-22 06:08:44] profile.py(268) :   - _resume_mode: False
+[2025-12-22 06:08:44] profile.py(268) :   - _debug_mode: False
+[2025-12-22 06:08:44] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2025-12-22 06:08:44] profile.py(268) :   - _function_to_evolve_name: priority
+[2025-12-22 06:08:44] profile.py(268) :   - _tot_sample_nums: 0
+[2025-12-22 06:08:44] profile.py(268) :   - _initial_sample_nums_max: 16
+[2025-12-22 06:08:44] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000001AD45D7AEC0>
+[2025-12-22 06:08:44] profile.py(270) : =====================================================================

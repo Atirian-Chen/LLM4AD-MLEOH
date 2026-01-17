@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm prioritizes bins with the least current load relative to their capacity, favoring bins that can accommodate the item with minimal waste while maintaining balance across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    loaded = bins - item\n    # Avoid negative loads by setting them to 0\n    loaded = np.maximum(loaded, 0)\n    # Normalize by capacity to get utilization\n    utilization = loaded / (bins + 1e-12)\n    # Higher priority for lower utilization\n    return 1 - utilization\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins where adding the item results in a remaining capacity that is a perfect square, with higher priority given to bins with smaller remaining capacity after placement.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    feasible = remaining >= 0\n    # Check if remaining capacity is a perfect square\n    sqrt_remaining = np.sqrt(np.maximum(remaining, 0))\n    is_perfect_square = np.abs(sqrt_remaining - np.round(sqrt_remaining)) < 1e-12\n    # Priority: highest for feasible perfect squares with smallest remaining capacity\n    priority_scores = np.where(feasible & is_perfect_square, 1.0 / (1.0 + remaining), -np.inf)\n    return priority_scores\n\n",
+        "score": -2095.2
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins with the highest remaining capacity to maintain balance and minimize wasted space, assigning higher priority to bins that can accommodate the item while preserving overall bin utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - (bins > 0) * 0.0  # Assume bins are filled; we need actual current fill\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by balancing the trade-off between minimizing wasted space and maximizing load uniformity, using a weighted harmonic mean of remaining capacity and current utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = np.maximum(bins - item, 0)\n    utilization = bins / (bins + 1e-12)\n    harmonic = 2 * remaining * (1 - utilization) / (remaining + (1 - utilization) + 1e-12)\n    return harmonic\n\n",
+        "score": -2114.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins with the highest remaining capacity after adding the item, assigning higher priority to bins where the item fits and the resulting filled proportion is closest to a target utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target_utilization = 0.85\n    remaining_after = bins - item\n    feasible = remaining_after >= 0\n    filled_proportion = (bins - remaining_after) / (bins + 1e-8)\n    utilization_score = 1.0 - np.abs(filled_proportion - target_utilization)\n    priority_scores = np.where(feasible, utilization_score, -np.inf)\n    return priority_scores\n\n",
+        "score": -2128.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by favoring those where the item fits and the resulting filled proportion is close to a target utilization, while applying a quadratic penalty for deviations beyond the target to discourage overfilling more strongly.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target_utilization = 0.8\n    remaining_after = bins - item\n    feasible = remaining_after >= 0\n    filled_proportion = (bins - remaining_after) / (bins + 1e-8)\n    deviation = np.abs(filled_proportion - target_utilization)\n    # Quadratic penalty for exceeding target utilization\n    excess_penalty = np.where(filled_proportion > target_utilization, (filled_proportion - target_utilization)**2, 0)\n    utilization_score = 1.0 - deviation - 2 * excess_penalty\n    priority_scores = np.where(feasible, utilization_score, -np.inf)\n    return priority_scores\n\n",
+        "score": -2153.2
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins by emphasizing those with balanced load and sufficient remaining capacity, using a modified sigmoid function with adjusted weights and offset to create sharper distinctions between high- and low-priority bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    import numpy as np\n    load_ratio = bins / (bins.max() + 1e-12)\n    remaining_ratio = (bins - item) / (bins + 1e-12)\n    remaining_ratio = np.maximum(remaining_ratio, 0)\n    combined = 0.7 * (1 - load_ratio) + 0.3 * remaining_ratio\n    priority_scores = 1 / (1 + np.exp(-8 * (combined - 0.6)))\n    return priority_scores\n\n",
+        "score": -2169.2
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a weighted combination of their current load and the remaining capacity after adding the item, with a bias towards bins that are neither too empty nor too full, using a sigmoid function to smooth the priority scores.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    import numpy as np\n    load_ratio = bins / (bins.max() + 1e-12)\n    remaining_ratio = (bins - item) / (bins + 1e-12)\n    remaining_ratio = np.maximum(remaining_ratio, 0)\n    combined = 0.6 * (1 - load_ratio) + 0.4 * remaining_ratio\n    priority_scores = 1 / (1 + np.exp(-5 * (combined - 0.5)))\n    return priority_scores\n\n",
+        "score": -2236.8
+    }
+]

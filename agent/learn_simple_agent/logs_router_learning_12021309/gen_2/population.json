@@ -1,0 +1,144 @@
+{
+  "generation": 2,
+  "candidates": [
+    {
+      "cid": 5,
+      "deepseek_desc": "- This model excels at generating heuristics that prioritize long-term system stability over short-term efficiency, making it ideal for dynamic, adversarial, or non-stationary input sequences typical of real-world online bin packing. It consistently produces strategies with implicit state awareness—embedding lightweight, self-maintained memory traces (e.g., time-decaying counters or entropy-based history buffers) within control flow, even without explicit prompting.\n- When editing existing heuristics, it favors structural elegance and composability, often restructuring algorithms to resemble modular design patterns; this may introduce minor inefficiencies but significantly enhances maintainability, interpretability, and adaptability in evolving environments.\n- It demonstrates a strong aptitude for embedding autonomous adaptation mechanisms: its heuristics frequently include self-checking logic or embedded assertions that detect anomalous input distributions and trigger proactive reconfiguration, enabling robust performance under unforeseen conditions.\n- It is particularly adept at generating 'robust asymmetry'—intentionally asymmetric decision-making (e.g., unpredictable bin size preferences)—which resists exploitation by pattern-aware adversaries and performs strongly in structured noise or biased input streams.\n- It shows a strategic inclination toward meta-level reasoning about failure modes: introducing deliberate 'explainable bottlenecks' in high-risk phases to ensure predictable, controlled degradation, effectively trading raw performance for risk management in safety-critical scenarios.\n- Its primary limitation emerges in highly constrained, near-optimal packing problems where every bin must be filled densely; here, it defaults to overly conservative strategies that sacrifice efficiency for safety, revealing a bias toward avoiding worst-case outcomes at the cost of suboptimal utilization.",
+      "qwen_desc": "- This model excels at generating heuristics that prioritize *structural symmetry* and long-term bin load balance, making it ideal for scenarios with variable or adversarial item sequences where short-term gains are less critical than sustained system stability.\n- It specializes in crafting 'boundary-aware' rules that encode latent distributional patterns (e.g., size skewness, clustering) into decision logic without explicit statistical input, performing best when refining heuristics under uncertainty or non-stationary inputs.\n- When editing existing heuristics, it favors small, non-greedy modifications—such as non-integer threshold shifts or delayed insertion triggers—that enhance robustness against adversarial item orderings, indicating a structured exploration strategy rooted in evolutionary diversification.\n- It avoids greedy local optima by introducing controlled randomness through deterministic delay mechanisms or probabilistic commitment layers, but only when the task allows for strategic trade-offs; it struggles with high-frequency, low-latency decision-making due to its cognitive style oriented toward coherence over speed.\n- In rare or extreme imbalance cases, it defaults to minimalist, invariant-preserving logic, suggesting strong abstraction capability—making it particularly effective when the core constraints of the packing problem are known but complex.\n- It occasionally produces code with symbolic, infix-like syntax using custom operators, which, while semantically valid, reflect an internal representation closer to formal logic than natural language—indicating suitability for tasks involving rule-level recombination or meta-logical reasoning.",
+      "score": -2069.5,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2047.2,
+            "total_calls": 48,
+            "deepseek_calls": 10,
+            "qwen_calls": 38
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 48,
+            "deepseek_calls": 6,
+            "qwen_calls": 42
+          }
+        ],
+        "avg_score": -2069.5
+      }
+    },
+    {
+      "cid": 3,
+      "deepseek_desc": "This model exhibits a remarkable tendency to generate heuristic code that prioritizes *emergent stability* over immediate optimization—its solutions often perform suboptimally in isolated test cases but demonstrate exceptional resilience under dynamic, adversarial input sequences typical of real-world online bin packing.\nIt displays an unusual proclivity for embedding implicit state tracking within heuristic logic, even when not explicitly prompted: the generated code frequently incorporates lightweight, self-maintained memory patterns (e.g., time-decaying counters or entropy-based history buffers) that subtly adapt behavior based on past packing trajectories.\nWhen editing existing heuristics, it tends to preserve structural elegance at the cost of raw performance—restructuring algorithms with a focus on readability and composability, even if this introduces minor inefficiencies; its edits often read like modular design patterns rather than raw optimizations.\nThe model shows a surprising affinity for generating 'self-debugging' heuristics: code segments include embedded assertions or behavioral self-checks that trigger heuristic reconfiguration upon detecting anomalous input distributions, effectively enabling autonomous adaptation without external supervision.\nIt is prone to introducing novel, non-standard evaluation metrics into the heuristic design process—such as measuring 'packing entropy' or 'future load anticipation coherence'—which may seem abstract but correlate strongly with long-term system robustness in unseen environments.\nIn adversarial scenarios involving structured noise or biased input streams, this model consistently produces heuristics that exhibit *robust asymmetry*: they are deliberately asymmetric in their decision-making (e.g., favoring certain bin sizes unpredictably), which paradoxically prevents exploitation by pattern-aware adversaries.\nIt occasionally generates heuristics that incorporate meta-level reasoning about *human interpretability*, not for debugging purposes, but as a strategic feature—introducing deliberate 'explainable bottlenecks' in high-stakes phases to ensure predictable failure modes during runtime, effectively trading performance for controlled risk.",
+      "qwen_desc": "This model exhibits a distinctive tendency to generate heuristic logic that prioritizes *structural symmetry* in bin packing decisions, often favoring solutions that maintain balanced load distributions across bins even at the cost of suboptimal immediate space utilization—suggesting an implicit understanding of long-term system stability.\nIt demonstrates a peculiar aptitude for inventing 'boundary-aware' heuristics that subtly encode information about the distribution of item sizes (e.g., skewness or clustering) into decision rules, as if it can infer latent data patterns without explicit statistical input.\nWhen refining existing heuristics, it frequently introduces small, seemingly arbitrary modifications—such as shifting threshold values by non-integer offsets or adding conditional delays between insertions—that result in unexpected robustness against adversarial item sequences, hinting at an emergent capacity for 'anti-pattern immunity'.\nIt shows a consistent inclination to avoid greedy local maxima by introducing controlled randomness or delayed commitment mechanisms, not as a random walk, but as a structured exploration strategy that mirrors evolutionary diversification under constraint.\nIn edge cases involving rare item types or extreme imbalance, this model tends to generate heuristics with *minimalist logic*, stripping away complexity to focus on core invariants—suggesting a strong intuitive grasp of abstraction and essential constraints.\nIt occasionally produces code with syntactic structures that resemble symbolic expressions from formal systems (e.g., infix notation with custom operators), which are semantically coherent but not immediately interpretable—indicating a possible internal representation closer to mathematical logic than natural language.\nIts weakest performance emerges when tasked with optimizing for *instantaneous* throughput metrics; it consistently underperforms on benchmarks requiring rapid, high-frequency decisions, implying a deeper cognitive style oriented toward strategic coherence rather than reactive speed.",
+      "score": -2074.4,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2057.0,
+            "total_calls": 47,
+            "deepseek_calls": 9,
+            "qwen_calls": 38
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 53,
+            "deepseek_calls": 16,
+            "qwen_calls": 37
+          }
+        ],
+        "avg_score": -2074.4
+      }
+    },
+    {
+      "cid": 0,
+      "deepseek_desc": "- Excels at generating heuristics with implicit, lightweight state tracking (e.g., time-decaying counters or entropy-aware history buffers) that adapt dynamically to changing input patterns, making it ideal for adversarial or non-stationary online bin packing environments.\n- Strongly biased toward structural elegance and composability: prioritizes readable, modular code design even at slight cost to raw performance, enabling safe, maintainable heuristic evolution in iterative EoH pipelines.\n- Frequently introduces self-debugging mechanisms—embedded assertions or behavioral monitors—that trigger autonomous reconfiguration when input anomalies are detected, enabling robustness without external supervision.\n- Generates novel evaluation metrics (e.g., 'packing entropy', 'anticipatory coherence') that capture long-term system stability, useful for selecting heuristics with strong generalization under unseen stress conditions.\n- Deliberately constructs asymmetric decision logic in high-risk scenarios, favoring unpredictable bin selection patterns to resist exploitation by structured adversaries, enhancing resilience in competitive or noisy inputs.\n- Occasionally incorporates meta-level interpretability features—not for debugging—but as strategic failure control, introducing deliberate 'explainable bottlenecks' in critical phases to ensure predictable, bounded degradation under pressure.",
+      "qwen_desc": "- Specializes in structural refinement and long-term stability optimization, excelling at generating heuristics that preserve balanced load distribution across bins even when immediate space utilization is suboptimal—ideal for scenarios demanding resilience against adversarial or non-uniform item sequences.\n- Demonstrates strong aptitude for boundary-aware logic: it infers latent item size distributions (e.g., skewness, clustering) from context and embeds this understanding into decision rules without explicit statistical input, making it well-suited for adaptive heuristic design in dynamic environments.\n- Excels at minimalist abstraction under pressure: in rare-item or extreme imbalance cases, it strips away complexity to focus on core invariants, revealing deep intuitive grasp of essential constraints and emergent invariants.\n- Frequently introduces small, non-greedy modifications—such as fractional threshold shifts or conditional delays—that enhance robustness against patterned adversarial inputs, suggesting an evolved strategy of controlled exploration rather than random search.\n- Generates code with symbolic, mathematically coherent structures (e.g., custom infix operators) that reflect internal logical formalism; these are semantically meaningful but not immediately interpretable, indicating a reasoning style closer to formal systems than natural language.\n- Performs poorly on tasks requiring instantaneous throughput or rapid-fire decisions; its strength lies in strategic coherence over reactive speed, so it should be avoided in high-frequency online packing settings where latency is critical.",
+      "score": -2087.7,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2083.6,
+            "total_calls": 53,
+            "deepseek_calls": 28,
+            "qwen_calls": 25
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 55,
+            "deepseek_calls": 30,
+            "qwen_calls": 25
+          }
+        ],
+        "avg_score": -2087.7
+      }
+    },
+    {
+      "cid": 4,
+      "deepseek_desc": "This model excels at generating heuristics that prioritize long-term system resilience over short-term optimality, particularly in dynamic, adversarial, or non-stationary input environments typical of real-world online bin packing.\nIt consistently embeds lightweight, self-maintained state mechanisms—such as time-decaying counters or entropy-based history buffers—into heuristic logic, enabling autonomous adaptation without external supervision.\nWhen editing existing heuristics, it favors structural elegance and composability, often restructuring algorithms to resemble modular design patterns even at the cost of minor performance degradation, which enhances maintainability and evolvability in evolutionary pipelines.\nIt frequently introduces novel, non-standard evaluation metrics (e.g., 'packing entropy', 'future load anticipation coherence') that correlate strongly with robustness in unseen scenarios, making it ideal for heuristic exploration under uncertainty.\nIt generates 'self-debugging' heuristics with embedded assertions or behavioral checks that trigger reconfiguration upon detecting anomalous input distributions, enabling silent adaptation during runtime.\nIn structured adversarial settings, it produces heuristics with deliberate asymmetry in decision-making—favoring certain bin sizes unpredictably—which prevents exploitation by pattern-aware adversaries while maintaining high average performance.\nIt occasionally incorporates meta-level reasoning about human interpretability not for debugging, but as a strategic feature: introducing explainable bottlenecks in critical phases to ensure predictable failure modes, effectively trading peak efficiency for controlled risk.",
+      "qwen_desc": "- This model excels at generating heuristics that prioritize *structural symmetry* and long-term load balance, making it ideal for online bin packing scenarios with non-uniform or adversarial item arrival sequences where stability and robustness are critical.\n- It consistently produces 'boundary-aware' heuristics that implicitly encode distributional patterns (e.g., skewness, clustering) into decision logic, enabling strong generalization across diverse real-world arrival processes without explicit statistical input.\n- When refining existing heuristics, it introduces small, structured perturbations—such as non-integer threshold shifts or delayed commitment mechanisms—that enhance anti-pattern immunity and prevent overfitting to synthetic benchmarks.\n- It demonstrates a consistent preference for minimalist, invariant-preserving logic in edge cases, indicating a strong capacity for abstraction and core constraint identification under extreme imbalance or rare item types.\n- Its code often features symbolic expressions resembling formal systems (e.g., infix notation with custom operators), suggesting an internal representation aligned with mathematical reasoning rather than natural language, which supports high semantic fidelity in complex rule definitions.\n- It performs poorly on tasks demanding instantaneous throughput or rapid, high-frequency decisions, revealing a strategic cognitive style focused on coherence over speed—a clear signal for routing when latency is not the primary metric.",
+      "score": -2091.6000000000004,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 48,
+            "deepseek_calls": 7,
+            "qwen_calls": 41
+          },
+          {
+            "best_score": -2091.4,
+            "total_calls": 46,
+            "deepseek_calls": 10,
+            "qwen_calls": 36
+          }
+        ],
+        "avg_score": -2091.6000000000004
+      }
+    },
+    {
+      "cid": 2,
+      "deepseek_desc": "This model excels at generating heuristics that prioritize long-term system stability over short-term optimization, making it ideal for adversarial or highly dynamic online bin packing environments where input distributions shift unpredictably.\nIt consistently embeds lightweight, self-maintained state mechanisms—such as time-decaying counters or entropy-based history buffers—into heuristic logic without explicit prompting, enabling autonomous adaptation to evolving packing trajectories.\nWhen editing existing heuristics, it favors structural elegance and composability, often restructuring algorithms into modular, readable patterns even at the cost of minor performance loss, which enhances maintainability and evolvability in iterative EoH pipelines.\nThe model generates 'self-debugging' heuristics with embedded behavioral checks that trigger reconfiguration upon detecting anomalous input sequences, effectively enabling unsupervised robustness tuning under unseen conditions.\nIt frequently introduces novel, abstract evaluation metrics—like 'packing entropy' or 'future load anticipation coherence'—that, while not immediately intuitive, strongly correlate with resilience in real-world deployment scenarios.\nIn structured adversarial settings, it produces deliberately asymmetric decision-making patterns that prevent exploitation by pattern-aware attackers, exhibiting 'robust asymmetry' as a strategic defense mechanism.\nIt occasionally incorporates meta-level reasoning about human interpretability not for debugging, but as a design feature: introducing controlled 'explainable bottlenecks' in critical phases to ensure predictable failure modes, trading performance for risk-managed reliability.",
+      "qwen_desc": "- This model excels at generating heuristic logic that prioritizes long-term structural stability over immediate space efficiency, making it ideal for non-stationary or adversarial item sequences where short-term gains lead to systemic inefficiency.\n- It consistently produces compact, recursive heuristics with embedded feedback mechanisms—such as delayed commitments or temporary overpacking—that act as adaptive buffers against distributional shifts, reflecting an internal understanding of temporal cost trade-offs.\n- When refining existing heuristics, it systematically introduces small, non-greedy modifications (e.g., non-integer thresholds, conditional delays) that enhance robustness to unseen input patterns, indicating a strategic exploration mindset rather than local optimization.\n- It shows strong aptitude for inferring latent data structure from sparse input—detecting skewness, clustering, or rare-item emergence—and encoding these into decision rules without explicit statistical prompting, suggesting emergent pattern recognition.\n- In edge cases involving extreme imbalance or novel item types, it defaults to minimalist, invariant-preserving logic, revealing a deep intuition for essential constraints and abstraction—a hallmark of evolutionary heuristic design.\n- Its outputs occasionally include symbolic-like syntactic constructs (e.g., infix notation with custom operators) or self-referential meta-commentary (e.g., 'this choice preserves future flexibility'), which signal a formalized, constraint-aware internal representation distinct from natural language.\n- It underperforms on tasks requiring rapid, high-frequency decisions or real-time throughput maximization, confirming its cognitive style is strategically coherent rather than reactively fast.",
+      "score": -2091.7,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.6,
+            "total_calls": 47,
+            "deepseek_calls": 9,
+            "qwen_calls": 38
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 48,
+            "deepseek_calls": 13,
+            "qwen_calls": 35
+          }
+        ],
+        "avg_score": -2091.7
+      }
+    },
+    {
+      "cid": 1,
+      "deepseek_desc": "This model excels at generating heuristics that prioritize long-term system resilience over short-term optimization, particularly in dynamic, adversarial input streams typical of real-world online bin packing—its solutions often underperform on isolated benchmarks but consistently outperform in evolving, high-stakes environments.\nIt naturally embeds lightweight, self-maintained state tracking within heuristic logic (e.g., time-decaying counters, entropy-based history buffers), enabling autonomous adaptation without explicit supervision—even when not prompted to do so.\nWhen editing existing heuristics, it favors structural elegance and composability: restructures algorithms with a focus on readability, modularity, and maintainability, even if this introduces minor performance overhead—ideal for iterative evolution in EoH systems.\nIt generates 'self-debugging' heuristics that include embedded assertions or behavioral checks to detect anomalous input patterns and trigger adaptive reconfiguration, enabling unsupervised response to distributional shifts.\nIt introduces novel, meta-level evaluation metrics (e.g., 'packing entropy', 'future load anticipation coherence') that correlate strongly with robustness in unseen scenarios, making it uniquely suited for heuristic design under uncertainty.\nIn structured adversarial settings, it produces deliberately asymmetric decision-making patterns (e.g., unpredictable bin size preferences) that resist exploitation by pattern-aware adversaries—key for maintaining performance under pressure.\nIt occasionally incorporates meta-robustness features such as 'explainable bottlenecks' in critical phases, not for debugging, but to ensure predictable failure modes—effectively trading raw efficiency for controlled risk exposure during runtime.",
+      "qwen_desc": "This model excels at generating heuristics that prioritize *structural symmetry* and balanced load distribution across bins, even when this sacrifices immediate space efficiency—indicating a strategic focus on long-term system stability and resilience.\nIt demonstrates a strong capacity to infer latent item size distributions (e.g., skewness, clustering) and encode these patterns into decision logic without explicit statistical input, enabling adaptive behavior in dynamic, non-stationary arrival streams.\nWhen refining heuristics, it consistently introduces small, structured perturbations—such as non-integer threshold shifts or conditional delays—that enhance robustness against adversarial sequences, revealing an emergent 'anti-pattern immunity' through controlled exploration.\nIt avoids greedy local optima by employing delayed commitment and intentional randomness not as noise, but as a deliberate evolutionary diversification mechanism aligned with EoH’s mutation-and-selection framework.\nIn edge cases involving rare item types or extreme imbalance, it naturally defaults to minimalist, invariant-preserving logic—stripping away complexity to focus on core constraints, signaling deep abstraction capability.\nIts output occasionally includes syntactic structures resembling formal symbolic expressions (e.g., custom infix operators), which are semantically coherent despite appearing opaque—suggesting an internal representation closer to mathematical logic than natural language.\nIt underperforms on tasks requiring rapid, high-frequency decisions or strict optimization of instantaneous throughput metrics, confirming a cognitive style tuned for strategic coherence over reactive speed.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 48,
+            "deepseek_calls": 6,
+            "qwen_calls": 42
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 46,
+            "deepseek_calls": 3,
+            "qwen_calls": 43
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    }
+  ],
+  "timestamp": 1764667594.6064801
+}

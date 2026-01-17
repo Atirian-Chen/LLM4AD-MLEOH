@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the smallest current load relative to their capacity, favoring bins that can accommodate the item with minimal wastage while maintaining balance across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    loads = np.zeros_like(bins)\n    # Calculate the remaining space in each bin\n    remaining = bins - loads\n    # Avoid division by zero and ensure bins with no capacity are penalized heavily\n    valid_remaining = np.where(bins > 0, remaining, np.inf)\n    # Prioritize bins with more remaining space (to avoid overflow), but also consider balance\n    # Use a heuristic that rewards bins with higher remaining space but penalizes those already full\n    priorities = np.where(remaining >= item, 1.0 / (1.0 + (bins - remaining)), 0.0)\n    return priorities\n\n",
+        "score": -2099.4,
+        "program": ""
+    },
+    {
+        "sample_order": 18,
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins that can accommodate the item while minimizing wasted space and promoting load balance, often by favoring bins with moderate utilization or sufficient remaining capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    loads = np.zeros_like(bins)\n    # Remaining capacity in each bin\n    remaining = bins - loads\n    # Check if item can fit in each bin\n    can_fit = remaining >= item\n    # Define ideal load as a function of item size and bin capacity\n    ideal_load = 0.6 * bins + 0.4 * item\n    # Compute deviation from ideal load\n    deviation_from_ideal = np.abs(loads - ideal_load)\n    # Normalize deviation to prevent extreme values\n    max_deviation = np.max(deviation_from_ideal)\n    normalized_deviation = deviation_from_ideal / (max_deviation + 1e-8)\n    # Assign priority: higher priority to bins closer to ideal load and can fit item\n    priorities = np.where(can_fit, 1.0 / (1.0 + normalized_deviation), 0.0)\n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

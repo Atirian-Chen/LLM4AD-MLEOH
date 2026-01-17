@@ -1,0 +1,9 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins that are less full, favoring bins with more remaining capacity while avoiding bins that are already close to full, and uses a smooth function to balance between these preferences.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Avoid negative or zero remaining capacity\n    remaining = np.maximum(remaining, 1e-8)\n    # Prioritize bins with more remaining capacity using inverse of remaining\n    # Add a small constant to prevent division by very small numbers\n    priorities = 1.0 / remaining\n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

@@ -1,0 +1,30 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item while maintaining balance across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    return remaining\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{We compute priority as the remaining capacity after hypothetically adding the item, preferring bins that would be filled exactly or leave the smallest positive remaining capacity, while avoiding overfilling.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Higher priority means we want to choose that bin first.\n    # We assign highest priority to bins that would be filled exactly (remaining == 0).\n    # Then among others, we prefer those with smallest positive remaining capacity.\n    # Overfilled bins (remaining < 0) get lowest priority.\n    priority_scores = np.full_like(bins, -np.inf)\n    valid_mask = remaining >= 0\n    priority_scores[valid_mask] = -remaining[valid_mask]  # Larger remaining -> lower priority\n    # For exactly filled bins, set to a value higher than any -remaining (since remaining >= 0)\n    # Here -0 is 0, so we add a small bonus to distinguish exact fill.\n    exact_fill = remaining == 0\n    if np.any(exact_fill):\n        priority_scores[exact_fill] = 1.0  # Any positive number larger than 0 works\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 32,
+        "algorithm": "{The new algorithm prioritizes bins by maximizing a sigmoid-transformed efficiency metric that balances the proportion of remaining capacity used with a penalty for large leftover spaces, while ensuring exact fits are always preferred.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    invalid_penalty = -1e9\n    valid_mask = remaining >= 0\n    exact_fill = remaining == 0\n    \n    # Efficiency metric: proportion of remaining capacity used, scaled by inverse leftover space\n    utilization = item / (remaining + 1e-12)\n    leftover_penalty = remaining / (bins + 1e-12)\n    \n    # Sigmoid transformation to bound scores and emphasize moderate fills\n    efficiency = utilization - 0.3 * leftover_penalty\n    sigmoid_score = 1 / (1 + np.exp(-5 * efficiency))\n    \n    scores = np.full_like(bins, invalid_penalty, dtype=float)\n    scores[valid_mask] = sigmoid_score[valid_mask]\n    scores[exact_fill] = 1e9\n    \n    return scores\n\n",
+        "score": -2091.4,
+        "program": ""
+    },
+    {
+        "sample_order": 34,
+        "algorithm": "{The new algorithm prioritizes bins by first rewarding exact fits, then favoring bins where the item size is close to the bin's remaining capacity to encourage near-complete fills, and finally applying a penalty for larger leftover spaces to minimize waste.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    invalid_penalty = -1e9\n    scores = np.full_like(bins, invalid_penalty, dtype=float)\n    \n    valid_mask = remaining >= 0\n    if not np.any(valid_mask):\n        return scores\n    \n    valid_remaining = remaining[valid_mask]\n    \n    # Reward closeness to filling the bin completely (item \u2248 remaining)\n    fill_closeness = 1.0 / (1.0 + np.abs(item - valid_remaining))\n    \n    # Penalize larger leftover space\n    leftover_penalty = valid_remaining / (1.0 + valid_remaining)\n    \n    # Combine: high fill_closeness good, low leftover_penalty good\n    valid_scores = fill_closeness - 0.3 * leftover_penalty\n    \n    # Highest priority to exact fits\n    exact_fill_mask = valid_remaining == 0\n    if np.any(exact_fill_mask):\n        valid_scores[exact_fill_mask] = 1e9\n    \n    scores[valid_mask] = valid_scores\n    return scores\n\n",
+        "score": -2055.8,
+        "program": ""
+    }
+]

@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins with remaining capacity closest to the item size, preferring exact fits, then underfills, then overfills, with a tie-breaker of larger capacity for overfills.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    exact = remaining == 0\n    underfill = remaining > 0\n    overfill = remaining < 0\n    \n    priority_scores = np.full_like(bins, -np.inf)\n    \n    priority_scores[exact] = 2 * bins.max()\n    priority_scores[underfill] = remaining[underfill]\n    priority_scores[overfill] = remaining[overfill] - bins.max()\n    \n    return priority_scores\n\n",
+        "score": -3734.8,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{The algorithm prioritizes bins with the smallest current total load relative to their capacity, favoring bins that can accommodate the item with minimal wastage while maintaining balance across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_capacity = bins  # assuming bins represents current loads\n    capacity = np.max(bins) if len(bins) > 0 else 1  # fallback for empty bins\n    # Normalize by capacity to get utilization\n    utilization = remaining_capacity / capacity\n    # Penalize high utilization and favor bins with more space\n    # Add penalty for bins that cannot fit the item\n    can_fit = (remaining_capacity + item) <= capacity\n    # Priority is higher for bins that can fit the item and have lower utilization\n    priority_scores = np.where(can_fit, -utilization, -np.inf)\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

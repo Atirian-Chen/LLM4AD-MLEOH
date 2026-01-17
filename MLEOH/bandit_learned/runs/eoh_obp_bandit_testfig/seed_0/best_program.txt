@@ -1,0 +1,28 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    avg_fill = np.mean(bins)
+    max_cap = np.max(bins)
+    fill_ratio = avg_fill / (max_cap + 1e-12)
+    alpha = 0.3 + 0.6 * fill_ratio
+    
+    half_target = bins * 0.5
+    full_target = bins - item
+    
+    half_dev = np.abs(half_target - item) / (bins + 1e-12)
+    full_dev = np.abs(full_target) / (bins + 1e-12)
+    
+    half_score = 1.0 / (half_dev + 1e-12)
+    full_score = 1.0 / (full_dev + 1e-12)
+    
+    scores = alpha * half_score + (1 - alpha) * full_score
+    return np.clip(scores, 1e-6, 1e6)
+

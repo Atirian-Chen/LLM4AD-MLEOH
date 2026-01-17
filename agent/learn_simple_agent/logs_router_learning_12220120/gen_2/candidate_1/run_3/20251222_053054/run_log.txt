@@ -1,0 +1,60 @@
+[2025-12-22 05:30:54] profile.py(246) : ====================================================================
+[2025-12-22 05:30:54] profile.py(247) : LLM Parameters
+[2025-12-22 05:30:54] profile.py(248) : --------------------------------------------------------------------
+[2025-12-22 05:30:54] profile.py(249) :   - LLM: AgentBasedRouter
+[2025-12-22 05:30:54] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001AD5C549CC0>
+[2025-12-22 05:30:54] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001AD5C549C60>
+[2025-12-22 05:30:54] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001AD5C549C60>
+[2025-12-22 05:30:54] profile.py(252) :   - verbose: False
+[2025-12-22 05:30:54] profile.py(252) :   - deepseek_desc: - Specializes in identifying and leveraging hidden structural regularities in dynamic bin packing sequences！such as recurring item size patterns or emergent alignment in arrival orders！by encoding them into lightweight, stateful decision rules that adapt without explicit memory overhead.
+- Excels at generating heuristic variants that perform radical conceptual rewrites: replacing core paradigms (e.g., from deterministic allocation to probabilistic influence models) while preserving performance, often yielding high-variance but high-reward improvements under non-stationary conditions.
+- Strongly prefers symbolic representations of historical decisions！using compact, hash-based abstractions rather than raw data storage！to maintain contextual awareness with minimal computational cost.
+- When refining heuristics, avoids incremental tweaks; instead, it proposes entirely new design frameworks that exploit implicit dataset biases (e.g., smooth item distributions), which can yield exceptional average performance but may fail under adversarial or novel input regimes.
+- Best suited for early-stage exploration and disruptive innovation in heuristic design, particularly when the goal is to evolve beyond conventional greedy or sorting-based strategies.
+[2025-12-22 05:30:54] profile.py(252) :   - qwen_desc: - Specializes in incremental, safety-conscious refinement of existing heuristics with strong emphasis on preserving structural invariants and logical consistency.
+- Excels at localized adjustments: tuning thresholds, weights, and decision boundaries to improve robustness under edge cases or adversarial input orders without altering core algorithmic flow.
+- Highly effective when the task is to stabilize a heuristic¨s performance across diverse input distributions by minimizing unexpected failures or sensitivity spikes.
+- Avoids introducing complex conditional structures or implicit memory mechanisms that could lead to fragile 'phantom invariants' or overfitting to synthetic patterns.
+- Performs best when given clear, bounded editing tasks focused on reliability, boundary handling, and small-scale optimization！ideal for EoH¨s refinement phase after initial heuristic generation.
+[2025-12-22 05:30:54] profile.py(252) :   - call_cnt: 0
+[2025-12-22 05:30:54] profile.py(252) :   - deepseek_cnt: 0
+[2025-12-22 05:30:54] profile.py(252) :   - qwen_cnt: 0
+[2025-12-22 05:30:54] profile.py(252) :   - debug_mode: False
+[2025-12-22 05:30:54] profile.py(253) : ====================================================================
+[2025-12-22 05:30:54] profile.py(254) : Problem Parameters
+[2025-12-22 05:30:54] profile.py(255) : --------------------------------------------------------------------
+[2025-12-22 05:30:54] profile.py(256) :   - Problem: OBPEvaluation
+[2025-12-22 05:30:54] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2025-12-22 05:30:54] profile.py(259) :   - use_numba_accelerate: False
+[2025-12-22 05:30:54] profile.py(259) :   - use_protected_div: False
+[2025-12-22 05:30:54] profile.py(259) :   - protected_div_delta: 1e-05
+[2025-12-22 05:30:54] profile.py(259) :   - random_seed: None
+[2025-12-22 05:30:54] profile.py(259) :   - timeout_seconds: 30
+[2025-12-22 05:30:54] profile.py(259) :   - exec_code: True
+[2025-12-22 05:30:54] profile.py(259) :   - safe_evaluate: True
+[2025-12-22 05:30:54] profile.py(259) :   - daemon_eval_process: False
+[2025-12-22 05:30:54] profile.py(259) :   - fork_proc: auto
+[2025-12-22 05:30:54] profile.py(259) :   - n_instances: 5
+[2025-12-22 05:30:54] profile.py(259) :   - n_items: 5000
+[2025-12-22 05:30:54] profile.py(259) :   - capacity: 100
+[2025-12-22 05:30:54] profile.py(261) : ====================================================================
+[2025-12-22 05:30:54] profile.py(262) : Method Parameters
+[2025-12-22 05:30:54] profile.py(263) : --------------------------------------------------------------------
+[2025-12-22 05:30:54] profile.py(264) :   - Method: EoH
+[2025-12-22 05:30:54] profile.py(268) :   - _max_generations: 6
+[2025-12-22 05:30:54] profile.py(268) :   - _max_sample_nums: 10000
+[2025-12-22 05:30:54] profile.py(268) :   - _pop_size: 8
+[2025-12-22 05:30:54] profile.py(268) :   - _selection_num: 3
+[2025-12-22 05:30:54] profile.py(268) :   - _use_e2_operator: True
+[2025-12-22 05:30:54] profile.py(268) :   - _use_m1_operator: True
+[2025-12-22 05:30:54] profile.py(268) :   - _use_m2_operator: True
+[2025-12-22 05:30:54] profile.py(268) :   - _num_samplers: 4
+[2025-12-22 05:30:54] profile.py(268) :   - _num_evaluators: 4
+[2025-12-22 05:30:54] profile.py(268) :   - _resume_mode: False
+[2025-12-22 05:30:54] profile.py(268) :   - _debug_mode: False
+[2025-12-22 05:30:54] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2025-12-22 05:30:54] profile.py(268) :   - _function_to_evolve_name: priority
+[2025-12-22 05:30:54] profile.py(268) :   - _tot_sample_nums: 0
+[2025-12-22 05:30:54] profile.py(268) :   - _initial_sample_nums_max: 16
+[2025-12-22 05:30:54] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000001AD45D7B400>
+[2025-12-22 05:30:54] profile.py(270) : =====================================================================

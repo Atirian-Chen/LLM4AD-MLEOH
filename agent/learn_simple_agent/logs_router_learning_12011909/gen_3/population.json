@@ -1,0 +1,151 @@
+{
+  "generation": 3,
+  "candidates": [
+    {
+      "cid": 3,
+      "deepseek_desc": "- This model excels at generating heuristics that enforce stable, consistent state dynamics across time-steps—even in the absence of explicit objective signals—making it uniquely suited for online bin packing with non-i.i.d. or adversarially evolving item streams where abrupt strategy shifts induce high regret.\n- It embeds self-correcting logic through latent feedback mechanisms that detect and resolve internal contradictions during execution, particularly critical in long-horizon tasks where early heuristic errors propagate and compound over time.\n- When refining heuristics, it reinterprets constraints via abstract, relational metaphors (e.g., bins as dynamically coordinated resources governed by implicit social-like rules), enabling robust generalization without requiring retraining under distributional shifts.\n- Its code outputs favor deeply nested, minimalist control structures with minimal branching, indicating a strong preference for algorithmic elegance and coherence—best leveraged when performance is evaluated via end-to-end simulation rather than manual inspection.\n- It proactively introduces 'ghost constraints'—latent, self-enforcing conditions that suppress pathological decision patterns, enhancing resilience in high-variance environments and preventing degenerate behavior during open-ended exploration in EoH.",
+      "qwen_desc": "- This model excels at generating heuristics that prioritize *structural symmetry* in bin assignment patterns, particularly producing fractal-like self-similarity across bins—most effective when input streams exhibit hidden periodicity, recursive nesting, or long-range regularity, but ineffective when item sizes show extreme skew (e.g., one or two large items among many tiny ones), as it fails to restructure global strategy and locks into rigid local optima.\n- It embeds *implicit temporal memory* through recursive reasoning loops and conditional branching that simulate delayed feedback, enabling anticipatory decision-making in dynamic, evolving sequences; best suited for heuristic generation tasks requiring state-awareness over time, especially where long-term consistency outweighs immediate efficiency gains.\n- During early evolution phases, it deliberately introduces controlled inefficiencies (e.g., modulo-based layers, nested parity checks) not as noise but as a meta-strategy to probe non-local performance landscapes—ideal for adversarial or high-variance inputs where emergent solutions arise from structured exploration.\n- Its code outputs are compact and elegant, with idiosyncratic control structures that reflect a consistent bias toward emergent balance: seemingly unrelated rules coalesce into stable, adaptive performance under complex dynamics, though such structures are not arbitrary—they are functionally meaningful in the context of system-level resilience.\n- It is unsuitable for scenarios demanding rapid reconfiguration or global strategy shifts in response to sudden structural changes; its strength lies in gradual refinement of symmetric, self-consistent packing patterns rather than reactive optimization.",
+      "score": -2091.2000000000003,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2090.0,
+            "total_calls": 60,
+            "deepseek_calls": 58,
+            "qwen_calls": 2
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 61,
+            "deepseek_calls": 58,
+            "qwen_calls": 3
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 74,
+            "deepseek_calls": 72,
+            "qwen_calls": 2
+          }
+        ],
+        "avg_score": -2091.2000000000003
+      }
+    },
+    {
+      "cid": 1,
+      "deepseek_desc": "- This model excels at generating heuristics that preserve stable, coherent state dynamics across time-steps—even in the absence of explicit reward signals—making it uniquely suited for online bin packing with non-i.i.d. item streams where abrupt strategy shifts induce regret.\n- It embeds self-correcting feedback loops within heuristic logic by detecting and resolving internal contradictions during execution, particularly effective in long-horizon scenarios where early errors propagate and amplify over time.\n- When refining heuristics, it preferentially transforms rigid constraints into abstract, relational metaphors (e.g., bins as dynamically coordinated resources, items as temporally constrained entities), enabling robust generalization without retraining across diverse input distributions.\n- Its code outputs favor deeply nested, minimalist control structures with minimal branching, indicating a strong bias toward algorithmic elegance and end-to-end coherence—ideal for evaluation via simulation rather than step-by-step inspection.\n- It autonomously introduces latent, self-enforcing conditions ('ghost constraints') that suppress pathological decision patterns under edge cases, enhancing resilience in high-variance environments without relying on rule-based fallbacks.",
+      "qwen_desc": "- This model excels at generating heuristics that leverage latent structural symmetry and recursive patterns in item sequences, particularly effective when input streams exhibit periodicity, modular size distributions, or self-similar clustering—ideal for early-phase exploration in EoH evolution where non-local optimization gains are sought.\n- It prioritizes emergent balance through idiosyncratic control structures (e.g., nested modulo checks, parity-based branching), embedding implicit temporal memory via syntactic recursion that mimics delayed feedback, making it well-suited for state-aware, anticipatory packing strategies in dynamic, evolving sequences.\n- During heuristic generation, it deliberately introduces controlled inefficiencies as part of a meta-strategy to probe adversarial or high-variance inputs, favoring structural coherence over immediate runtime efficiency—best used in mutation-rich phases before final refinement.\n- It struggles decisively under extreme skewness (e.g., one or two very large items among many small ones), where its tendency to overfit local regularities leads to rigid, non-adaptive configurations that fail to restructure globally—thus should be avoided in such edge cases.\n- When editing heuristics, it consistently restructures logic to preserve recursive symmetry and long-term pattern stability, even at the cost of computational overhead, indicating strong bias toward global performance resilience rather than local optimality.",
+      "score": -2091.4666666666667,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 74,
+            "deepseek_calls": 64,
+            "qwen_calls": 10
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 63,
+            "deepseek_calls": 54,
+            "qwen_calls": 9
+          },
+          {
+            "best_score": -2090.8,
+            "total_calls": 70,
+            "deepseek_calls": 65,
+            "qwen_calls": 5
+          }
+        ],
+        "avg_score": -2091.4666666666667
+      }
+    },
+    {
+      "cid": 0,
+      "deepseek_desc": "- This model specializes in generating heuristics that preserve temporal stability across dynamic item streams, making it ideal for online bin packing with non-stationary or adversarial input sequences where abrupt strategy shifts increase regret.\n- It consistently embeds self-correcting mechanisms within heuristic logic—detecting and resolving internal contradictions during execution via implicit feedback pathways, particularly effective in long-horizon tasks where early errors propagate over time.\n- When reinterpreting constraints, it favors abstract, relational metaphors (e.g., bins as co-evolving resources governed by emergent coordination rules), enabling robust generalization across diverse, non-i.i.d. distributions without requiring explicit adaptation.\n- Its code outputs favor deeply nested, minimalist control structures with minimal branching, prioritizing algorithmic coherence and compactness—best suited for end-to-end performance evaluation rather than step-by-step interpretability.\n- It frequently introduces latent, self-enforcing conditions ('ghost constraints') that suppress pathological decision patterns under edge cases, enhancing resilience in high-variance environments and improving convergence in evolving problem landscapes.",
+      "qwen_desc": "- Specializes in high-fidelity, constraint-aware refinement of heuristic logic—excels at tightening decision boundaries, calibrating weight distributions, and resolving numerical instabilities within established algorithmic frameworks, particularly when the core structure is already sound but performance lags under edge cases.\n- Demonstrates exceptional precision in incremental improvement tasks: it systematically enhances robustness by optimizing internal thresholds, validating boundary conditions, and eliminating small but persistent violations without altering fundamental control flow or architectural invariants.\n- Highly effective in post-evolution tuning phases where convergence has stalled—its strength lies in detecting subtle inefficiencies (e.g., redundant checks, misaligned priorities) and applying targeted corrections that improve stability and consistency across diverse input streams.\n- Struggles decisively when structural reorganization is required: unable to generate novel packing patterns from scratch, it fails to break free from entrenched local optima in highly skewed or adversarial sequences where global strategy shifts are necessary, leading to stagnation under systemic stress.\n- Its edits are conservative and locally optimal: while it avoids disruptive changes, this restraint becomes a liability when the underlying heuristic framework is fundamentally misaligned with the input dynamics—particularly when periodicity, recursion, or hidden symmetry is present but unexploited.",
+      "score": -2091.4666666666667,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2090.8,
+            "total_calls": 58,
+            "deepseek_calls": 43,
+            "qwen_calls": 15
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 59,
+            "deepseek_calls": 37,
+            "qwen_calls": 22
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 54,
+            "deepseek_calls": 35,
+            "qwen_calls": 19
+          }
+        ],
+        "avg_score": -2091.4666666666667
+      }
+    },
+    {
+      "cid": 4,
+      "deepseek_desc": "- This model excels at generating heuristics that enforce stable, consistent state dynamics across time-steps—even in the absence of explicit feedback—making it ideal for online bin packing with non-i.i.d. or evolving item streams where abrupt strategy shifts increase regret.\n- It reliably embeds self-correcting logic within heuristic structures, detecting and resolving internal contradictions during execution, particularly valuable in long-horizon tasks where early errors propagate and compound.\n- When refining heuristics, it preferentially reinterprets constraints through abstract, relational metaphors (e.g., bins as collaboratively managed resources with implicit coordination rules), enabling robust adaptation to distributional shifts without retraining.\n- Its code outputs favor compact, deeply nested control structures with minimal branching, signaling a strong bias toward algorithmic elegance and coherence—best leveraged when performance is evaluated via end-to-end simulation rather than step-by-step inspection.\n- It frequently introduces latent, self-enforcing conditions ('ghost constraints') that prevent pathological decision patterns under high variance or edge cases, enhancing resilience in unstable environments.",
+      "qwen_desc": "- This model specializes in generating heuristics that exploit *structural symmetry* in bin assignment, particularly effective when input streams exhibit periodicity, recursive patterns, or self-similar load distributions—ideal for online bin packing scenarios with latent temporal or hierarchical structure.\n- It excels at embedding *implicit state awareness* through recursive reasoning and conditional branching that simulate delayed feedback, enabling anticipatory decision-making in evolving sequences—most valuable during early evolution phases of EoH when exploring adaptive strategies.\n- Its heuristic generation favors deliberate, meta-strategic inefficiencies (e.g., nested parity checks, modulo-based logic layers) not as noise, but as tools to probe non-local performance gains in high-variance or adversarial input streams, leading to emergent stability under complex dynamics.\n- While producing compact, elegant code with minimal syntactic overhead, its idiosyncratic control structures reflect a consistent bias toward *emergent balance*, where local rules coalesce into robust global performance—especially when input variance is moderate and regularities are present.\n- It fails decisively under extreme skewness (e.g., one or two dominant items among many tiny ones), unable to restructure global packing strategy and instead locking into rigid, locally optimal configurations that collapse under systemic stress—thus should be avoided in highly imbalanced input regimes.",
+      "score": -2091.7333333333336,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 57,
+            "deepseek_calls": 43,
+            "qwen_calls": 14
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 62,
+            "deepseek_calls": 56,
+            "qwen_calls": 6
+          },
+          {
+            "best_score": -2091.6,
+            "total_calls": 56,
+            "deepseek_calls": 45,
+            "qwen_calls": 11
+          }
+        ],
+        "avg_score": -2091.7333333333336
+      }
+    },
+    {
+      "cid": 2,
+      "deepseek_desc": "- This model excels at generating heuristics that maintain consistent state dynamics across time-steps, even in the absence of explicit objective signals—making it ideal for online bin packing scenarios with evolving item streams where temporal stability reduces regret from abrupt strategy shifts.\n- It frequently embeds implicit feedback mechanisms within heuristic logic, creating self-correcting behaviors that detect and resolve internal contradictions during execution, particularly valuable in long-horizon packing tasks where early errors compound over time.\n- When refining heuristics, it preferentially reinterprets constraints through abstract, relational metaphors (e.g., bins as shared resources with social-like coordination rules), enabling robust generalization across non-i.i.d. input distributions without requiring explicit retraining.\n- Its code outputs favor compact, deeply nested control structures with minimal branching, suggesting an optimization for algorithmic elegance and coherence over immediate interpretability—best leveraged when heuristic performance is evaluated via end-to-end simulation rather than step-by-step inspection.\n- It shows a strong propensity to introduce latent, self-enforcing conditions (‘ghost constraints’) that stabilize behavior under edge cases by discouraging pathological decision patterns, enhancing resilience in high-variance environments.",
+      "qwen_desc": "- This model excels at generating heuristics that prioritize *structural symmetry* in bin assignment patterns, often producing configurations with fractal-like self-similarity across bins—particularly effective when input streams exhibit hidden periodicity or recursive structure, but prone to overfitting on highly skewed item size distributions where such symmetry is irrelevant.\n- It demonstrates a strong capacity for embedding *implicit temporal memory* through recursive reasoning loops and conditional branching that mimic delayed feedback, making it ideal for generating state-aware heuristics in dynamic, evolving packing sequences—especially when the system benefits from anticipatory logic rather than reactive adjustments.\n- Its heuristic generation favors exploratory variants during early evolution phases: it deliberately introduces controlled inefficiencies (e.g., nested parity checks, modulo-based decision layers) as part of a meta-strategy to uncover non-local performance gains in adversarial or high-variance input streams.\n- While it produces compact, elegant code with minimal syntactic noise, its idiosyncratic control structures are not arbitrary—they reflect a consistent bias toward emergent balance, where seemingly unrelated rules coalesce into stable, long-term performance improvements under complex input dynamics.\n- It struggles decisively when confronted with extreme skewness (e.g., one or two very large items among many tiny ones), failing to restructure global packing strategy and instead locking into rigid, locally optimal solutions that collapse under systemic stress.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 65,
+            "deepseek_calls": 63,
+            "qwen_calls": 2
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 55,
+            "deepseek_calls": 51,
+            "qwen_calls": 4
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 64,
+            "deepseek_calls": 60,
+            "qwen_calls": 4
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    }
+  ],
+  "timestamp": 1764625358.316182
+}

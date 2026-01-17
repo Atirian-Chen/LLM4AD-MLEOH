@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm prioritizes bins with the smallest remaining capacity, penalizing bins that are already close to full by assigning them higher priority scores to encourage balanced distribution.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Avoid negative or zero remaining capacity\n    remaining = np.maximum(remaining, 0)\n    # Use inverse of remaining capacity as priority (smaller remaining = higher priority)\n    # Add a small epsilon to avoid division by zero\n    priority_scores = 1 / (remaining + 1e-8)\n    return priority_scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to balance efficient space utilization and load distribution by dynamically adjusting priority based on bin occupancy relative to the item size or global statistics, avoiding extreme underutilization or overfilling.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    fits = remaining >= 0\n    priorities = np.zeros_like(bins)\n    target_remaining = item * 0.75  # Desired remaining capacity as 75% of item size\n    excess = remaining[fits]\n    deviation = np.abs(excess - target_remaining)\n    scores = np.exp(-0.5 * (deviation / (item + 1e-8)) ** 2)\n    priorities[fits] = scores\n    return priorities\n\n",
+        "score": -2102.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a dynamic scoring system that rewards bins with remaining capacity slightly above the item size, penalizing both underutilized and overly spacious bins to promote efficient space usage and balanced load distribution.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Ensure item fits in the bin\n    fits = remaining >= 0\n    # Initialize priorities with zeros for bins that can't fit the item\n    priorities = np.zeros_like(bins)\n    # For bins that can fit the item, use a Gaussian-like function centered at item size\n    # This favors bins where remaining capacity is close to the item size\n    excess = remaining[fits]\n    # Gaussian-like scoring: peak at item size, decreases as excess becomes too large or too small\n    scores = np.exp(-0.5 * ((excess - item) / (item + 1e-8)) ** 2)\n    priorities[fits] = scores\n    return priorities\n\n",
+        "score": -2111.2
+    },
+    {
+        "algorithm": "{The algorithm assigns priority based on the relative position of each bin's remaining capacity compared to a dynamically adjusted target range, favoring bins whose remaining capacity is closest to an optimal midpoint between underutilized and overutilized states, thereby promoting balanced load distribution while preventing extreme imbalances.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    remaining = np.maximum(remaining, 0)\n    min_remaining = np.min(remaining)\n    max_remaining = np.max(remaining)\n    target_midpoint = (min_remaining + max_remaining) / 2\n    distance_from_target = np.abs(remaining - target_midpoint)\n    priority_scores = 1 / (distance_from_target + 1e-8)\n    return priority_scores\n\n",
+        "score": -2274.2
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins based on their remaining capacity relative to the item size, aiming for balanced distribution by either favoring underutilized bins or penalizing overfilled ones.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Use a sigmoid-like function centered at 0 to reward moderate remaining capacity\n    # This encourages bins with remaining capacity close to the item size\n    priority_scores = 1 / (1 + np.exp(-remaining * 2))  # Sigmoid centered at 0\n    return priority_scores\n\n",
+        "score": -2552.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins with remaining capacity closest to the item size to minimize wasted space, while still favoring bins that have more total capacity available.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - np.min(bins)\n    # Calculate how close remaining capacity is to item size\n    closeness = np.abs(remaining - item)\n    # Invert so closer matches get higher priority, add small epsilon to avoid division by zero\n    priorities = 1.0 / (closeness + 1e-9)\n    # Zero priority if bin cannot fit the item\n    priorities = np.where(bins >= item, priorities, 0)\n    return priorities\n\n",
+        "score": -2635.2
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a combination of remaining capacity and bin utilization variance, favoring bins that are neither too full nor too empty to maintain global balance and reduce fragmentation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    remaining = np.maximum(remaining, 0)\n    utilization = (bins - remaining) / bins\n    utilization = np.where(bins > 0, utilization, 0)\n    mean_utilization = np.mean(utilization)\n    variance = np.sum((utilization - mean_utilization) ** 2) / len(utilization)\n    # Favor bins with utilization close to the mean\n    deviation_from_mean = np.abs(utilization - mean_utilization)\n    # Normalize deviation to avoid extreme values\n    normalized_deviation = deviation_from_mean / (1 + variance)\n    # Higher priority for bins closer to average utilization\n    priority_scores = 1 / (normalized_deviation + 1e-8)\n    return priority_scores\n\n",
+        "score": -3101.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a balance between remaining capacity and bin utilization variance, rewarding bins that are neither too empty nor too full, thus promoting even distribution while avoiding excessive fragmentation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    remaining = np.maximum(remaining, 0)\n    avg_remaining = np.mean(remaining)\n    deviation = np.abs(remaining - avg_remaining)\n    # Penalize bins that are significantly above or below average remaining capacity\n    priority_scores = 1 / (deviation + 1e-8)\n    return priority_scores\n\n",
+        "score": -3222.0
+    }
+]

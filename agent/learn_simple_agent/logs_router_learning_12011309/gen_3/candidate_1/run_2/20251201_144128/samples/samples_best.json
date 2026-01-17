@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item without exceeding their limit while minimizing wasted space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.min(bins)  # Avoid division by zero and normalize relative to smallest bin\n    remaining = np.where(remaining > 0, remaining, 1e-10)  # Small positive value if zero\n    return 1 / remaining\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 11,
+        "algorithm": "{We prioritize bins based on a hybrid strategy that rewards bins with moderate remaining capacity\u2014neither too small nor too large\u2014by penalizing both extreme underutilization and overutilization, while also considering the relative deviation of remaining capacity from the item size.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Normalize remaining capacity to avoid division by zero\n    normalized_remaining = np.where(remaining > 0, remaining, 1e-10)\n    \n    # Compute deviation from ideal remaining capacity (close to item size)\n    deviation = np.abs(remaining - item)\n    \n    # Prioritize bins where remaining is close to item size (moderate fit), penalize extremes\n    priorities = 1 / (1 + deviation / (item + 1e-12))\n    \n    # Penalize bins that are overfilled (negative remaining) heavily\n    overfilled_mask = remaining < 0\n    priorities[overfilled_mask] = -np.inf\n    \n    # Slight bonus for bins with exactly matching capacity (exact fit)\n    exact_fit_mask = remaining == 0\n    priorities[exact_fit_mask] += 0.5\n    \n    return priorities\n\n",
+        "score": -2045.8,
+        "program": ""
+    }
+]

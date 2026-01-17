@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{This algorithm prioritizes bins using a piecewise linear function that gives highest priority to bins that would be nearly full after adding the item, medium priority to bins with moderate remaining capacity, and lowest priority to nearly empty bins, while completely rejecting overflow.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_after_add = bins - item\n    valid_mask = remaining_after_add >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    if np.any(valid_mask):\n        x = remaining_after_add[valid_mask]\n        # Piecewise linear: highest near 0, medium in middle, low near 1\n        scores = np.where(x < 0.2, 1.0 - x/0.2, \n                 np.where(x < 0.6, 0.5 * (0.6 - x)/0.4, \n                 0.1 * (1.0 - x)/0.4))\n        priority_scores[valid_mask] = scores\n    return priority_scores\n\n",
+        "score": -2091.6
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item while minimizing wasted space, favoring bins with the smallest remaining capacity that is still sufficient to fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Mask bins that cannot fit the item\n    valid_bins = remaining >= 0\n    # Initialize priorities with a low value for invalid bins\n    priorities = np.full_like(bins, -1.0)\n    # For valid bins, prioritize based on minimal wasted space (i.e., smallest remaining capacity)\n    if np.any(valid_bins):\n        # Use negative remaining capacity to prioritize smaller remaining space\n        priorities[valid_bins] = -remaining[valid_bins]\n    return priorities\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins that minimize leftover space after adding the item, with a focus on favoring bins that are close to being optimally filled, while avoiding overflow through penalization of invalid placements.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_after_add = bins - item\n    valid_mask = remaining_after_add >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    if np.any(valid_mask):\n        x = remaining_after_add[valid_mask]\n        # Logarithmic penalty: very high priority for small leftovers, low for large\n        priority_scores[valid_mask] = 1.0 / (np.log(1.0 + 1.0e-6 + x) + 1e-6)\n    return priority_scores\n\n",
+        "score": -2094.6
+    },
+    {
+        "algorithm": "{The new algorithm assigns higher priority to bins that not only can accommodate the item but also have a remaining capacity close to the item size, thus minimizing both wasted space and the potential for future fragmentation, by favoring bins with remaining capacity just above the item size using a logarithmic penalty for larger excess capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_bins = remaining >= 0\n    priorities = np.full_like(bins, -1.0)\n    if np.any(valid_bins):\n        # Use logarithmic scaling of excess capacity to penalize large waste more heavily\n        excess = remaining[valid_bins]\n        # Avoid log(0); add small epsilon\n        log_excess = np.log1p(excess)\n        # Prioritize bins with excess capacity closest to zero (i.e., tight fit)\n        priorities[valid_bins] = -log_excess\n    return priorities\n\n",
+        "score": -2094.8
+    },
+    {
+        "algorithm": "{This algorithm calculates priority by considering both the remaining capacity after adding the item and how close the bin would be to being perfectly filled, favoring bins that would be left with minimal wasted space while avoiding overflow.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_after_add = bins - item\n    valid_mask = remaining_after_add >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    priority_scores[valid_mask] = 1.0 / (1.0 + remaining_after_add[valid_mask])\n    return priority_scores\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{This algorithm prioritizes bins that would be filled closest to their capacity without exceeding it, using a score based on the ratio of used space to total capacity after adding the item, favoring bins with higher utilization and penalizing those with excessive leftover space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_after_add = bins - item\n    valid_mask = remaining_after_add >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    used_after_add = item + (bins - remaining_after_add)\n    utilization_ratio = used_after_add / bins\n    priority_scores[valid_mask] = utilization_ratio[valid_mask]\n    return priority_scores\n\n",
+        "score": -2096.8
+    },
+    {
+        "algorithm": "{This algorithm prioritizes bins based on a sigmoid function of the remaining capacity after adding the item, which smoothly transitions from low to high priority as bins approach optimal filling while heavily penalizing overflow.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_after_add = bins - item\n    valid_mask = remaining_after_add >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    if np.any(valid_mask):\n        # Use sigmoid function centered around small remaining capacity\n        # Scale to make transition sharper around near-full bins\n        x = remaining_after_add[valid_mask]\n        priority_scores[valid_mask] = 1.0 / (1.0 + np.exp(5.0 * (x - 0.1)))\n    return priority_scores\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{This algorithm prioritizes bins that minimize leftover space after adding the item, using a score based on the inverse of the remaining capacity post-addition, favoring bins with smaller leftover space while penalizing those with larger unused capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_after_add = bins - item\n    valid_mask = remaining_after_add >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    leftover_space = remaining_after_add\n    # Inverse of leftover space to favor smaller leftovers\n    priority_scores[valid_mask] = 1 / (leftover_space[valid_mask] + 1e-12)\n    return priority_scores\n\n",
+        "score": -2122.2
+    }
+]

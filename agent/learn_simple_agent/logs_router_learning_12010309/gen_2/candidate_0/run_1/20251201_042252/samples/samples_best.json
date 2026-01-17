@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the least current utilization, rewarding bins that can accommodate the item with minimal waste while favoring those with higher remaining capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.clip(bins, 0, item)\n    # Prioritize bins with higher remaining capacity\n    # If a bin cannot fit the item, assign very low priority\n    priorities = np.where(remaining >= item, remaining, -np.inf)\n    return priorities\n\n",
+        "score": -3786.2,
+        "program": ""
+    },
+    {
+        "sample_order": 3,
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item while minimizing wasted space, favoring bins with the smallest remaining capacity that still fits the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Mask out bins that cannot fit the item\n    valid = remaining >= 0\n    # Initialize priorities with a large negative value (low priority) for invalid bins\n    priorities = np.full_like(bins, -np.inf)\n    # For valid bins, prioritize those with smaller remaining capacity (to minimize waste)\n    priorities[valid] = -remaining[valid]\n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 27,
+        "algorithm": "{The algorithm assigns priority based on a hybrid measure that rewards bins with moderate remaining capacity\u2014avoiding both overfilled and overly underused bins\u2014by combining a logarithmic penalty for underutilization with a linear penalty for wasted space, ensuring balanced load distribution.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    priorities = np.full_like(bins, -np.inf)\n    # For bins that can fit the item, compute a hybrid score\n    # Logarithmic term penalizes very low remaining capacity (underuse)\n    # Linear term penalizes high remaining capacity (waste)\n    log_penalty = np.log(1 + remaining[valid])\n    waste_penalty = remaining[valid]\n    # Combine penalties: lower total penalty means higher priority\n    scores = -(log_penalty + 0.5 * waste_penalty)\n    priorities[valid] = scores\n    return priorities\n\n",
+        "score": -2091.4,
+        "program": ""
+    }
+]

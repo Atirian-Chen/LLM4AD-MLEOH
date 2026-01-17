@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item without exceeding their capacity while minimizing fragmentation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return bins - item\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 3,
+        "algorithm": "{The algorithm assigns higher priority to bins where adding the item would bring the remaining capacity closest to a target fraction of the bin's original capacity, favoring bins that are neither too empty nor too full after insertion.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    target_fill_ratio = 0.8\n    remaining = bins - item\n    valid = remaining >= 0\n    fill_ratio = 1 - remaining / bins\n    target_distance = np.abs(fill_ratio - target_fill_ratio)\n    priority_scores = -target_distance\n    priority_scores = np.where(valid, priority_scores, -np.inf)\n    return priority_scores\n\n",
+        "score": -2145.8,
+        "program": ""
+    },
+    {
+        "sample_order": 8,
+        "algorithm": "{The algorithm calculates priority as the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves minimal leftover space, while heavily penalizing overfull bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Perfect fit gets highest priority\n    perfect_fit_bonus = (remaining == 0).astype(float) * 1000\n    # Priority is higher for smaller positive remaining capacity\n    priority_scores = -remaining\n    # Heavily penalize overfull bins\n    penalty = (remaining < 0).astype(float) * -10000\n    return priority_scores + perfect_fit_bonus + penalty\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

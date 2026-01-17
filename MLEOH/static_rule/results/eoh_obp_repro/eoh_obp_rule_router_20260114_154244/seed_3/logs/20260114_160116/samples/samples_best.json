@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{\nNew algorithm: Assign priority based on the remaining capacity after adding the item, preferring bins where the resulting remaining capacity is minimized but non\u2011negative, and breaking ties by preferring bins with larger current capacity.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Priority is higher for smaller remaining capacity, but only if feasible\n    # Use a large penalty for infeasible bins so they get lowest priority\n    priority_vals = np.where(remaining >= 0, -remaining, -np.inf)\n    # Break ties by preferring larger current capacity (bins value)\n    # Add a tiny offset proportional to bins to maintain order when remaining is equal\n    tie_breaker = bins * 1e-10\n    return priority_vals + tie_breaker\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 43,
+        "algorithm": "{New algorithm: Assign priority based on a normalized measure of utilization efficiency, emphasizing bins with high utilization and minimal leftover space, using a quadratic penalty for overflow and a logarithmic bonus for small leftovers, while rewarding perfect fits with a fixed maximum score.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    scores = np.zeros_like(bins)\n    \n    # Perfect fit gets highest score\n    perfect_fit = (remaining == 0)\n    scores[perfect_fit] = 10.0\n    \n    # Positive remaining capacity: higher utilization is better, use log scaling for small leftovers\n    positive_remaining = (remaining > 0)\n    scores[positive_remaining] = 1.0 / (np.log(1.0 + 0.5 * remaining[positive_remaining]))\n    \n    # Overflow: negative score with increasing penalty proportional to the square of overflow\n    overflow = (remaining < 0)\n    scores[overflow] = -2.0 * (1.0 + abs(remaining[overflow]) ** 2)\n    \n    return scores\n\n",
+        "score": -2091.6,
+        "program": ""
+    }
+]

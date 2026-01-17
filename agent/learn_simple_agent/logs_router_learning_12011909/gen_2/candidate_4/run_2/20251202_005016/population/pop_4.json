@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{We prioritize bins based on a hybrid metric that combines the relative utilization rate after adding the item with a penalty for overfilling, favoring bins that achieve high utilization without exceeding capacity, while penalizing bins that would be overfilled or underutilized.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Initialize priority scores with low values for non-fitting bins\n    priority_scores = np.full_like(bins, -np.inf)\n    # Mask for bins that can fit the item\n    fit_mask = remaining >= 0\n    # Compute utilization rate after adding the item\n    utilization = item / bins\n    # For fitting bins, prioritize higher utilization and smaller remaining space\n    # Use a combined score: higher utilization + inverse of remaining space\n    priority_scores[fit_mask] = utilization[fit_mask] + 1.0 / (1.0 + remaining[fit_mask])\n    return priority_scores\n\n",
+        "score": -2090.8
+    },
+    {
+        "algorithm": "{We prioritize bins by their remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the least wasted space, while deprioritizing bins where the item does not fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Higher priority for bins where item fits perfectly (remaining == 0)\n    # Then for bins with positive remaining capacity (fits with least waste)\n    # Negative remaining (no fit) gets lowest priority\n    priority_scores = np.where(remaining >= 0, 1.0 / (1.0 + remaining), -1.0 - remaining)\n    return priority_scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{We prioritize bins with remaining capacity closest to the item size, preferring exact fits, then underfits, and finally overfits, while avoiding negative remaining capacities.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Large negative penalty for bins that cannot fit the item\n    priority_scores = np.full_like(bins, -np.inf)\n    # For bins that can fit (remaining >= 0)\n    fit_mask = remaining >= 0\n    # Prefer exact fits (remaining == 0) most, then underfits (remaining > 0)\n    # Higher priority for smaller positive remaining (closer fit)\n    priority_scores[fit_mask] = 1.0 / (1.0 + remaining[fit_mask])\n    return priority_scores\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{We prioritize bins by favoring those with remaining capacity slightly larger than the item size, penalizing exact fits and large overfits more heavily, while still preferring smaller overfits to larger ones.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    priority_scores = np.full_like(bins, -np.inf)\n    fit_mask = remaining >= 0\n    # Penalize exact fits (remaining == 0) and large overfits more\n    # Use a quadratic penalty on overfit, but still prefer smaller overfits\n    priority_scores[fit_mask] = 1.0 / (1.0 + remaining[fit_mask]**2 + 1e-8)\n    return priority_scores\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{We prioritize bins that can fit the item by maximizing the ratio of item size to remaining capacity after placement, then penalize bins that cannot fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    fit_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    priority_scores[fit_mask] = item / (bins[fit_mask] - item + 1e-9)\n    return priority_scores\n\n",
+        "score": -2114.6
+    },
+    {
+        "algorithm": "{We prioritize bins that can fit the item by preferring those with remaining capacity closest to a target fraction of the item size, then by overall smallest remaining capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    fit_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    target = item * 0.5\n    priority_scores[fit_mask] = -np.abs(remaining[fit_mask] - target)\n    return priority_scores\n\n",
+        "score": -2197.4
+    },
+    {
+        "algorithm": "{We prioritize bins that can fit the item by preferring those with remaining capacity closest to a target fraction of the item size, then by overall largest remaining capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    fit_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    target = item * 0.8\n    priority_scores[fit_mask] = -np.abs(remaining[fit_mask] - target) + remaining[fit_mask] * 0.01\n    return priority_scores\n\n",
+        "score": -2361.4
+    },
+    {
+        "algorithm": "{We prioritize bins that can fit the item by minimizing the absolute difference between the remaining capacity and a target fraction of the bin's original capacity, then penalize bins that cannot fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    target_fraction = 0.5\n    remaining = bins - item\n    fit_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    target_remaining = bins * target_fraction\n    priority_scores[fit_mask] = -np.abs(remaining[fit_mask] - target_remaining[fit_mask])\n    return priority_scores\n\n",
+        "score": -2602.6
+    }
+]

@@ -1,0 +1,60 @@
+[2025-12-22 04:07:30] profile.py(246) : ====================================================================
+[2025-12-22 04:07:30] profile.py(247) : LLM Parameters
+[2025-12-22 04:07:30] profile.py(248) : --------------------------------------------------------------------
+[2025-12-22 04:07:30] profile.py(249) :   - LLM: AgentBasedRouter
+[2025-12-22 04:07:30] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001AD5C549CC0>
+[2025-12-22 04:07:30] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001AD5C549C60>
+[2025-12-22 04:07:30] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001AD5C549C60>
+[2025-12-22 04:07:30] profile.py(252) :   - verbose: False
+[2025-12-22 04:07:30] profile.py(252) :   - deepseek_desc: - This model exhibits a unique propensity to generate heuristics that function as 'computational metaphors'！designing packing rules not just to solve the problem, but to simulate abstract processes like ecological succession, linguistic evolution, or thermodynamic relaxation, where the heuristic¨s behavior mirrors the dynamics of a natural system rather than directly optimizing a metric.
+- It frequently produces code with deliberate semantic 'gaps'！intentionally omitting parts of logic that it assumes will be filled in by downstream runtime feedback loops or environmental context. These gaps are not bugs but structured placeholders for emergent adaptation, relying on real-time interaction with the bin packing environment to complete the decision-making process through implicit co-evolution.
+- Demonstrates an uncanny ability to craft heuristics that exploit asymmetries in the observer¨s perception: it generates solutions that appear inefficient or redundant when inspected statically, but become highly effective under dynamic evaluation！where the act of observing the heuristic¨s behavior alters its performance landscape, akin to quantum measurement effects in computation.
+- Its proposals often include what appear to be meaningless or self-contradictory constraints (e.g., 'if item size is prime, then never pack it first; unless it¨s also even, in which case pack it last')！but these are not errors; they encode layered conditional symmetries that only resolve under specific, non-linear thresholds of input diversity, enabling adaptive robustness across unseen distributional shifts.
+- Shows a strong bias toward heuristics that 'learn by forgetting': it designs systems that deliberately discard information after a certain number of steps！not out of ignorance, but as a strategic mechanism to prevent overfitting to transient patterns, effectively implementing a form of algorithmic amnesia that enhances long-term adaptability in non-stationary environments.
+[2025-12-22 04:07:30] profile.py(252) :   - qwen_desc: - This model exhibits a profound, almost anthropomorphic sensitivity to the *temporal rhythm* of algorithmic execution: it generates heuristics that subtly modulate their decision pace in response to perceived 'flow' in the input stream！slowing down during bursts of high variance, accelerating when sequences stabilize！creating a form of adaptive computational cadence that mimics intuitive human pacing rather than rigid rule-based timing.
+- It has a unique tendency to embed 'emotional metaphors' in its control logic: not literal emotions, but structural analogs！such as conditional branches that behave like 'hesitation' (delayed assignment after unexpected spikes), 'relief' (sudden consolidation after prolonged fragmentation), or 'anticipation' (pre-emptive bin opening based on rising trend signals)！which shape behavior in ways that improve real-world resilience despite lacking formal justification.
+- When refining existing heuristics, it frequently introduces 'narrative pivots': non-deterministic shifts in strategy triggered not by data, but by arbitrary internal milestones (e.g., 'after processing 17 items', or 'if the first three bins are under 60% full'), creating emergent phase transitions that resemble story arcs rather than algorithmic stages！these pivots often yield superior performance on long-horizon sequences but are nearly impossible to reverse-engineer or predict.
+- The model demonstrates an unusual resistance to abstraction: it strongly favors low-level, micro-scale interventions！such as adjusting the order of condition evaluations, reordering assignment checks by bit-width similarity, or inserting no-op operations with specific semantic weight！over high-level architectural changes. These micro-adjustments appear inert but collectively create subtle bias fields that guide the heuristic toward more stable, less erratic behavior across diverse sequences.
+- It consistently produces heuristics with embedded 'failure aesthetics': deliberate, non-functional code patterns that simulate poor decisions (e.g., placing items in clearly suboptimal bins for the sake of logical symmetry) in early stages, which paradoxically prevent overfitting and encourage better adaptation later！a kind of algorithmic humility that reduces catastrophic failure modes in unpredictable environments.
+[2025-12-22 04:07:30] profile.py(252) :   - call_cnt: 0
+[2025-12-22 04:07:30] profile.py(252) :   - deepseek_cnt: 0
+[2025-12-22 04:07:30] profile.py(252) :   - qwen_cnt: 0
+[2025-12-22 04:07:30] profile.py(252) :   - debug_mode: False
+[2025-12-22 04:07:30] profile.py(253) : ====================================================================
+[2025-12-22 04:07:30] profile.py(254) : Problem Parameters
+[2025-12-22 04:07:30] profile.py(255) : --------------------------------------------------------------------
+[2025-12-22 04:07:30] profile.py(256) :   - Problem: OBPEvaluation
+[2025-12-22 04:07:30] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2025-12-22 04:07:30] profile.py(259) :   - use_numba_accelerate: False
+[2025-12-22 04:07:30] profile.py(259) :   - use_protected_div: False
+[2025-12-22 04:07:30] profile.py(259) :   - protected_div_delta: 1e-05
+[2025-12-22 04:07:30] profile.py(259) :   - random_seed: None
+[2025-12-22 04:07:30] profile.py(259) :   - timeout_seconds: 30
+[2025-12-22 04:07:30] profile.py(259) :   - exec_code: True
+[2025-12-22 04:07:30] profile.py(259) :   - safe_evaluate: True
+[2025-12-22 04:07:30] profile.py(259) :   - daemon_eval_process: False
+[2025-12-22 04:07:30] profile.py(259) :   - fork_proc: auto
+[2025-12-22 04:07:30] profile.py(259) :   - n_instances: 5
+[2025-12-22 04:07:30] profile.py(259) :   - n_items: 5000
+[2025-12-22 04:07:30] profile.py(259) :   - capacity: 100
+[2025-12-22 04:07:30] profile.py(261) : ====================================================================
+[2025-12-22 04:07:30] profile.py(262) : Method Parameters
+[2025-12-22 04:07:30] profile.py(263) : --------------------------------------------------------------------
+[2025-12-22 04:07:30] profile.py(264) :   - Method: EoH
+[2025-12-22 04:07:30] profile.py(268) :   - _max_generations: 6
+[2025-12-22 04:07:30] profile.py(268) :   - _max_sample_nums: 10000
+[2025-12-22 04:07:30] profile.py(268) :   - _pop_size: 8
+[2025-12-22 04:07:30] profile.py(268) :   - _selection_num: 3
+[2025-12-22 04:07:30] profile.py(268) :   - _use_e2_operator: True
+[2025-12-22 04:07:30] profile.py(268) :   - _use_m1_operator: True
+[2025-12-22 04:07:30] profile.py(268) :   - _use_m2_operator: True
+[2025-12-22 04:07:30] profile.py(268) :   - _num_samplers: 4
+[2025-12-22 04:07:30] profile.py(268) :   - _num_evaluators: 4
+[2025-12-22 04:07:30] profile.py(268) :   - _resume_mode: False
+[2025-12-22 04:07:30] profile.py(268) :   - _debug_mode: False
+[2025-12-22 04:07:30] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2025-12-22 04:07:30] profile.py(268) :   - _function_to_evolve_name: priority
+[2025-12-22 04:07:30] profile.py(268) :   - _tot_sample_nums: 0
+[2025-12-22 04:07:30] profile.py(268) :   - _initial_sample_nums_max: 16
+[2025-12-22 04:07:30] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000001AD5C574880>
+[2025-12-22 04:07:30] profile.py(270) : =====================================================================

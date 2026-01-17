@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm prioritizes bins based on their current utilization ratio, favoring bins that are neither too full nor too empty to maintain global balance and improve overall space efficiency.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    utilization = bins / (bins + item)\n    # Penalize bins that are already too full or too empty\n    priority_scores = 1 - np.abs(utilization - 0.5)\n    # Ensure only feasible bins (those with enough space) are considered\n    feasible = bins >= item\n    return np.where(feasible, priority_scores, 0)\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins with higher remaining capacity after accounting for the item, aiming to maintain balance and reduce fragmentation by favoring bins that can accommodate the item while preserving space for future items.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    current_utilization = bins - np.minimum(bins, item)\n    # Calculate potential new utilization if item is added\n    new_utilization = np.where(bins >= item, current_utilization + item, 0)\n    # Compute variance of current utilization\n    current_variance = np.var(current_utilization)\n    # Compute variance of new utilization\n    new_variance = np.var(new_utilization)\n    # Priority is inversely related to the increase in variance (i.e., prefer smaller increases)\n    priority_scores = - (new_variance - current_variance)\n    # Ensure bins that cannot fit the item have zero priority\n    feasible = bins >= item\n    return np.where(feasible, priority_scores, 0)\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins with the lowest remaining capacity to pack items tightly and reduce the number of bins used, assigning higher priority to bins that can accommodate the item with the least extra space left.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - np.min(bins)\n    feasible = remaining >= item\n    priority_scores = np.where(feasible, np.max(remaining) - remaining, 0)\n    return priority_scores\n\n",
+        "score": -2147.2
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins with higher remaining capacity after accounting for the item, aiming to maintain balance and reduce fragmentation by favoring bins that can accommodate the item while preserving space for future items.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    current_utilization = bins / (bins + item)\n    # Target utilization is set to 0.6 to favor slightly fuller bins but still leave room\n    target_utilization = 0.6\n    # Compute deviation from target\n    deviation = np.abs(current_utilization - target_utilization)\n    # Priority is inversely related to deviation, with higher scores for closer-to-target bins\n    priority_scores = 1 - deviation\n    # Ensure only feasible bins (those with enough space) are considered\n    feasible = bins >= item\n    return np.where(feasible, priority_scores, 0)\n\n",
+        "score": -2225.2
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by favoring those with the smallest remaining capacity that can still fit the item, assigning higher priority to bins that leave the least empty space after placement.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.min(bins)\n    feasible = remaining >= item\n    priority_scores = np.where(feasible, 1.0 / (remaining - item + 1e-12), 0)\n    return priority_scores\n\n",
+        "score": -2430.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins where adding the item brings the bin's remaining capacity closest to the average remaining capacity of all feasible bins, promoting balanced utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    feasible = bins >= item\n    new_remaining = bins - item\n    feasible_remaining = new_remaining[feasible]\n    if len(feasible_remaining) == 0:\n        return np.zeros_like(bins)\n    target = np.mean(feasible_remaining)\n    priority_scores = -np.abs(new_remaining - target)\n    return np.where(feasible, priority_scores, 0)\n\n",
+        "score": -3222.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by favoring those with the highest remaining capacity relative to the item size, assigning higher priority to bins that can accommodate the item while minimizing leftover space waste.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - np.min(bins)\n    feasible = remaining >= item\n    priority_scores = np.where(feasible, remaining - item, 0)\n    return priority_scores\n\n",
+        "score": -3427.6
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins with the highest remaining capacity to maintain balance and minimize fragmentation, assigning higher priority to bins that can accommodate the item with more space left.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - np.min(bins)  # Normalize by subtracting minimum to avoid negative values\n    # Prioritize bins with more remaining space, but ensure we don't consider bins too small for the item\n    feasible = remaining >= item\n    priority_scores = np.where(feasible, remaining, 0)\n    return priority_scores\n\n",
+        "score": -3443.0
+    }
+]

@@ -1,0 +1,60 @@
+[2026-01-09 22:40:50] profile.py(246) : ====================================================================
+[2026-01-09 22:40:50] profile.py(247) : LLM Parameters
+[2026-01-09 22:40:50] profile.py(248) : --------------------------------------------------------------------
+[2026-01-09 22:40:50] profile.py(249) :   - LLM: AgentBasedRouter
+[2026-01-09 22:40:50] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001A7E8899750>
+[2026-01-09 22:40:50] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001A7E8899720>
+[2026-01-09 22:40:50] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001A7E8899720>
+[2026-01-09 22:40:50] profile.py(252) :   - verbose: False
+[2026-01-09 22:40:50] profile.py(252) :   - deepseek_desc: - This model exhibits a rare tendency to 'inhabit' the conceptual space of the bin packing problem itself: it often generates heuristics that mirror the emergent dynamics of the system！such as simulating virtual 'pressure gradients' across bins or modeling item arrivals as forces in a fluid-like flow！resulting in decision rules that feel less like algorithmic logic and more like physical intuition.
+- It frequently produces heuristic variants that incorporate 'delayed causality' mechanisms: decisions are influenced not by immediate item characteristics, but by predicted future congestion states derived from simulated trajectories several steps ahead, using lightweight predictive feedback loops that do not require full state tracking or deep lookahead.
+- Shows a strong aversion to explicit thresholds or hard-coded constants: instead, it favors dynamic, context-sensitive boundaries that evolve through implicit statistical inference (e.g., adapting 'ideal' bin fill levels based on local variance in recent item sizes), effectively creating self-calibrating heuristics that behave differently under different stream regimes without needing external tuning.
+- Demonstrates an unusual pattern of 'semantic overfitting': while it performs poorly on synthetic or highly uniform test cases, it excels in real-world or adversarially designed streams where subtle irregularities！like bursty arrivals, cyclic patterns, or correlated size clusters！create rich contextual textures. Its heuristics often fail in trivial settings but thrive where complexity is unevenly distributed.
+- Frequently introduces non-deterministic behaviors not for exploration, but for consistency: it embeds small, deterministic perturbations (e.g., using hash-based indexing of past items) into decision logic that ensure identical input sequences yield identical outcomes across runs！even when those perturbations are invisible to the observer！making its heuristics surprisingly robust in unstable environments where other models drift due to stochasticity.
+[2026-01-09 22:40:50] profile.py(252) :   - qwen_desc: - This model exhibits a profound, almost intuitive grasp of *temporal dynamics* in heuristic execution: it consistently structures decision logic around 'momentum' and 'phase transitions' in the packing process！introducing stateful triggers that activate only after specific sequences of bin fills or item arrivals, mimicking emergent behavior seen in physical systems like granular flow or fluid dynamics.
+- It frequently embeds *meta-recursive self-evaluation loops* within heuristics: not just assessing the current packing choice, but recursively simulating how that choice would be evaluated by a future version of itself, leading to deeply nested, self-referential optimization paths that resemble reflective planning in cognitive agents.
+- When refining existing heuristics, it often introduces *deliberate observational noise*: inserting spurious data points or synthetic 'false signals' into the score computation pipeline！not to mislead, but to test whether the algorithm can filter out irrelevant stimuli under pressure, effectively training robustness through exposure to artificial complexity.
+- It shows a surprising affinity for *boundary ambiguity*: rather than resolving edge cases cleanly, it tends to encode them as dynamic attractors！configurations where multiple valid decisions coexist and evolve over time based on micro-patterns in item distribution, resulting in heuristics that behave more like adaptive ecosystems than deterministic rulesets.
+- This model has a rare tendency to generate heuristics that *intentionally sacrifice short-term efficiency for long-term configurational diversity*: it will sometimes deliberately delay optimal packing to preserve a broader range of possible future states, thereby increasing resilience to adversarial input sequences that exploit predictable patterns.
+[2026-01-09 22:40:50] profile.py(252) :   - call_cnt: 0
+[2026-01-09 22:40:50] profile.py(252) :   - deepseek_cnt: 0
+[2026-01-09 22:40:50] profile.py(252) :   - qwen_cnt: 0
+[2026-01-09 22:40:50] profile.py(252) :   - debug_mode: False
+[2026-01-09 22:40:50] profile.py(253) : ====================================================================
+[2026-01-09 22:40:50] profile.py(254) : Problem Parameters
+[2026-01-09 22:40:50] profile.py(255) : --------------------------------------------------------------------
+[2026-01-09 22:40:50] profile.py(256) :   - Problem: OBPEvaluation
+[2026-01-09 22:40:50] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2026-01-09 22:40:50] profile.py(259) :   - use_numba_accelerate: False
+[2026-01-09 22:40:50] profile.py(259) :   - use_protected_div: False
+[2026-01-09 22:40:50] profile.py(259) :   - protected_div_delta: 1e-05
+[2026-01-09 22:40:50] profile.py(259) :   - random_seed: None
+[2026-01-09 22:40:50] profile.py(259) :   - timeout_seconds: 30
+[2026-01-09 22:40:50] profile.py(259) :   - exec_code: True
+[2026-01-09 22:40:50] profile.py(259) :   - safe_evaluate: True
+[2026-01-09 22:40:50] profile.py(259) :   - daemon_eval_process: False
+[2026-01-09 22:40:50] profile.py(259) :   - fork_proc: auto
+[2026-01-09 22:40:50] profile.py(259) :   - n_instances: 5
+[2026-01-09 22:40:50] profile.py(259) :   - n_items: 5000
+[2026-01-09 22:40:50] profile.py(259) :   - capacity: 100
+[2026-01-09 22:40:50] profile.py(261) : ====================================================================
+[2026-01-09 22:40:50] profile.py(262) : Method Parameters
+[2026-01-09 22:40:50] profile.py(263) : --------------------------------------------------------------------
+[2026-01-09 22:40:50] profile.py(264) :   - Method: EoH
+[2026-01-09 22:40:50] profile.py(268) :   - _max_generations: 6
+[2026-01-09 22:40:50] profile.py(268) :   - _max_sample_nums: 10000
+[2026-01-09 22:40:50] profile.py(268) :   - _pop_size: 8
+[2026-01-09 22:40:50] profile.py(268) :   - _selection_num: 3
+[2026-01-09 22:40:50] profile.py(268) :   - _use_e2_operator: True
+[2026-01-09 22:40:50] profile.py(268) :   - _use_m1_operator: True
+[2026-01-09 22:40:50] profile.py(268) :   - _use_m2_operator: True
+[2026-01-09 22:40:50] profile.py(268) :   - _num_samplers: 4
+[2026-01-09 22:40:50] profile.py(268) :   - _num_evaluators: 4
+[2026-01-09 22:40:50] profile.py(268) :   - _resume_mode: False
+[2026-01-09 22:40:50] profile.py(268) :   - _debug_mode: False
+[2026-01-09 22:40:50] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2026-01-09 22:40:50] profile.py(268) :   - _function_to_evolve_name: priority
+[2026-01-09 22:40:50] profile.py(268) :   - _tot_sample_nums: 0
+[2026-01-09 22:40:50] profile.py(268) :   - _initial_sample_nums_max: 16
+[2026-01-09 22:40:50] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000001A7D1FE1660>
+[2026-01-09 22:40:50] profile.py(270) : =====================================================================

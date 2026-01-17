@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins that have more remaining capacity, favoring bins that can accommodate the item with minimal fragmentation, while also considering the balance across bins to avoid overloading any single bin.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - (bins > 0) * (bins <= 0)\n    valid_bins = remaining >= item\n    priority_scores = np.zeros_like(bins)\n    priority_scores[valid_bins] = remaining[valid_bins]\n    priority_scores[~valid_bins] = 0\n    return priority_scores\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 9,
+        "algorithm": "{The algorithm prioritizes bins with the least current load relative to their capacity, favoring bins that can accommodate the item with minimal wastage while maintaining balance across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - (bins.sum() - bins.sum())  # Placeholder for actual current load tracking\n    # Assume bins are initially empty; in practice, we'd track current loads\n    # For now, assume current load is 0 and use capacity directly\n    # Normalize by capacity to get utilization\n    utilization = (bins - item) / bins\n    # Adjust for items that don't fit\n    utilization = np.where(item > bins, -np.inf, utilization)\n    # Higher priority for lower utilization (more room)\n    priority_scores = -utilization\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

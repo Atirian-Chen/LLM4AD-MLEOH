@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item while balancing load distribution across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_capacity = bins - item\n    # Ensure non-negative remaining capacity (bin cannot hold item if capacity is exceeded)\n    remaining_capacity = np.maximum(remaining_capacity, 0)\n    # Priority is proportional to remaining capacity\n    return remaining_capacity\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 4,
+        "algorithm": "{The algorithm assigns higher priority to bins that are less full, calculated as the inverse of the ratio of current bin size to bin capacity, ensuring items are distributed to underutilized bins first.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    current_load = bins - item  # Assuming we're simulating adding the item\n    # Avoid division by zero by using a small epsilon if bin capacity is zero\n    capacities = bins\n    safe_capacities = np.where(capacities == 0, 1e-10, capacities)\n    # Priority is inversely proportional to utilization\n    priority_scores = 1 / (1 + (current_load / safe_capacities))\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 34,
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins based on a measure of remaining capacity after adding the item, with adjustments to balance space utilization, avoid waste, and promote equitable distribution across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    excess = bins - item\n    # Bins that cannot hold the item get zero priority\n    valid_bins = excess >= 0\n    priority_scores = np.zeros_like(bins)\n\n    # For valid bins, compute priority using a U-shaped function:\n    # - High priority when excess is near 0 (tight fit)\n    # - High priority when excess is large (high flexibility)\n    # - Low priority when excess is moderate (neither tight nor flexible)\n    # Use: priority = exp(-excess^2 / (item + 1e-8)) + exp(-(bins.max() - excess)^2 / (bins.max() + 1e-8))\n    # But to avoid dependence on max, use fixed scale relative to item\n    scale = max(item, 1.0)\n    \n    # Component 1: high when excess is small (tight fit)\n    comp1 = np.exp(-excess[valid_bins] ** 2 / (scale ** 2))\n    \n    # Component 2: high when excess is large (flexibility)\n    # We want high priority when excess is close to the maximum possible excess\n    # Maximum possible excess is bins.max() - item, but we don't know it ahead\n    # So use bins.max() as reference\n    max_excess = bins.max() - item\n    # If max_excess < 0, all bins invalid \u2192 skip\n    if max_excess <= 0:\n        return priority_scores\n\n    # Normalize the excess against max_excess to make it scale-invariant\n    norm_excess = excess[valid_bins] / max_excess\n    # Use: exp(- (1 - norm_excess)**2 ) \u2192 peaks at norm_excess=1 (full excess)\n    # But we want to reward high excess \u2192 so use exp(- (1 - norm_excess)**2 )\n    # Actually, we want: exp(- (max_excess - excess)**2 / (scale**2) )\n    # But scaled to be meaningful\n    comp2 = np.exp(- (max_excess - excess[valid_bins]) ** 2 / (scale ** 2))\n\n    # Combine components: sum of two exponentials\n    priority_scores[valid_bins] = comp1 + comp2\n\n    # Normalize to prevent extreme values? Not necessary for relative ordering.\n    return priority_scores\n\n",
+        "score": -2082.0,
+        "program": ""
+    }
+]

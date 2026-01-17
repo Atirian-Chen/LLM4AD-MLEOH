@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the highest remaining capacity to minimize fragmentation and maximize space utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return bins - item\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 6,
+        "algorithm": "{The algorithm assigns higher priority to bins that are less full, using a score inversely proportional to the current load of each bin relative to its capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return 1.0 / (bins - item + 1e-9)\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 33,
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins that are either less full or more deviated from an average load, aiming to balance the distribution of items across bins by favoring those that are currently underutilized or unbalanced relative to others.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    total_capacity = np.sum(bins)\n    num_bins = len(bins)\n    average_load = total_capacity / num_bins\n    remaining_capacity = bins - item\n    current_loads = bins - item\n    deviations = np.abs(current_loads - average_load)\n    geometric_factor = np.sqrt(remaining_capacity * (deviations + 1e-9))\n    return 1.0 / (geometric_factor + 1e-9)\n\n",
+        "score": -2090.2,
+        "program": ""
+    }
+]

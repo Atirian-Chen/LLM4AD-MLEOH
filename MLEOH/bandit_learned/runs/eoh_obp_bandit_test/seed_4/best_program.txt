@@ -1,0 +1,20 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    valid = remaining >= 0
+    scores = np.full_like(bins, -np.inf)
+    # Compute absolute difference between item and bin capacity
+    diff = np.abs(bins - item)
+    # Only consider valid bins (that can fit the item)
+    scores[valid] = -diff[valid]  # Negative so smaller diff → higher priority
+    return scores
+

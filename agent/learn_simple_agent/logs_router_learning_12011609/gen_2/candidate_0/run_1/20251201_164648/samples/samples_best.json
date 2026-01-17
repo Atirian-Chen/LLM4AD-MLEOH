@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins that are less full, favoring bins with more remaining capacity to balance the load evenly across all bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_capacity = bins - item\n    # Avoid negative or zero capacity by clamping to a small positive value\n    remaining_capacity = np.maximum(remaining_capacity, 1e-9)\n    # Higher remaining capacity means higher priority\n    return 1.0 / remaining_capacity\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 15,
+        "algorithm": "{The algorithm assigns higher priority to bins where the item size fits most proportionally, preferring bins that are neither too empty nor too full, using a Gaussian-like weighting centered around a target fill ratio.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    target_ratio = 0.5\n    current_fill = 1.0 - bins\n    new_fill = current_fill + item\n    ratio_diff = np.abs(new_fill - target_ratio)\n    sigma = 0.2\n    scores = np.exp(-0.5 * (ratio_diff / sigma) ** 2)\n    scores = np.where(bins >= item, scores, -np.inf)\n    return scores\n\n",
+        "score": -2091.0,
+        "program": ""
+    },
+    {
+        "sample_order": 20,
+        "algorithm": "{The algorithm assigns higher priority to bins that are closer to a target fill ratio of 0.7, using a Gaussian-like weighting with increased sensitivity to overfilling and stricter feasibility constraints.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    target_ratio = 0.7\n    current_fill = 1.0 - bins\n    new_fill = current_fill + item\n    ratio_diff = np.abs(new_fill - target_ratio)\n    sigma = 0.15\n    scores = np.exp(-0.5 * (ratio_diff / sigma) ** 2)\n    scores = np.where(bins >= item, scores, -np.inf)\n    return scores\n\n",
+        "score": -2089.8,
+        "program": ""
+    }
+]

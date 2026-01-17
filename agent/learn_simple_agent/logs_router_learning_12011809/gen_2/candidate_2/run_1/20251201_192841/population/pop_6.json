@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm prioritizes bins by the inverse of their squared relative remaining capacity after placing the item, strongly favoring bins where the item fits perfectly and heavily penalizing near\u2011full bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    scores = np.zeros_like(bins)\n    scores[valid] = 1.0 / ((remaining[valid] / (bins[valid] + 1e-8)) ** 2 + 1e-8)\n    return scores\n\n",
+        "score": -2091.4
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins where the item fits exactly or leaves a small remaining fraction, using a Gaussian-like penalty centered on zero leftover capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    # Penalty increases with absolute leftover capacity, smallest penalty near zero leftover\n    penalty = np.where(valid, np.exp(-(remaining ** 2) / (2 * (bins + 1e-8))), -np.inf)\n    return penalty\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by the hyperbolic tangent of the ratio of leftover capacity to bin capacity, which smoothly favors bins where the item leaves a moderate relative leftover, while sharply penalizing both near\u2011zero and near\u2011full leftovers.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    scores = np.full_like(bins, -np.inf)\n    rel_leftover = remaining[valid] / (bins[valid] + 1e-8)\n    scores[valid] = np.tanh(4 * (rel_leftover - 0.5) ** 3 + 0.5)\n    return scores\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by the exponential of the negative squared relative difference between the bin's remaining capacity after placing the item and a dynamically chosen ideal remaining capacity, which is a fraction of the bin's original capacity, emphasizing precision through squared penalties and normalized differences.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    ideal_remaining_ratio = 0.3\n    remaining = bins - item\n    valid = remaining >= 0\n    ideal_remaining = bins * ideal_remaining_ratio\n    relative_difference = np.abs(remaining - ideal_remaining) / (bins + 1e-8)\n    scores = np.zeros_like(bins)\n    scores[valid] = np.exp(-relative_difference[valid] ** 2)\n    return scores\n\n",
+        "score": -2102.6
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by the exponential of the negative absolute difference between the bin's remaining capacity after placing the item and a dynamically chosen ideal remaining capacity, which is a fraction of the bin's original capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    ideal_remaining_ratio = 0.2\n    remaining = bins - item\n    valid = remaining >= 0\n    ideal_remaining = bins * ideal_remaining_ratio\n    difference = np.abs(remaining - ideal_remaining)\n    scores = np.zeros_like(bins)\n    scores[valid] = np.exp(-difference[valid] / (bins[valid] + 1e-8))\n    return scores\n\n",
+        "score": -2104.8
+    },
+    {
+        "algorithm": "{The new algorithm assigns higher priority to bins with leftover capacity close to a user-defined target fraction (e.g., 10% of bin capacity), using a Gaussian-like penalty centered on the target leftover, penalizing deviations from this ideal.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    # Target leftover is 10% of bin capacity\n    target_leftover = 0.1 * bins\n    # Gaussian-like penalty centered on target leftover\n    deviation = np.abs(remaining - target_leftover)\n    # Use a fixed sigma for the Gaussian; adjust sensitivity via sigma\n    sigma = 0.15 * bins + 1e-8\n    penalty = np.where(\n        valid,\n        np.exp(- (deviation ** 2) / (2 * (sigma ** 2))),\n        -np.inf\n    )\n    return penalty\n\n",
+        "score": -2113.2
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by the ratio of the item size to the bin capacity, favoring bins where the item occupies a large proportion of the remaining space, while applying a penalty for bins where the item would leave a very small leftover capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    proportion = item / (bins + 1e-8)\n    leftover_penalty = np.where(remaining > 0, 1.0 / (remaining + 1e-8), 0)\n    scores = np.where(valid, proportion * leftover_penalty, -np.inf)\n    return scores\n\n",
+        "score": -2114.0
+    },
+    {
+        "algorithm": "{The algorithms prioritize bins with higher remaining capacity to maximize space utilization and reduce fragmentation, with variations in how remaining capacity is scaled or normalized.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    valid_bins = bins > 0\n    ratio = np.full_like(bins, 0.0)\n    ratio[valid_bins] = item / bins[valid_bins]\n    # Invert ratio to favor bins where item is a small fraction of capacity\n    priority_scores = 1.0 - ratio\n    # Ensure non-negative priorities\n    priority_scores = np.maximum(priority_scores, 0.0)\n    return priority_scores\n\n",
+        "score": -2122.2
+    }
+]

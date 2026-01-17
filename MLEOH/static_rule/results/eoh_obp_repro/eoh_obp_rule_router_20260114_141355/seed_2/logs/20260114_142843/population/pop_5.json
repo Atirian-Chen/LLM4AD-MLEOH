@@ -1,0 +1,52 @@
+[
+    {
+        "algorithm": "{\nFirst, compute for each bin the remaining capacity after hypothetically adding the item; then assign higher priority to bins where the remaining capacity is smaller but non\u2011negative, and zero priority if the item does not fit.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    priority_scores = np.where(remaining >= 0, 1.0 / (remaining + 1.0), 0.0)\n    return priority_scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{\nNew algorithm: Assign priority based on the remaining capacity after adding the item, preferring bins where the resulting remaining capacity is minimized but non\u2011negative, and breaking ties by preferring bins with larger current capacity.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Initialize priority with a large negative value for bins where item doesn't fit\n    priority_scores = np.full_like(bins, -np.inf)\n    # For bins that can accommodate the item, priority is higher when remaining capacity is smaller,\n    # and among equal remaining capacities, higher current capacity is preferred.\n    mask = remaining >= 0\n    # Primary key: negative remaining (so smaller remaining gets higher priority)\n    # Secondary key: bins (so larger current capacity breaks ties)\n    priority_scores[mask] = -remaining[mask] + bins[mask] * 1e-10\n    return priority_scores\n\n",
+        "score": -2092.8
+    },
+    {
+        "algorithm": "{\nFirst, compute the remaining capacity after adding the item to each bin, then prioritize bins where the item fits perfectly (remaining capacity 0) highest, followed by bins with positive remaining capacity, and finally assign the lowest priority to bins where the item does not fit.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Highest priority for perfect fit (remaining == 0)\n    # Then for bins with positive remaining capacity (remaining > 0)\n    # Lowest priority for bins where item does not fit (remaining < 0)\n    priority_scores = np.where(remaining == 0, 2,\n                               np.where(remaining > 0, 1, 0))\n    return priority_scores\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{New algorithm: Assign priority based on the ratio of remaining capacity to current bin capacity after adding the item, favoring bins where this ratio is minimized (indicating efficient utilization), and breaking ties by preferring bins with larger current capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    priority_scores = np.full_like(bins, -np.inf)\n    mask = remaining >= 0\n    # Primary key: ratio of remaining capacity to current bin capacity (minimize ratio)\n    # Secondary key: larger current capacity breaks ties\n    ratio = remaining[mask] / bins[mask]\n    priority_scores[mask] = -ratio + bins[mask] * 1e-10\n    return priority_scores\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{New algorithm: Assign priority based on the ratio of the item size to the current bin capacity after adding the item, favoring bins where this ratio is maximized (indicating higher utilization relative to bin size), and breaking ties by preferring bins with smaller current capacity to encourage filling smaller bins first.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    priority_scores = np.full_like(bins, -np.inf)\n    mask = remaining >= 0\n    # Primary key: ratio of item size to new bin capacity (maximize ratio)\n    # Secondary key: smaller current capacity breaks ties\n    ratio = item / (bins[mask] - item + 1e-10)\n    priority_scores[mask] = ratio - bins[mask] * 1e-10\n    return priority_scores\n\n",
+        "score": -2114.6
+    },
+    {
+        "algorithm": "{\nNew algorithm: Assign priority based on the exponential decay of remaining capacity after adding the item, giving highest priority to bins where the resulting remaining capacity is closest to a target fraction of the original bin capacity.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    target_ratio = 0.2\n    target_capacity = bins * target_ratio\n    gap = np.abs(remaining - target_capacity)\n    priority_scores = np.where(remaining >= 0, np.exp(-gap / (bins + 1e-10)), 0.0)\n    return priority_scores\n\n",
+        "score": -2145.8
+    },
+    {
+        "algorithm": "{New algorithm: Assign priority based on the inverse of the relative remaining capacity after adding the item, favoring bins where the remaining capacity is closest to a target fraction of the original bin capacity, with a stronger penalty for overfilling and a logarithmic scaling for underutilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    target_ratio = 0.3\n    target_capacity = bins * target_ratio\n    gap = np.abs(remaining - target_capacity)\n    valid = remaining >= 0\n    priority_scores = np.where(valid, 1.0 / (1.0 + gap / (bins + 1e-10)), 0.0)\n    return priority_scores\n\n",
+        "score": -2214.0
+    },
+    {
+        "algorithm": "{\nAssign higher priority to bins where the item size is closest to a fixed fraction of the bin's current remaining capacity, with zero priority if the item does not fit.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    target_ratio = 0.6\n    target = bins * target_ratio\n    closeness = np.abs(item - target)\n    priority_scores = np.where(remaining >= 0, 1.0 / (closeness + 1.0), 0.0)\n    return priority_scores\n\n",
+        "score": -2267.8
+    },
+    {
+        "algorithm": "{\nFirst, compute for each bin the remaining capacity after hypothetically adding the item; then assign higher priority to bins where the remaining capacity is closer to a target fraction of the bin's original capacity, and zero priority if the item does not fit.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    target_ratio = 0.5\n    target = bins * target_ratio\n    deviation = np.abs(remaining - target)\n    priority_scores = np.where(remaining >= 0, 1.0 / (deviation + 1.0), 0.0)\n    return priority_scores\n\n",
+        "score": -2626.4
+    },
+    {
+        "algorithm": "{New algorithm: Assign priority based on the logarithmic transformation of the remaining capacity after adding the item, favoring bins with higher remaining capacity while penalizing bins that are nearly full, and breaking ties by preferring bins with smaller current capacity to encourage load balancing.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    priority_scores = np.full_like(bins, -np.inf)\n    mask = remaining >= 0\n    log_remaining = np.log1p(remaining[mask])  # log(1 + remaining) to avoid log(0)\n    # Primary key: maximize log-transformed remaining capacity\n    # Secondary key: prefer smaller current capacity to balance load\n    priority_scores[mask] = log_remaining - bins[mask] * 1e-10\n    return priority_scores\n\n",
+        "score": -3716.0
+    }
+]

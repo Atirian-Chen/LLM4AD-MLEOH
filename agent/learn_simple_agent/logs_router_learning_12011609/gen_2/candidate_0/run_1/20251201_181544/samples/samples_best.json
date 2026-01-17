@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins with the smallest remaining capacity that can still fit the item, then by overall smallest remaining capacity if no bin fits.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    priority_scores = np.full_like(bins, np.inf)\n    # Bins that can fit the item get priority based on remaining capacity\n    can_fit = bins >= item\n    if np.any(can_fit):\n        priority_scores[can_fit] = bins[can_fit]\n    else:\n        # If none fit, prioritize smallest bin (closest to fitting)\n        priority_scores = bins\n    return priority_scores\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the least wasted space, while penalizing overfull bins heavily.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Large positive priority if fits perfectly, high positive if fits well,\n    # negative if overfull, with more overfill giving more negative priority.\n    priority_scores = np.where(\n        remaining == 0,\n        2.0,                     # highest for exact fit\n        np.where(\n            remaining > 0,\n            1.0 / (remaining + 1e-9),  # fits, prefer smaller remaining capacity\n            -abs(remaining)      # does not fit, penalize by overfill amount\n        )\n    )\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

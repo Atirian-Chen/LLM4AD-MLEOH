@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item while maintaining balance across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_capacity = bins - item\n    remaining_capacity = np.maximum(remaining_capacity, 0)\n    return remaining_capacity\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 4,
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item with minimal leftover space, favoring bins that are closer to full but still have enough capacity, and breaks ties by preferring bins with lower current occupancy.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.minimum(bins, item)\n    # Avoid division by zero and penalize bins that cannot fit the item\n    can_fit = (bins >= item).astype(float)\n    # Prioritize bins with smallest remaining space after adding the item\n    # Use negative because we want higher priority for smaller leftover space\n    priorities = -remaining * can_fit\n    # Add a small tie-breaker based on current occupancy (lower is better)\n    occupancy = bins - remaining\n    tie_breaker = -occupancy * can_fit\n    # Combine the two criteria\n    final_priorities = priorities + 0.01 * tie_breaker\n    return final_priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

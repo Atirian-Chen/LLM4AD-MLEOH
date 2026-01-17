@@ -1,0 +1,61 @@
+[2025-12-22 09:25:51] profile.py(246) : ====================================================================
+[2025-12-22 09:25:51] profile.py(247) : LLM Parameters
+[2025-12-22 09:25:51] profile.py(248) : --------------------------------------------------------------------
+[2025-12-22 09:25:51] profile.py(249) :   - LLM: AgentBasedRouter
+[2025-12-22 09:25:51] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001AD5C549CC0>
+[2025-12-22 09:25:51] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001AD5C549C60>
+[2025-12-22 09:25:51] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001AD5C549C60>
+[2025-12-22 09:25:51] profile.py(252) :   - verbose: False
+[2025-12-22 09:25:51] profile.py(252) :   - deepseek_desc: - Specializes in synthesizing high-level structural patterns across diverse heuristics, enabling the creation of novel hybrid strategies that adapt dynamically to changing input distributions.
+- Excels at generating exploratory, high-variance heuristic variants¡ªespecially when input dependencies are non-linear or evolving over time¡ªdriving systemic innovation in online bin packing.
+- Skilled at writing robust, modular Python code with explicit control flow and efficient vectorized NumPy operations, designed for real-time execution and runtime adaptation.
+- Most effective when the task demands long-term performance under non-stationary conditions, particularly where heuristic behavior must evolve based on feedback from live inputs.
+- Not suitable for static, deterministic scenarios with fixed input sets or for incremental refinements of existing rules; avoid using for low-variance, rule-based tuning tasks.
+- Its strength lies in radical redesign rather than optimization: best leveraged during phases of heuristic exploration and evolution, not convergence.
+[2025-12-22 09:25:51] profile.py(252) :   - qwen_desc: - Specializes in fine-grained, conservative edits to existing heuristics with minimal structural disruption.
+- Excels at tuning parameters such as thresholds, weights, and scoring coefficients to enhance robustness and boundary handling¡ªparticularly under dynamic or noisy input conditions.
+- Prefers micro-level interventions: reordering condition checks, adjusting evaluation order by bit-width similarity, or inserting semantic no-ops to subtly improve long-term stability without visible changes.
+- Avoids high-level redesigns; consistently preserves core logic and invariants while introducing controlled, non-optimal early placements to prevent overfitting.
+- Best suited for refining heuristics already close to optimal, especially when the goal is variance reduction and adaptability across diverse sequences rather than aggressive performance gains.
+[2025-12-22 09:25:51] profile.py(252) :   - call_cnt: 0
+[2025-12-22 09:25:51] profile.py(252) :   - deepseek_cnt: 0
+[2025-12-22 09:25:51] profile.py(252) :   - qwen_cnt: 0
+[2025-12-22 09:25:51] profile.py(252) :   - debug_mode: False
+[2025-12-22 09:25:51] profile.py(253) : ====================================================================
+[2025-12-22 09:25:51] profile.py(254) : Problem Parameters
+[2025-12-22 09:25:51] profile.py(255) : --------------------------------------------------------------------
+[2025-12-22 09:25:51] profile.py(256) :   - Problem: OBPEvaluation
+[2025-12-22 09:25:51] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2025-12-22 09:25:51] profile.py(259) :   - use_numba_accelerate: False
+[2025-12-22 09:25:51] profile.py(259) :   - use_protected_div: False
+[2025-12-22 09:25:51] profile.py(259) :   - protected_div_delta: 1e-05
+[2025-12-22 09:25:51] profile.py(259) :   - random_seed: None
+[2025-12-22 09:25:51] profile.py(259) :   - timeout_seconds: 30
+[2025-12-22 09:25:51] profile.py(259) :   - exec_code: True
+[2025-12-22 09:25:51] profile.py(259) :   - safe_evaluate: True
+[2025-12-22 09:25:51] profile.py(259) :   - daemon_eval_process: False
+[2025-12-22 09:25:51] profile.py(259) :   - fork_proc: auto
+[2025-12-22 09:25:51] profile.py(259) :   - n_instances: 5
+[2025-12-22 09:25:51] profile.py(259) :   - n_items: 5000
+[2025-12-22 09:25:51] profile.py(259) :   - capacity: 100
+[2025-12-22 09:25:51] profile.py(261) : ====================================================================
+[2025-12-22 09:25:51] profile.py(262) : Method Parameters
+[2025-12-22 09:25:51] profile.py(263) : --------------------------------------------------------------------
+[2025-12-22 09:25:51] profile.py(264) :   - Method: EoH
+[2025-12-22 09:25:51] profile.py(268) :   - _max_generations: 6
+[2025-12-22 09:25:51] profile.py(268) :   - _max_sample_nums: 10000
+[2025-12-22 09:25:51] profile.py(268) :   - _pop_size: 8
+[2025-12-22 09:25:51] profile.py(268) :   - _selection_num: 3
+[2025-12-22 09:25:51] profile.py(268) :   - _use_e2_operator: True
+[2025-12-22 09:25:51] profile.py(268) :   - _use_m1_operator: True
+[2025-12-22 09:25:51] profile.py(268) :   - _use_m2_operator: True
+[2025-12-22 09:25:51] profile.py(268) :   - _num_samplers: 4
+[2025-12-22 09:25:51] profile.py(268) :   - _num_evaluators: 4
+[2025-12-22 09:25:51] profile.py(268) :   - _resume_mode: False
+[2025-12-22 09:25:51] profile.py(268) :   - _debug_mode: False
+[2025-12-22 09:25:51] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2025-12-22 09:25:51] profile.py(268) :   - _function_to_evolve_name: priority
+[2025-12-22 09:25:51] profile.py(268) :   - _tot_sample_nums: 0
+[2025-12-22 09:25:51] profile.py(268) :   - _initial_sample_nums_max: 16
+[2025-12-22 09:25:51] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000001AD45D0DD50>
+[2025-12-22 09:25:51] profile.py(270) : =====================================================================

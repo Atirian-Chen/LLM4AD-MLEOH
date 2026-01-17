@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the highest remaining capacity to maintain balance and minimize wasted space, assigning higher priority to bins that can accommodate the item with minimal leftover space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Ensure bins can actually fit the item\n    valid = remaining >= 0\n    # Assign priority based on remaining capacity (higher is better)\n    priorities = np.where(valid, remaining, -np.inf)\n    return priorities\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 3,
+        "algorithm": "{The algorithm assigns higher priority to bins that are less full, using a normalized inverse of the current utilization to favor bins with more remaining capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    used = np.clip(bins - item, 0, None)\n    available = bins - used\n    # Avoid division by zero by adding a small epsilon if necessary\n    available = np.where(available == 0, 1e-10, available)\n    return available / bins\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins where the item fits exactly or leaves the smallest positive remaining capacity, while heavily penalizing overfull bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Large penalty for overfull bins, then maximize closeness to zero from the positive side\n    priority_scores = np.where(remaining >= 0, -remaining, -np.inf)\n    return priority_scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins based on the relative remaining capacity after adding the item, favoring bins that maintain a balanced residual space while avoiding overfilling, with higher priority given to bins where the item fits comfortably without exceeding a slightly relaxed fill threshold.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    optimal_fill = 0.8  # Slightly relaxed optimal fill level\n    remaining_capacity = bins - item\n    valid_bins = remaining_capacity >= 0\n    priority_scores = np.zeros_like(bins)\n    # For valid bins, compute priority based on remaining capacity\n    # Higher remaining capacity is better if not too high (avoid underutilization)\n    # Normalize remaining capacity to [0,1] range relative to max possible\n    max_remaining = bins[valid_bins].max() if valid_bins.any() else 1\n    normalized_remaining = np.where(valid_bins, remaining_capacity / max_remaining, 0)\n    # Favor bins with moderate remaining capacity (not too small, not too large)\n    # Use a sigmoid-like function to emphasize mid-range values\n    adjusted_remaining = 2 * normalized_remaining - 1  # Map to [-1, 1]\n    priority_scores[valid_bins] = 1 / (1 + np.exp(-5 * adjusted_remaining))\n    return priority_scores\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on maximizing the remaining space after adding the item, favoring bins that will have a balanced and usable residual capacity, thus promoting efficient space utilization while avoiding overfilling.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_space = bins - item\n    # Penalize bins where the item cannot fit\n    valid_bins = bins >= item\n    priority_scores = np.zeros_like(bins)\n    # Only consider valid bins\n    if np.any(valid_bins):\n        # Prioritize bins with more remaining space (but not too much to avoid underutilization)\n        # Use a sigmoid-like function to reward moderate remaining space\n        normalized_remaining = remaining_space[valid_bins] / bins[valid_bins]\n        # Reward bins with moderate fill (avoid both empty and full bins)\n        # Use a centered Gaussian-like shape around 0.5\n        deviation_from_optimal = np.abs(normalized_remaining - 0.5)\n        priority_scores[valid_bins] = 1 / (1 + 2 * deviation_from_optimal)\n    return priority_scores\n\n",
+        "score": -2111.2
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins where the item fits well\u2014either exactly or with minimal leftover space\u2014while heavily penalizing bins that become overfull, using different mathematical formulations to balance remaining capacity and overfill penalties.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    utilization_ratio = item / bins\n    # Reward bins where utilization ratio is near ideal fractions\n    ideal_ratios = [0.5, 0.6667, 0.75, 0.8, 0.9]\n    score_from_ratio = -np.min(np.abs(utilization_ratio[:, None] - np.array(ideal_ratios)), axis=1)\n    # Penalize overfull bins logarithmically\n    overfill_penalty = np.where(remaining < 0, np.log1p(-remaining), 0)\n    # Combine scores\n    priority_scores = score_from_ratio - 2 * overfill_penalty\n    return priority_scores\n\n",
+        "score": -2174.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on how close their current load is to a predefined optimal fill level, rewarding bins that are closest to this ideal state after adding the item, thus promoting balanced bin utilization and reducing both underutilization and overfilling.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    optimal_fill = 0.75  # Desired fill ratio (can be tuned)\n    current_load = bins - (bins - item)  # Current load before adding item\n    target_load_after_add = (bins + item) * optimal_fill\n    deviation_from_target = np.abs((current_load + item) - target_load_after_add)\n    # Lower deviation means better fit, so we invert it for priority\n    priority_scores = 1 / (1 + deviation_from_target)\n    # Penalize bins where the item cannot fit\n    valid_bins = bins >= item\n    priority_scores[~valid_bins] = 0\n    return priority_scores\n\n",
+        "score": -2266.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a normalized ratio of remaining capacity to bin size, favoring bins that are neither too empty nor too full after accommodating the item, with an emphasis on balance and efficient utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_remaining = np.clip(remaining, 0, None)\n    # Avoid division by zero and handle bins that can't fit the item\n    bin_sizes = bins.copy()\n    bin_sizes[bin_sizes == 0] = 1  # Prevent division by zero\n    ratio = valid_remaining / bin_sizes\n    # Prioritize bins with moderate usage (not too low, not too high)\n    # Use a quadratic penalty for both very low and very high ratios\n    penalty = (ratio - 0.5) ** 2\n    priority_scores = -penalty\n    # Penalize overfull bins\n    priority_scores[remaining < 0] = -np.inf\n    return priority_scores\n\n",
+        "score": -2868.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a sigmoid-weighted balance between maximizing remaining capacity and minimizing overfill, with a smooth transition penalty for bins near capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    sigmoid = 1 / (1 + np.exp(-remaining))\n    penalty = np.where(remaining >= 0, 0, -np.abs(remaining)**2)\n    priority_scores = sigmoid + penalty\n    return priority_scores\n\n",
+        "score": -3578.2
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins by emphasizing those with high remaining capacity using a modified sigmoid function and applying a quadratic penalty for overfilled bins, while introducing a threshold-based smoothing to avoid abrupt score changes near full capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Apply sigmoid-like weighting to remaining capacity\n    sigmoid = 1 / (1 + np.exp(-remaining * 0.5))  # Adjusted slope for slower transition\n    # Penalty for overfilled bins: quadratic penalty only when underfilled\n    penalty = np.where(remaining < 0, -0.5 * np.abs(remaining)**2, 0)\n    # Add smooth thresholding around zero to reduce sharpness in scores\n    threshold = np.abs(remaining) < 1.0\n    smoothed_penalty = np.where(threshold, -0.1 * remaining**2, penalty)\n    priority_scores = sigmoid + smoothed_penalty\n    return priority_scores\n\n",
+        "score": -4880.6
+    }
+]

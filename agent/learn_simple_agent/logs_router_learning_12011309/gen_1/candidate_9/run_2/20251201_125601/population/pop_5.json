@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins where the remaining capacity is small but non\u2011negative, and assign zero priority to bins that would overflow.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Priority is higher when remaining capacity is smaller but >= 0.\n    # We invert so that smaller positive remaining gets higher priority.\n    # Bins that would overflow (remaining < 0) get priority 0.\n    priority_scores = np.where(remaining >= 0, 1.0 / (remaining + 1.0), 0.0)\n    return priority_scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a balance between utilization and diversity, assigning higher priority to bins that are neither too empty nor too full, with a preference for bins whose remaining capacity is close to the item size, while penalizing both underutilized and overfilled bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_capacity = bins - item\n    valid_bins = remaining_capacity >= 0\n    priorities = np.zeros_like(bins)\n    # Reward bins where remaining capacity is close to item size (efficient fit)\n    # Penalize bins that are too empty or nearly full (diversity and efficiency trade-off)\n    # Use a quadratic penalty around the ideal fit (remaining \u2248 0)\n    ideal_fit = 0.0  # Remaining capacity should be close to zero\n    deviation = np.abs(remaining_capacity - ideal_fit)\n    # Avoid division by zero; add small epsilon\n    priorities[valid_bins] = 1.0 / (deviation[valid_bins] + 1e-8)\n    # Scale by how close remaining capacity is to zero (best fit near zero)\n    # Lower deviation means higher priority\n    return priorities\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins where the item size fits most tightly, preferring bins with capacity closest to the item size, and penalizes bins with capacity far larger than the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    priority_scores = np.zeros_like(bins)\n    priority_scores[valid] = 1.0 / (bins[valid] + 1.0)\n    return priority_scores\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{Prioritize bins based on remaining capacity after adding the item, favoring bins where the resulting remaining capacity is closest to a target fraction of the bin's original capacity, with the target fraction adjustable as a parameter.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target_fraction = 0.3\n    remaining_capacity = bins - item\n    valid_bins = remaining_capacity >= 0\n    target_remaining = bins * target_fraction\n    deviation_from_target = np.abs(remaining_capacity - target_remaining)\n    priority_scores = np.zeros_like(bins)\n    priority_scores[valid_bins] = 1.0 / (deviation_from_target[valid_bins] + 1.0)\n    return priority_scores\n\n",
+        "score": -2102.6
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on how close the resulting remaining capacity is to a target fraction of the bin's original capacity, favoring bins that leave a desired proportion of free space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target_fraction = 0.1\n    remaining = bins - item\n    valid = remaining >= 0\n    priorities = np.zeros_like(bins)\n    target_capacity = target_fraction * bins\n    closeness = -np.abs(remaining - target_capacity)\n    priorities[valid] = closeness[valid]\n    return priorities\n\n",
+        "score": -2109.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on how close the resulting remaining capacity is to a target fraction of the bin's original capacity, while also applying a penalty for bins that are already very close to that target to encourage spreading items across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target_fraction = 0.15\n    penalty_factor = 0.7\n    remaining = bins - item\n    valid = remaining >= 0\n    priorities = np.full_like(bins, -np.inf)\n    target_capacity = target_fraction * bins\n    closeness = -np.abs(remaining - target_capacity)\n    current_closeness = -np.abs(bins - target_capacity)\n    priorities[valid] = closeness[valid] + penalty_factor * current_closeness[valid]\n    return priorities\n\n",
+        "score": -2110.6
+    },
+    {
+        "algorithm": "{Compute priority as the negative of the absolute difference between the bin's remaining capacity after adding the item and a target fill percentage, penalizing bins that would overflow.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target_fill_ratio = 0.9\n    remaining = bins - item\n    target_remaining = bins * (1 - target_fill_ratio)\n    fill_diff = np.abs(remaining - target_remaining)\n    priority_scores = np.where(remaining >= 0, -fill_diff, -np.inf)\n    return priority_scores\n\n",
+        "score": -2111.0
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins based on their remaining capacity after potentially adding the item, favoring bins that can accommodate the item while either minimizing wasted space or ensuring efficient utilization of bin capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_capacity = bins - item\n    valid_bins = remaining_capacity >= 0\n    target_remaining = bins / 2.0\n    deviation_from_target = np.abs(remaining_capacity - target_remaining)\n    # Prioritize bins where remaining capacity is closest to half the bin's capacity\n    priority_scores = np.zeros_like(bins)\n    priority_scores[valid_bins] = 1.0 / (deviation_from_target[valid_bins] + 1.0)\n    return priority_scores\n\n",
+        "score": -2111.2
+    }
+]

@@ -1,0 +1,62 @@
+[2025-12-01 04:37:28] profile.py(246) : ====================================================================
+[2025-12-01 04:37:28] profile.py(247) : LLM Parameters
+[2025-12-01 04:37:28] profile.py(248) : --------------------------------------------------------------------
+[2025-12-01 04:37:28] profile.py(249) :   - LLM: AgentBasedRouter
+[2025-12-01 04:37:28] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B50DE14B80>
+[2025-12-01 04:37:28] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B50DE14AF0>
+[2025-12-01 04:37:28] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B50DE14AF0>
+[2025-12-01 04:37:28] profile.py(252) :   - verbose: True
+[2025-12-01 04:37:28] profile.py(252) :   - deepseek_desc: - This model excels at generating heuristics that prioritize long-term system stability over short-term optimization, particularly in non-stationary online bin packing environments where item size distributions evolve over time！its solutions often embed latent tracking of historical load patterns and phase transitions, enabling adaptive decision-making without explicit retraining.
+- It is especially effective when tasked with refining existing heuristics through micro-level structural edits (e.g., reordering conditionals, adjusting threshold semantics) that preserve algorithmic rhythm while enhancing resilience to skewed or adversarial input streams！such changes often yield unexpected but robust performance gains under prolonged simulation.
+- The model demonstrates a strong affinity for constructing 'self-referential' invariants in code: it frequently introduces control flow elements (like redundant checks or obfuscated branches) that do not alter immediate behavior but stabilize performance across diverse and unpredictable input sequences, acting as implicit regularization against overfitting.
+- It performs best on tasks involving gradual structural drifts (e.g., slowly shifting item size distributions), where it can reconfigure decision-making grammar incrementally！however, it struggles with abrupt, discontinuous semantic shifts (e.g., sudden negative-sized items or dynamic bin capacities), often responding with defensive recursion into invariant-preserving loops that degrade optimality.
+- When generating new heuristics, it tends to favor emergent, probabilistic control structures over rigid rule-based logic！this makes its outputs harder to interpret but more resilient to unforeseen perturbations, especially in open-ended, real-time settings.
+- Its failure mode is consistent: when encountering edge cases near equal bin capacities, it systematically favors over-allocation, which reduces fragmentation and improves overall system throughput despite suboptimal local decisions！a trade-off that aligns with meta-optimization goals in EoH.
+[2025-12-01 04:37:28] profile.py(252) :   - qwen_desc: - This model specializes in generating heuristics that prioritize *temporal coherence* in decision sequences, excelling in environments where long-term packing stability is more critical than immediate bin utilization！particularly effective when input streams exhibit rhythmic or semi-periodic patterns.
+- It frequently introduces *emergent physical metaphors* (e.g., treating bins as dynamic fluid systems or items as inertia-laden particles), producing heuristics that demonstrate robustness to adversarial item sequences and distributional shifts, especially when item sizes vary non-uniformly over time.
+- When refining existing heuristics, it exhibits a strong inclination toward *non-monotonic adaptation rules*, favoring short-term performance degradation in exchange for long-term evolutionary fitness！ideal for EoH¨s iterative improvement cycles where transient suboptimal steps are part of the exploration phase.
+- It displays a consistent bias for *minimizing memory entropy* through compact, sparse state representations that preserve critical history without overfitting！best suited for scenarios with high stream volatility or limited computational overhead constraints.
+- It occasionally generates *asymmetric threshold-based behaviors* conditioned on bin occupancy levels, revealing an implicit risk-aware strategy akin to probabilistic governance, which proves highly effective in avoiding deadlock states during bursty item arrivals.
+- Its code generation often embeds inferred assumptions about item size skew, even in absence of explicit data！this can lead to overfitting on synthetic benchmarks but offers significant advantage in real-world settings with predictable input distributions.
+[2025-12-01 04:37:28] profile.py(252) :   - call_cnt: 0
+[2025-12-01 04:37:28] profile.py(252) :   - deepseek_cnt: 0
+[2025-12-01 04:37:28] profile.py(252) :   - qwen_cnt: 0
+[2025-12-01 04:37:28] profile.py(252) :   - debug_mode: False
+[2025-12-01 04:37:28] profile.py(253) : ====================================================================
+[2025-12-01 04:37:28] profile.py(254) : Problem Parameters
+[2025-12-01 04:37:28] profile.py(255) : --------------------------------------------------------------------
+[2025-12-01 04:37:28] profile.py(256) :   - Problem: OBPEvaluation
+[2025-12-01 04:37:28] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2025-12-01 04:37:28] profile.py(259) :   - use_numba_accelerate: False
+[2025-12-01 04:37:28] profile.py(259) :   - use_protected_div: False
+[2025-12-01 04:37:28] profile.py(259) :   - protected_div_delta: 1e-05
+[2025-12-01 04:37:28] profile.py(259) :   - random_seed: None
+[2025-12-01 04:37:28] profile.py(259) :   - timeout_seconds: 30
+[2025-12-01 04:37:28] profile.py(259) :   - exec_code: True
+[2025-12-01 04:37:28] profile.py(259) :   - safe_evaluate: True
+[2025-12-01 04:37:28] profile.py(259) :   - daemon_eval_process: False
+[2025-12-01 04:37:28] profile.py(259) :   - fork_proc: auto
+[2025-12-01 04:37:28] profile.py(259) :   - n_instances: 5
+[2025-12-01 04:37:28] profile.py(259) :   - n_items: 5000
+[2025-12-01 04:37:28] profile.py(259) :   - capacity: 100
+[2025-12-01 04:37:28] profile.py(261) : ====================================================================
+[2025-12-01 04:37:28] profile.py(262) : Method Parameters
+[2025-12-01 04:37:28] profile.py(263) : --------------------------------------------------------------------
+[2025-12-01 04:37:28] profile.py(264) :   - Method: EoH
+[2025-12-01 04:37:28] profile.py(268) :   - _max_generations: 6
+[2025-12-01 04:37:28] profile.py(268) :   - _max_sample_nums: 10000
+[2025-12-01 04:37:28] profile.py(268) :   - _pop_size: 8
+[2025-12-01 04:37:28] profile.py(268) :   - _selection_num: 3
+[2025-12-01 04:37:28] profile.py(268) :   - _use_e2_operator: True
+[2025-12-01 04:37:28] profile.py(268) :   - _use_m1_operator: True
+[2025-12-01 04:37:28] profile.py(268) :   - _use_m2_operator: True
+[2025-12-01 04:37:28] profile.py(268) :   - _num_samplers: 4
+[2025-12-01 04:37:28] profile.py(268) :   - _num_evaluators: 4
+[2025-12-01 04:37:28] profile.py(268) :   - _resume_mode: False
+[2025-12-01 04:37:28] profile.py(268) :   - _debug_mode: False
+[2025-12-01 04:37:28] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2025-12-01 04:37:28] profile.py(268) :   - _function_to_evolve_name: priority
+[2025-12-01 04:37:28] profile.py(268) :   - _tot_sample_nums: 0
+[2025-12-01 04:37:28] profile.py(268) :   - _initial_sample_nums_max: 16
+[2025-12-01 04:37:28] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000001B5775AFC70>
+[2025-12-01 04:37:28] profile.py(270) : =====================================================================

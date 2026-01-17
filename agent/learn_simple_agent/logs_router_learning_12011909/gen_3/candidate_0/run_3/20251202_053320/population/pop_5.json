@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item with minimal wastage, while also considering balance across bins by penalizing overfilled or nearly full bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - (bins - item).clip(min=0)\n    # Avoid division by zero and penalize bins that cannot fit the item\n    valid_remaining = np.where(remaining >= 0, remaining, 0)\n    # Prioritize bins with higher remaining capacity, but avoid those already too full\n    priorities = valid_remaining / (1 + (bins - valid_remaining))\n    return priorities\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins where the item fits and the resulting remaining capacity is closest to a target absolute value, rather than a fraction of the bin's original capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    target_remaining = 0.5\n    remaining_after = bins - item\n    invalid = remaining_after < 0\n    deviation = np.abs(remaining_after - target_remaining)\n    priorities = np.where(invalid, -np.inf, 1 / (deviation + 1e-8))\n    return priorities\n\n",
+        "score": -2092.8
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item with minimal wastage, favoring bins with the smallest available space that is still sufficient for the item, while penalizing bins that are already full or nearly full.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    available = bins - (bins > 0) * 0.01  # Avoid division by zero; treat full bins as having 0 capacity\n    # Prevent negative or zero available space\n    available = np.maximum(available, 0)\n    \n    # Compute wastage if item is added: extra space after placing the item\n    wastage = available - item\n    # Penalize bins where item doesn't fit\n    invalid_bins = wastage < 0\n    # Assign high priority to bins with minimal wastage and valid fit\n    priorities = np.where(invalid_bins, -np.inf, 1 / (wastage + 1e-8))\n    # Ensure full bins get lowest priority\n    full_bins = bins <= 0\n    priorities = np.where(full_bins, -np.inf, priorities)\n    \n    return priorities\n\n",
+        "score": -2114.0
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins where adding the item brings the bin's remaining capacity closest to a target fraction of its original capacity, favoring balanced utilization while penalizing bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target_fraction = 0.2\n    original_capacities = bins.copy()\n    remaining_after = bins - item\n    invalid = remaining_after < 0\n    target_remaining = original_capacities * target_fraction\n    deviation = np.abs(remaining_after - target_remaining)\n    priorities = np.where(invalid, -np.inf, 1 / (deviation + 1e-8))\n    return priorities\n\n",
+        "score": -2140.6
+    },
+    {
+        "algorithm": "{The algorithm assigns priority based on how close the bin's remaining capacity after adding the item is to a target fraction of its original capacity, while also favoring bins with larger remaining capacity if they are above the target, and applying a penalty for bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    target_fraction = 0.2\n    original_capacities = bins.copy()\n    remaining_after = bins - item\n    invalid = remaining_after < 0\n    target_remaining = original_capacities * target_fraction\n    deviation = remaining_after - target_remaining\n    priorities = np.where(deviation >= 0,\n                          1 / (deviation + 1e-8),\n                          -np.abs(deviation))\n    priorities = np.where(invalid, -np.inf, priorities)\n    return priorities\n\n",
+        "score": -2257.6
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins where the ratio of item size to remaining capacity is closest to a golden ratio target, favoring efficient packing while penalizing bins that are too full or cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    golden_ratio = 0.618\n    remaining = bins.copy()\n    invalid = remaining < item\n    ratio = np.where(remaining > 0, item / remaining, np.inf)\n    deviation = np.abs(ratio - golden_ratio)\n    priorities = np.where(invalid, -np.inf, 1 / (deviation + 1e-8))\n    return priorities\n\n",
+        "score": -2344.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on the ratio of the item size to bin capacity, favoring bins where the item occupies a moderate proportion to avoid both underutilization and overcommitment, using a Gaussian-like scoring centered around an ideal fill ratio.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    fill_ratio = item / bins\n    # Ideal fill ratio target (e.g., 0.5 for balanced utilization)\n    target = 0.5\n    # Width parameter for the Gaussian (controls tolerance)\n    sigma = 0.2\n    # Gaussian scoring: higher priority near the target ratio\n    scores = np.exp(-0.5 * ((fill_ratio - target) / sigma) ** 2)\n    # Set priority to zero for bins that cannot fit the item\n    scores = np.where(bins >= item, scores, 0.0)\n    return scores\n\n",
+        "score": -2868.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins where the item fits and the resulting filled proportion is closest to a dynamically adjusted target that depends on the current overall distribution of bin fills, using a sigmoid weighting to smoothly favor bins near the ideal range.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    potential_fill = (bins - item) / bins\n    valid = potential_fill >= 0\n    \n    # Dynamic target: aim for fill between 0.5 and 0.8, but shift based on median fill\n    current_fills = 1 - (bins / bins.max()) if bins.max() > 0 else np.zeros_like(bins)\n    median_fill = np.median(current_fills[valid]) if np.any(valid) else 0.65\n    target_min, target_max = 0.5, 0.8\n    dynamic_target = np.clip(median_fill, target_min, target_max)\n    \n    # Sigmoid-based priority: highest near dynamic_target, smooth falloff\n    # Scale factor controls sharpness of preference\n    scale = 10.0\n    closeness = np.exp(-scale * (potential_fill - dynamic_target) ** 2)\n    \n    # Base priority: sigmoid closeness, invalid bins get -inf\n    priorities = np.where(valid, closeness, -np.inf)\n    \n    # Slight bonus for bins with larger capacity to avoid early overfill\n    capacity_bonus = 1 + 0.1 * (bins / bins.max() if bins.max() > 0 else 0)\n    priorities *= capacity_bonus\n    \n    return priorities\n\n",
+        "score": -2916.0
+    }
+]

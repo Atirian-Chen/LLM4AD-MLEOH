@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm prioritizes bins with the smallest current load relative to their capacity, favoring bins that can accommodate the item with minimal waste while balancing load distribution.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - np.minimum(bins, item)\n    # Avoid division by zero by adding a small epsilon if necessary\n    safe_remaining = np.where(remaining == 0, 1e-9, remaining)\n    # Priority is inversely proportional to remaining capacity (favor bins with less remaining space)\n    priorities = 1 / safe_remaining\n    # Normalize priorities to ensure higher values mean higher priority\n    normalized_priorities = priorities / np.max(priorities)\n    return normalized_priorities\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins with the smallest remaining capacity after hypothetically adding the item, but only among bins that can fit the item, otherwise assigning zero priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    priorities = np.zeros_like(bins)\n    feasible = bins >= item\n    if np.any(feasible):\n        remaining = bins[feasible] - item\n        priorities[feasible] = 1 - (remaining / (bins[feasible] + 1e-9))\n    return priorities\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a weighted combination of their current load and remaining capacity, assigning higher priority to bins that are neither too full nor too empty\u2014specifically, those where adding the item results in a balanced utilization across bins, measured by minimizing the deviation from an ideal load ratio after placement.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    new_load = bins + item\n    # Avoid division by zero by adding small epsilon\n    safe_bins = bins + 1e-9\n    # Ideal load ratio is 0.75 (adjustable target), measure deviation from it post-addition\n    ideal_ratio = 0.75\n    normalized_new_load = new_load / (bins + item)  # This is 1, so instead use relative deviation\n    # Instead: measure how close the new load ratio is to the ideal, penalizing deviations\n    new_ratio = new_load / (bins + item)\n    # Use the absolute deviation from ideal ratio as a penalty (lower deviation \u2192 higher priority)\n    deviation = np.abs(new_ratio - ideal_ratio)\n    # Prioritize bins with smaller deviation; invert to make lower deviation \u2192 higher score\n    priorities = 1.0 / (deviation + 1e-9)\n    # Normalize to ensure higher values mean higher priority\n    normalized_priorities = priorities / np.max(priorities)\n    return normalized_priorities\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by a weighted combination of their current load and the squared fit of the item, favoring bins that are moderately full while penalizing both near\u2011empty and nearly\u2011full bins to promote balanced utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    load = bins\n    # Compute how well the item fits: higher score if item fits exactly or leaves little waste\n    fit_score = np.exp(-np.abs(bins - item))\n    # Penalize bins that are too empty or too full: prefer moderate loads\n    balance_penalty = -((load - 0.5 * np.max(bins)) ** 2)\n    # Combine factors with weights\n    combined = 0.6 * fit_score + 0.4 * balance_penalty\n    # Normalize to [0,1] range\n    if np.max(combined) - np.min(combined) > 0:\n        normalized = (combined - np.min(combined)) / (np.max(combined) - np.min(combined))\n    else:\n        normalized = np.ones_like(combined)\n    return normalized\n\n",
+        "score": -2274.2
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by a weighted combination of their current load and the squared fit of the item, favoring bins that are moderately full while penalizing both near\u2011empty and nearly\u2011full bins to promote balanced utilization, with adjusted weights and a modified balance target.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    load = bins\n    fit_score = np.exp(-np.abs(bins - item))\n    balance_penalty = -((load - 0.7 * np.max(bins)) ** 2)\n    combined = 0.3 * fit_score + 0.7 * balance_penalty\n    if np.max(combined) - np.min(combined) > 0:\n        normalized = (combined - np.min(combined)) / (np.max(combined) - np.min(combined))\n    else:\n        normalized = np.ones_like(combined)\n    return normalized\n\n",
+        "score": -2520.2
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins based on how well they balance fit and load distribution, aiming for efficient and balanced utilization by considering both item compatibility and bin occupancy state.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    priorities = np.zeros_like(bins)\n    feasible = bins >= item\n    if not np.any(feasible):\n        return priorities\n\n    # Target load ratio after adding the item\n    target_ratio = 0.75\n    # Compute hypothetical load after adding item\n    new_load = bins[feasible] + item\n    # Relative load ratio after addition\n    load_ratio = new_load / bins[feasible]\n    # Deviation from target ratio\n    deviation = np.abs(load_ratio - target_ratio)\n    # Fit score based on how close the load ratio is to target\n    fit_score = np.exp(-2 * deviation)\n    # Penalize bins that are either too empty or too full (before addition)\n    max_capacity = np.max(bins)\n    normalized_load = bins[feasible] / (max_capacity + 1e-9)\n    balance_penalty = -(normalized_load - 0.5) ** 2\n    # Combine with emphasis on fit and balance\n    combined = 0.7 * fit_score + 0.3 * balance_penalty\n    # Normalize to [0,1]\n    min_val, max_val = np.min(combined), np.max(combined)\n    if max_val - min_val > 1e-9:\n        normalized = (combined - min_val) / (max_val - min_val)\n    else:\n        normalized = np.ones_like(combined)\n    priorities[feasible] = normalized\n    return priorities\n\n",
+        "score": -3250.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by a sigmoid\u2011transformed combination of the item's fit residual and the bin's load deviation from a dynamic target, encouraging placement that minimizes future fragmentation while keeping loads evenly spread.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    load = bins\n    target = np.mean(load) + 0.5 * item\n    balance = 1.0 / (1.0 + np.abs(load - target))\n    fit = np.exp(-(item - load) ** 2)\n    raw = 0.6 * balance + 0.4 * fit\n    if np.max(raw) - np.min(raw) > 0:\n        normalized = (raw - np.min(raw)) / (np.max(raw) - np.min(raw))\n    else:\n        normalized = np.ones_like(raw)\n    return normalized\n\n",
+        "score": -3571.2
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins that are less full, using the inverse of the current load ratio relative to capacity to favor bins with more remaining space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    return 1.0 / (bins + 1e-9) - item / (bins + 1e-9)\n\n",
+        "score": -4999.6
+    }
+]

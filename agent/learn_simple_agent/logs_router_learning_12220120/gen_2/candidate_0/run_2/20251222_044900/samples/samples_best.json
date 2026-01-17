@@ -1,0 +1,9 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins where adding the item would leave the remaining capacity closest to a small positive target, preferring bins that are already closer to full if ties occur.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_after = bins - item\n    valid = remaining_after >= 0\n    target = 0.1\n    distance = np.abs(remaining_after - target)\n    max_dist = np.max(distance) + 1 if len(distance) > 0 else 1\n    distance[~valid] = max_dist\n    priority_score = -distance\n    tie_breaker = bins / (np.max(bins) + 1e-12)\n    priority_score += tie_breaker * 1e-6\n    return priority_score\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

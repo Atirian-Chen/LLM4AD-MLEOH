@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm calculates priority as the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves minimal leftover space, while heavily penalizing overfull bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    priority_scores = np.where(remaining >= 0, remaining, -np.inf)\n    return priority_scores\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 3,
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins that are nearly full but still fit the item, while assigning the lowest priority to bins that would overflow.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Highest priority for bins that fit exactly (remaining == 0)\n    # Then for bins with positive remaining capacity (closer to zero is better)\n    # Bins that overflow get priority -inf\n    priority_scores = np.where(remaining >= 0, -remaining, -np.inf)\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 28,
+        "algorithm": "{The new algorithm prioritizes bins by a sigmoid-transformed ratio of item size to bin capacity, favoring near-exact fits while smoothly penalizing both overflows and excessively large leftover space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    fits = remaining >= 0\n    exact_fit = np.isclose(remaining, 0)\n    \n    priority_scores = np.full_like(bins, -np.inf)\n    \n    # Exact fit gets highest priority\n    priority_scores[exact_fit] = 10.0\n    \n    # For bins that fit but are not exact\n    fits_not_exact = fits & ~exact_fit\n    if np.any(fits_not_exact):\n        ratio = item / bins[fits_not_exact]\n        # Sigmoid transformation centered at high ratios\n        priority_scores[fits_not_exact] = 8.0 / (1.0 + np.exp(-12.0 * (ratio - 0.85)))\n    \n    return priority_scores\n\n",
+        "score": -2090.0,
+        "program": ""
+    }
+]

@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins with the smallest remaining capacity that can still fit the item, ensuring efficient space utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_capacity = bins - item\n    valid_bins = remaining_capacity >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    priority_scores[valid_bins] = -remaining_capacity[valid_bins]\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 18,
+        "algorithm": "{This algorithm calculates priority by favoring bins where the item fits exactly, then bins with minimal wasted space, and finally uses remaining capacity as a tiebreaker with a preference for more filled bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_capacity = bins - item\n    valid_bins = remaining_capacity >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    \n    exact_fit = remaining_capacity == 0\n    near_fill = (remaining_capacity > 0) & (remaining_capacity <= 0.1 * bins)\n    other_valid = valid_bins & ~exact_fit & ~near_fill\n    \n    priority_scores[exact_fit] = 1000\n    priority_scores[near_fill] = 500 + (1 / (1 + remaining_capacity[near_fill]))\n    priority_scores[other_valid] = 1 / (1 + remaining_capacity[other_valid])\n    \n    return priority_scores\n\n",
+        "score": -2091.6,
+        "program": ""
+    }
+]

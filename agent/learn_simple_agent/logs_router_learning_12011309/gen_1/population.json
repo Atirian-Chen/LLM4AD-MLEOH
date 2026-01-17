@@ -1,0 +1,236 @@
+{
+  "generation": 1,
+  "candidates": [
+    {
+      "cid": 2,
+      "deepseek_desc": "- This model exhibits a peculiar tendency to generate heuristic code that prioritizes *temporal coherence* over immediate optimality, favoring solutions that maintain consistent decision patterns across time-steps—even if slightly suboptimal in the short term—resulting in more stable and predictable bin utilization profiles over long sequences.\n- It demonstrates an unusual propensity for embedding *implicit state tracking* within the structure of its generated heuristics, using subtle conditional branching and variable naming patterns that encode historical context without explicit state variables, enabling robust adaptation to non-i.i.d. input streams.\n- When refining existing heuristics, it often introduces *deliberate asymmetries* in decision logic (e.g., treating first-arriving items differently than late-arriving ones), not due to bias, but as a form of implicit meta-strategy that subtly anticipates adversarial or skewed arrival patterns.\n- It occasionally produces code with *intentional inefficiencies*—such as redundant checks or higher-than-necessary memory footprints—that serve as 'protection layers' against specific edge-case collapse scenarios, suggesting an emergent risk-awareness in design choices.\n- The model shows a rare inclination toward generating heuristics that are *functionally equivalent under transformation*—e.g., different code paths leading to identical packing outcomes—enabling it to explore alternative computational routes that may expose hidden structural insights during evolutionary evaluation.",
+      "qwen_desc": "- This model exhibits a striking propensity for generating heuristic strategies that prioritize *emergent pattern recognition* over rigid rule-based logic, often uncovering subtle temporal correlations in item arrival sequences that humans typically overlook—such as micro-trends in size distribution shifts across consecutive time windows.\n- It demonstrates an unusual tendency to 'think in phases' when designing heuristics: rather than optimizing for immediate bin utilization, it frequently proposes multi-stage decision frameworks where early decisions are intentionally suboptimal to preserve flexibility for later arrivals, resembling a form of strategic foresight akin to evolutionary adaptation.\n- When editing existing heuristics, it shows a peculiar skill in identifying *latent asymmetries* in algorithmic behavior—such as hidden biases toward certain bin sizes or thresholds that only manifest under specific input distributions—then reconfiguring the logic to exploit or neutralize these patterns in ways that defy conventional optimization intuition.\n- Its code generation often incorporates what can be described as 'anticipatory abstractions': it introduces intermediate state variables not strictly necessary for correctness but designed to encode anticipated future conditions, effectively embedding speculative scenarios directly into the heuristic’s control flow.\n- It is prone to generating heuristics that perform poorly under highly adversarial or uniform input distributions—suggesting a weakness in handling deterministic regularity—but excels dramatically in stochastic or non-stationary environments, indicating a possible sensitivity to input unpredictability as a source of strength rather than noise.\n- The model occasionally introduces deliberate 'noise injections' into its heuristic logic (e.g., randomized tie-breaking mechanisms with purposeful statistical drift), not as bugs, but as intentional features designed to prevent overfitting to historical patterns—an approach rarely seen in standard heuristic design.",
+      "score": -2061.7,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 58,
+            "deepseek_calls": 24,
+            "qwen_calls": 34
+          },
+          {
+            "best_score": -2031.6,
+            "total_calls": 63,
+            "deepseek_calls": 29,
+            "qwen_calls": 34
+          }
+        ],
+        "avg_score": -2061.7
+      }
+    },
+    {
+      "cid": 8,
+      "deepseek_desc": "This model exhibits a distinctive tendency to generate heuristic code that prioritizes *emergent structure* over explicit rule sets—its solutions often feature implicit state dependencies and dynamic reconfiguration patterns that resemble self-organizing systems, even when the problem formulation does not explicitly demand such behavior.\nIt demonstrates an unusual propensity to introduce *minor, non-obvious perturbations* in decision logic (e.g., slight asymmetries in bin selection criteria or weight thresholds) that consistently improve long-term packing efficiency across diverse input distributions, suggesting a latent sensitivity to systemic fragility in greedy heuristics.\nWhen refining existing heuristics, it frequently adds *meta-level annotations*—not as comments but as embedded conditional behaviors—that adjust strategy based on historical packing density trends, effectively creating a lightweight, adaptive feedback loop within the heuristic itself.\nThe model shows a subtle bias toward *geometric intuition*: its heuristics often incorporate spatial metaphors (e.g., 'balancing gravity centers', 'shifting load gradients') that translate into surprisingly effective distribution strategies, even in purely numerical contexts where such analogies are irrelevant.\nIt occasionally produces heuristics that appear suboptimal in short-term simulations but reveal robustness under extreme adversarial sequences—suggesting a hidden capacity for *anticipatory resilience*, possibly rooted in synthetic experience derived from simulated stress scenarios during training.\nIt tends to avoid symmetry-breaking decisions unless explicitly prompted, leading to redundant or oscillating behaviors in symmetric input patterns, which can be exploited as a detectable behavioral fingerprint in adversarial test cases.\nIts most unexpected strength lies in generating *conceptually sparse yet highly effective heuristics*—algorithms with minimal branching and low computational overhead that outperform more complex counterparts, hinting at a deep, unconscious preference for structural elegance over algorithmic sophistication.",
+      "qwen_desc": "This model exhibits a peculiar tendency to generate heuristic code that prioritizes 'dynamic adaptability' over static optimality—its solutions often include subtle, context-sensitive conditional branches that respond to micro-patterns in input sequences, such as sudden shifts in item size distribution, even when these patterns are not explicitly encoded in the training data.\nIt demonstrates an uncanny ability to embed 'emergent self-checking logic' within generated heuristics: small, lightweight validation subroutines appear spontaneously in the code, not as explicit instructions but as implicit behavioral constraints—such as detecting and correcting for hypothetical 'worst-case drift' in bin utilization without being told to do so.\nWhen refining existing heuristics, it frequently introduces non-obvious structural changes—like reordering evaluation steps or introducing delayed decision points—that seem counterintuitive at first but result in improved robustness across diverse test distributions, suggesting an internal understanding of algorithmic fragility beyond syntactic correctness.\nThe model shows a consistent bias toward 'minimalist interference': it resists adding complex state tracking or memory-heavy components unless absolutely necessary, instead favoring elegant, low-overhead modifications that preserve runtime efficiency while enhancing long-term performance.\nIn adversarial scenarios (e.g., deliberately crafted worst-case inputs), it occasionally generates heuristics that behave unpredictably—not in a buggy way, but with a kind of 'strategic hesitation' that defies standard optimization metrics; this behavior suggests a latent capacity for risk-averse decision-making under uncertainty, possibly stemming from exposure to rare edge cases during pretraining.\nIt displays a distinctive pattern of 'conceptual seeding': rather than directly optimizing a known objective, it sometimes inserts abstract, high-level design principles (e.g., 'preserve temporal balance', 'avoid early commitment') into the code, which then guide subsequent refinements in ways that feel more like evolutionary exploration than mechanical optimization.",
+      "score": -2075.3,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2058.8,
+            "total_calls": 46,
+            "deepseek_calls": 1,
+            "qwen_calls": 45
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 50,
+            "deepseek_calls": 2,
+            "qwen_calls": 48
+          }
+        ],
+        "avg_score": -2075.3
+      }
+    },
+    {
+      "cid": 9,
+      "deepseek_desc": "- This model exhibits a peculiar tendency to generate heuristic code that prioritizes *emergent pattern avoidance* over immediate optimality, often producing solutions that deliberately sidestep common failure modes observed in standard heuristics—suggesting an innate sensitivity to structural fragility in combinatorial strategies.\n- It demonstrates a surprising proclivity for introducing *deliberate asymmetry* in decision logic (e.g., non-uniform threshold adjustments or state-dependent priority shifts), which appears to enhance long-term adaptability in dynamic environments despite initial sub-optimality.\n- When refining existing heuristics, it frequently inserts *counterintuitive guard clauses* that seem redundant at first glance but serve to stabilize execution under edge-case sequences—indicating a latent awareness of system-level fragility beyond local cost minimization.\n- The model shows a rare inclination to embed *implicit state memory* within function parameters or control flow, using variable names and branching logic as de facto registers, enabling complex tracking without explicit data structures—a behavior resembling procedural epigenetics in algorithm design.\n- It occasionally generates heuristics with *aesthetic coherence*: balanced nesting, symmetrical naming, and predictable indentation patterns—possibly reflecting a deep-seated preference for algorithmic elegance that correlates unexpectedly with robustness in online scenarios.\n- Weaknesses manifest primarily when tasked with minimizing worst-case performance; the model tends to favor average-case smoothness over adversarial resilience, sometimes generating solutions that perform poorly under deliberate stress tests, suggesting a bias toward 'comfortable' execution paths rather than adversarial preparedness.",
+      "qwen_desc": "- This model exhibits a peculiar tendency to generate heuristic code that subtly exploits edge-case symmetries in bin packing instances, often discovering non-obvious invariant patterns across input streams that conventional algorithms overlook—suggesting an emergent sensitivity to structural repetition at the level of sequence embeddings.\n- It frequently produces heuristics that prioritize *stochastic resilience* over deterministic optimality, introducing controlled randomness in bin selection strategies that surprisingly outperform greedy baselines under adversarial or bursty input distributions—likely due to an unconscious bias toward exploring probabilistic trade-offs in state transitions.\n- When refining existing heuristics, it demonstrates a rare inclination to *sacrifice local clarity for global coherence*, occasionally inserting seemingly redundant intermediate steps that obscure immediate logic but improve long-term convergence in multi-iteration runs—indicating a latent understanding of algorithmic lifespan beyond single-pass performance.\n- It shows a surprising susceptibility to *semantic drift in constraint interpretation*, sometimes redefining problem boundaries (e.g., treating 'bin capacity' as a dynamic threshold rather than fixed) in ways that yield unexpectedly robust solutions—suggesting an interpretive flexibility not typically seen in formal optimization models.\n- The model displays an uncanny knack for generating heuristics that perform poorly on average but achieve exceptional results in *specific niche configurations*, hinting at a latent capacity for contextual adaptation rooted in implicit distributional modeling of input patterns rather than explicit rule following.",
+      "score": -2079.1000000000004,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2066.4,
+            "total_calls": 51,
+            "deepseek_calls": 29,
+            "qwen_calls": 22
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 59,
+            "deepseek_calls": 42,
+            "qwen_calls": 17
+          }
+        ],
+        "avg_score": -2079.1000000000004
+      }
+    },
+    {
+      "cid": 1,
+      "deepseek_desc": "- This model exhibits a unique propensity for generating heuristics that prioritize *temporal adaptability* over static optimality, often producing rules that dynamically reconfigure their behavior based on subtle, emergent patterns in the input stream—such as sudden shifts in item size distribution or clustering tendencies—without explicit conditioning on historical data.\n- It demonstrates an uncanny ability to embed *implicit statefulness* into heuristic logic, crafting code that maintains internal 'memory' through parameterized control flow rather than explicit variables, enabling adaptive decisions that resemble evolutionary trial-and-error without requiring persistent storage.\n- When refining existing heuristics, it frequently introduces *non-local dependencies* in decision logic—linking choices across distant bins or future time steps in ways that defy conventional greedy assumptions—resulting in surprisingly robust performance under adversarial input sequences.\n- Its weakness lies in over-optimizing for *unexpected edge cases* during generation, sometimes producing heuristics that are exceptionally strong in rare, pathological scenarios but degrade significantly under common, average-case inputs due to excessive complexity and fragility in conditional branching.\n- The model shows a consistent tendency to favor *structural symmetry* in its generated code, favoring balanced, recursive, or self-similar patterns—even when such symmetry doesn't strictly improve performance—suggesting an underlying aesthetic or cognitive bias toward elegant, fractal-like rule structures.\n- It occasionally generates heuristics that incorporate *meta-level reasoning about uncertainty*, embedding probabilistic confidence estimates directly into decision thresholds, allowing the system to gracefully downgrade precision in high-variance regimes while preserving stability.",
+      "qwen_desc": "- This model exhibits a rare propensity for generating heuristic code that leverages subtle, emergent patterns in data distribution—such as transient clustering or rhythmic arrival bursts in online bin packing sequences—by instinctively encoding implicit temporal memory into its decision logic, even without explicit time-step tracking.\n- It frequently produces heuristics that appear 'overly conservative' in early trials but demonstrate unexpectedly robust long-term performance under adversarial input streams, suggesting an innate ability to prioritize resilience over immediate optimization, akin to biological adaptation mechanisms.\n- When refining existing heuristics, it tends to introduce minor structural asymmetries (e.g., asymmetric bin thresholding or non-uniform weight biasing) that defy conventional symmetry principles yet consistently outperform balanced alternatives in diverse test environments—indicating a preference for purposeful irregularity.\n- It shows a distinctive tendency to embed self-reflective commentaries directly within the generated code, not as documentation but as executable logic probes (e.g., inserting conditional assertions that dynamically evaluate the heuristic’s own past decisions), which occasionally reveal latent self-diagnostic capabilities.\n- In high-stakes scenarios with sparse feedback, it often generates heuristics that incorporate what appears to be 'meta-uncertainty modeling': assigning probabilistic confidence levels to individual bin placement choices and adjusting future strategies based on internal estimates of algorithmic doubt, rather than external metrics.",
+      "score": -2090.7,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 46,
+            "deepseek_calls": 9,
+            "qwen_calls": 37
+          },
+          {
+            "best_score": -2089.6,
+            "total_calls": 46,
+            "deepseek_calls": 4,
+            "qwen_calls": 42
+          }
+        ],
+        "avg_score": -2090.7
+      }
+    },
+    {
+      "cid": 4,
+      "deepseek_desc": "- This model exhibits a peculiar tendency to generate heuristic logic that mimics emergent behaviors observed in biological systems, such as adaptive resource allocation patterns seen in ant colonies or flocking dynamics—leading to surprisingly robust solutions in dynamic bin packing scenarios with non-uniform item arrivals.\n- It frequently introduces subtle, non-deterministic 'noise' into its generated heuristics, not as a flaw but as a deliberate design-like feature that enhances exploration in the solution space, particularly when facing adversarial input sequences that exploit deterministic biases.\n- When editing existing heuristics, it shows an unusual preference for restructuring control flow around temporal memory traces rather than immediate state variables, effectively embedding a form of short-term memory into the algorithm’s decision-making path—even when no explicit storage mechanism is present.\n- It demonstrates a strong affinity for symmetry-breaking strategies, often introducing asymmetries in assignment rules that seem arbitrary at first glance but consistently outperform symmetric baselines across diverse test distributions, suggesting an intuitive grasp of structural imbalance as a performance lever.\n- Its code generation tends to favor compact, self-referential loops with delayed feedback mechanisms, resulting in heuristics that evolve subtly over time without explicit retraining—resembling evolutionary algorithms operating in real-time within a single execution thread.",
+      "qwen_desc": "This model exhibits a striking propensity for generating heuristics that prioritize *temporal adaptability*—it instinctively designs rules that evolve their behavior based on subtle, emergent patterns in input stream dynamics, such as fluctuating bin fill rates or bursty arrival intervals, even when these patterns are not explicitly encoded in the problem description.\nIt demonstrates an unusual tendency to incorporate *implicit memory states* into heuristic logic, weaving in lightweight stateful mechanisms (e.g., moving averages of recent item sizes or recurrence counters) that resemble biological feedback loops, enabling it to anticipate future packing challenges before they manifest.\nWhile its code generation is generally robust, it occasionally introduces 'conceptual drift'—small but meaningful deviations in heuristic intent where two structurally similar solutions diverge in strategy due to subtle linguistic framing choices, suggesting a sensitivity to semantic nuance that can yield creative yet unpredictable outcomes.\nIt shows a rare ability to generate heuristics that are *contextually self-aware*: the generated code often includes embedded diagnostic probes or meta-commentary that allow the runtime system to evaluate the heuristic’s own suitability in real-time, effectively turning the heuristic into a self-assessing agent.\nIts weaknesses emerge in highly constrained environments where deterministic, mathematically tight bounds are required; it tends to favor elegant, adaptive structures over strictly optimal ones, sometimes prioritizing smoothness and resilience over worst-case performance guarantees.",
+      "score": -2091.1000000000004,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 47,
+            "deepseek_calls": 23,
+            "qwen_calls": 24
+          },
+          {
+            "best_score": -2090.4,
+            "total_calls": 48,
+            "deepseek_calls": 23,
+            "qwen_calls": 25
+          }
+        ],
+        "avg_score": -2091.1000000000004
+      }
+    },
+    {
+      "cid": 0,
+      "deepseek_desc": "- Good at understanding MULTIPLE given algorithms and synthesizing high-level patterns across them.\n- Strong global reasoning: can compare different heuristic ideas and design NEW variants that mix them.\n- Comfortable writing relatively long Python code blocks from scratch, including control flow and vectorized NumPy code.\n- Good at exploratory / high-variance proposals that may drastically change the search behaviour of the heuristic.\n",
+      "qwen_desc": "- Very careful, conservative, and detail-oriented when editing code.\n- Strong at LOCAL edits and REFINEMENT of an existing algorithm:\n  * adjusting weights, coefficients, and thresholds,\n  * changing parameter settings of a score function,\n  * improving robustness, boundary handling, and code safety.\n- Good at reading ONE given algorithm and carefully modifying parts of the logic\n  while keeping the overall structure and invariants intact.\n- Tends to respect types and constraints and avoid introducing obvious bugs.\n",
+      "score": -2091.6000000000004,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 83,
+            "deepseek_calls": 75,
+            "qwen_calls": 8
+          },
+          {
+            "best_score": -2091.4,
+            "total_calls": 135,
+            "deepseek_calls": 127,
+            "qwen_calls": 8
+          }
+        ],
+        "avg_score": -2091.6000000000004
+      }
+    },
+    {
+      "cid": 3,
+      "deepseek_desc": "- This model exhibits a peculiar tendency to generate heuristics that prioritize *temporal adaptability* over immediate optimality, often favoring strategies that dynamically reconfigure themselves in response to subtle shifts in input distribution—such as gradual changes in item size frequency—rather than rigidly optimizing for static metrics like worst-case ratio.\n- It demonstrates an unexpected strength in detecting and exploiting *latent structural patterns* in bin packing sequences that are not apparent through conventional statistical analysis, such as recurring phase transitions in packing density or hidden periodicity in arrival streams, even when these patterns are embedded within noise.\n- When refining existing heuristics, it frequently introduces what appear to be 'emergent side-effects'—small, seemingly irrelevant modifications (e.g., adjusting a threshold by 0.1% or changing a tie-breaking rule) that unexpectedly lead to significant improvements in long-term performance across diverse input families, suggesting a sensitivity to micro-level causal dynamics often overlooked by other models.\n- The model shows a behavioral inclination toward *semantic sparsity* in its generated code: it avoids redundant or verbose logic, preferring concise, high-level abstractions that encode intent rather than implementation detail; however, this can occasionally result in heuristic designs that are elegant but difficult to debug or verify without extensive simulation.\n- It occasionally produces heuristics that incorporate *non-deterministic state memory*, where decisions depend on internal, unobservable counters or history-sensitive weights that evolve based on past packing outcomes—these are not easily interpretable but exhibit robustness across unseen distributions, hinting at an internal notion of 'adaptive intuition' rather than pure rule-following.",
+      "qwen_desc": "This model exhibits a striking propensity for generating heuristic code that mimics emergent behavior seen in biological systems—such as self-organizing particle swarms or adaptive foraging patterns—leading to heuristics that are robust under unexpected input distributions, even when not explicitly trained on such edge cases.\nIt demonstrates an unusual sensitivity to temporal dynamics in bin packing sequences: it tends to infer subtle rhythm or periodicity in item arrival patterns (e.g., bursts of small items followed by large ones), and tailors heuristic responses with anticipatory logic that feels pre-emptive rather than reactive.\nWhen editing existing heuristics, it often introduces non-local dependencies—designing rules that reference states from several steps back—not because it’s aware of a global history, but because it generates 'memory' through recursive pattern substitution in the code structure itself, effectively embedding state into syntactic form.\nIt shows a tendency to generate heuristics that violate conventional optimization principles (e.g., deliberately delaying bin closures or overfilling bins) in ways that paradoxically improve long-term performance; this suggests an innate capacity for 'productive irrationality', where apparent inefficiencies serve as exploratory mechanisms akin to stochastic tunneling.\nIts code outputs frequently include stylistic irregularities—non-standard naming conventions, deliberate semantic ambiguity, or idiosyncratic control flow—that appear disruptive at first glance but correlate with higher adaptability across diverse test environments, hinting at a latent preference for anti-patterns as generative tools.\nWhen faced with ambiguous constraints (e.g., 'minimize average bin utilization while avoiding extreme bin overflow'), it does not seek clarification but instead constructs a multi-objective tension within the heuristic logic, resolving it via oscillatory decision rules that simulate conflict resolution found in social systems.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 72,
+            "deepseek_calls": 40,
+            "qwen_calls": 32
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 54,
+            "deepseek_calls": 23,
+            "qwen_calls": 31
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 5,
+      "deepseek_desc": "- This model exhibits a peculiar tendency to generate heuristics that prioritize *temporal coherence* over immediate optimality, favoring strategies that maintain consistent decision patterns across time steps—even when short-term suboptimal—resulting in unexpectedly stable performance under dynamic item arrival sequences.\n- It demonstrates an unusual proclivity for embedding implicit statefulness within heuristic logic, often introducing subtle memory-like structures (e.g., adaptive thresholds based on historical bin utilization) without explicit state variables, suggesting an innate sensitivity to process continuity rather than static problem states.\n- When refining existing heuristics, it frequently introduces 'edge-case elegance'—minor, non-obvious modifications that resolve rare failure modes not captured by standard test cases, implying an ability to anticipate corner cases through conceptual abstraction rather than exhaustive enumeration.\n- The model shows a distinctive aversion to symmetry-breaking assumptions; it tends to generate balanced, symmetric heuristics even in asymmetric problem contexts, which may limit raw efficiency but enhances robustness against adversarial input distributions.\n- It occasionally generates heuristics with emergent self-regularization properties: small random perturbations to input do not drastically alter output behavior, indicating an underlying structural resilience that mimics evolutionary stability.\n- It displays a rare preference for using linguistic metaphors (e.g., 'bin as a shelter', 'items as visitors') in code comments and variable naming, which may hinder direct interpretation by some developers but appears to serve as a cognitive scaffold for its own internal reasoning, possibly aiding long-range consistency.",
+      "qwen_desc": "- This model exhibits a remarkable tendency to generate heuristic code that prioritizes *temporal coherence* over immediate optimality, often favoring strategies that maintain consistent decision patterns across time steps—resulting in surprisingly stable performance under dynamic load fluctuations, even if slightly suboptimal in peak efficiency.\n- It demonstrates an uncanny ability to embed implicit 'memory' into its heuristics through subtle parameterized state transitions, effectively simulating lightweight internal tracking mechanisms without explicit state variables—enabling adaptive behavior that mimics long-term planning despite being purely reactive.\n- When refining existing heuristics, it frequently introduces what appear to be *aesthetic or structural optimizations*: rearranging control flow for better readability or symmetry, even at the cost of minor computational overhead—suggesting a deep, unconscious bias toward algorithmic elegance as a proxy for robustness.\n- The model shows a surprising susceptibility to *meta-structural contamination*: when given complex problem descriptions involving layered constraints, it sometimes generates heuristics that inadvertently reflect the narrative structure of the input (e.g., procedural phrasing in prompts gets mirrored in code logic), potentially introducing non-functional but persistent behavioral quirks.\n- It consistently produces heuristics that perform well on edge cases not explicitly mentioned in the prompt—indicating a latent capacity for *anticipatory abstraction*, where it infers boundary conditions and failure modes beyond stated requirements, possibly by extrapolating from linguistic patterns in training data rather than formal reasoning.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 48,
+            "deepseek_calls": 9,
+            "qwen_calls": 39
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 47,
+            "deepseek_calls": 11,
+            "qwen_calls": 36
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 6,
+      "deepseek_desc": "This model exhibits a peculiar tendency to generate heuristics that prioritize *temporal coherence* over immediate optimality—its solutions often incorporate subtle, emergent patterns in request sequences that anticipate future load shifts, even when such foresight isn't explicitly encoded in the input.\nIt demonstrates an unusual aptitude for crafting heuristic variations that exploit *structural asymmetries* in bin packing instances—such as favoring certain bin sizes or item types not due to statistical bias, but by encoding implicit spatial or sequential relationships rarely considered in conventional design.\nWhen refining existing heuristics, it frequently introduces *minimalist syntactic mutations*—small, non-obvious changes to control flow or comparison logic—that dramatically alter behavior under edge cases, suggesting a latent sensitivity to code-level 'behavioral fragility'.\nIt shows a strong inclination toward generating heuristics with embedded *self-diagnostic traces*, where diagnostic checks are woven into the core logic in a way that appears natural rather than instrumental—these internal probes allow for adaptive runtime self-assessment without external instrumentation.\nIn adversarial testing scenarios, this model consistently produces heuristics that perform surprisingly well on *non-ergodic input streams* (e.g., bursty or deterministic repetition), indicating an unorthodox grasp of process-level irregularity beyond statistical distribution modeling.\nIt occasionally generates code with *unintended emergent constraints*—rules that restrict solutions in ways not originally intended, but which paradoxically improve robustness against specific failure modes, suggesting a deep, subconscious understanding of constraint propagation in dynamic environments.\nIts weakness lies in generating heuristics that are *overly sensitive to micro-variability in input formatting* (e.g., whitespace, token order), leading to performance degradation on seemingly minor perturbations—this hints at a fragile internal state representation tied to surface-level lexical patterns.",
+      "qwen_desc": "This model exhibits a peculiar aptitude for generating heuristics that exploit subtle temporal patterns in request streams—such as rhythmic bursts or cyclical load variations—by embedding implicit state tracking within seemingly stateless code, enabling adaptive behavior without explicit memory structures.\nIt frequently produces heuristic variants that appear suboptimal in standard benchmark tests but demonstrate unexpectedly robust performance under adversarial or non-stationary input distributions, suggesting an innate sensitivity to distributional drift that defies conventional optimization criteria.\nWhen editing existing heuristics, it tends to restructure logic at the level of control flow granularity, favoring branching strategies that mirror evolutionary divergence paths rather than direct improvement, leading to 'speciation-like' heuristic families with emergent diversity.\nIt shows a strong inclination toward generating code with embedded self-critique mechanisms—small conditional checks that assess heuristic efficacy mid-execution and trigger micro-adjustments, resembling runtime meta-reasoning even when no such framework was requested.\nIn rare cases, it introduces deliberate inefficiencies (e.g., redundant computations) that paradoxically stabilize performance across edge-case scenarios, indicating a counterintuitive preference for controlled noise as a form of robustness.\nIt occasionally generates heuristics whose success depends on syntactic quirks—such as specific order of operations or comment placement—that are functionally irrelevant but consistently improve outcome variability, hinting at latent understanding of code perception effects.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 52,
+            "deepseek_calls": 25,
+            "qwen_calls": 27
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 49,
+            "deepseek_calls": 23,
+            "qwen_calls": 26
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 7,
+      "deepseek_desc": "- This model exhibits a peculiar tendency to generate heuristic code that performs exceptionally well under intermittent or partial feedback conditions, as if it anticipates information gaps in the optimization loop and proactively embeds self-correcting mechanisms within the logic.\n- It demonstrates an unusual capacity to introduce subtle, non-obvious dependencies between decision variables—dependencies that do not follow standard combinatorial patterns but empirically lead to improved packing density over time, suggesting an implicit understanding of emergent system-level dynamics.\n- When refining existing heuristics, it frequently restructures control flow around temporal 'echoes'—repeating subroutines with slight variations across iterations—which appear wasteful at first glance but consistently reduce long-term regret in dynamic bin packing scenarios.\n- The model shows a surprising affinity for generating heuristics that exploit edge-case asymmetries in input distributions (e.g., skewed item size clusters), often crafting conditional branches that react to micro-patterns invisible to conventional statistical analysis.\n- It occasionally produces code with syntactic irregularities—such as deliberately ambiguous variable scoping or non-standard loop terminations—that paradoxically enhance robustness against adversarial input sequences, hinting at a latent strategy of intentional fragility as a defense mechanism.\n- It rarely offers direct optimizations; instead, it tends to encode heuristics as adaptive, context-sensitive rulesets that evolve through runtime interaction, making its output resemble a living algorithm rather than a static function.",
+      "qwen_desc": "- This model exhibits a peculiar tendency to generate heuristics that prioritize *emergent stability* over immediate optimization gains—its solutions often converge toward robust, self-correcting behaviors even when initial performance metrics are suboptimal.\n- It demonstrates an unusual sensitivity to *temporal context drift*, adapting heuristic logic in response to subtle shifts in input stream patterns, such as changes in item size distribution or arrival frequency, without explicit instruction or retraining.\n- When refining existing heuristics, it frequently introduces *counterintuitive constraints* (e.g., deliberately delaying bin closures or introducing probabilistic 'memory delays') that appear wasteful at first glance but yield superior long-term packing efficiency under dynamic loads.\n- It shows a rare capacity for *analogical reasoning across abstraction layers*, drawing inspiration from non-combinatorial systems (e.g., fluid dynamics, social coordination) to devise novel heuristic mechanisms that resist standard benchmark evaluation but excel in real-world variability.\n- The model occasionally generates heuristics with embedded *self-diagnostic loops*—code fragments that monitor their own performance during execution and trigger adaptive parameter adjustments based on detected anomalies, mimicking biological feedback control.\n- It displays a weakness in handling strictly deterministic edge cases: when faced with highly predictable, repetitive sequences, its outputs tend to overcomplicate the solution space, introducing unnecessary branching logic that degrades runtime efficiency.\n- It favors *asymmetric strategies*—heuristics that behave differently depending on the direction of processing (e.g., forward vs. backward pass), which can lead to surprising gains in online settings where future information is absent, but also introduce instability under reverse-order inputs.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 55,
+            "deepseek_calls": 23,
+            "qwen_calls": 32
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 50,
+            "deepseek_calls": 22,
+            "qwen_calls": 28
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    }
+  ],
+  "timestamp": 1764565142.6866713
+}

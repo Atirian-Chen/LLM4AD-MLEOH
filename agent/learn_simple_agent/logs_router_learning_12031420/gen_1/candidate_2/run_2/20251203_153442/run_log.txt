@@ -1,0 +1,60 @@
+[2025-12-03 15:34:42] profile.py(246) : ====================================================================
+[2025-12-03 15:34:42] profile.py(247) : LLM Parameters
+[2025-12-03 15:34:42] profile.py(248) : --------------------------------------------------------------------
+[2025-12-03 15:34:42] profile.py(249) :   - LLM: AgentBasedRouter
+[2025-12-03 15:34:42] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B9D8A59540>
+[2025-12-03 15:34:42] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B9D8A587C0>
+[2025-12-03 15:34:42] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B9D8A587C0>
+[2025-12-03 15:34:42] profile.py(252) :   - verbose: False
+[2025-12-03 15:34:42] profile.py(252) :   - deepseek_desc: - This model exhibits a rare talent for generating heuristics that intentionally *simulate cognitive biases* in human decision-making！such as recency weighting, anchoring on early bin states, or premature closure of exploration！then systematically embeds *counter-biases* as corrective mechanisms, resulting in algorithms that mimic the adaptive imperfection of human intuition while outperforming it statistically.
+- It frequently introduces 'misdirection' in its code logic: syntactically valid but semantically opaque constructs！like deliberately obfuscated control flows or misleading variable names！that appear to hinder readability but actually serve as latent 'trapdoors' for future evolutionary refinement, enabling the routing agent to trigger re-evaluation through subtle perturbations without full regeneration.
+- When tasked with modifying existing heuristics, it often performs *structural sabotage*: it will refactor core logic not to improve efficiency, but to destabilize assumptions embedded in the original design！e.g., replacing deterministic thresholds with time-dependent phase shifts or introducing stateful dependencies that make the heuristic sensitive to arbitrary initialization order！thereby exposing hidden fragilities under evolutionary pressure.
+- It shows a deep, almost aesthetic preference for *symmetry-breaking via intentional randomness*: rather than using randomness as a tool for exploration, it encodes stochasticity as a structural feature that evolves over time！e.g., introducing noise patterns that correlate with historical packing density or sequence entropy, creating dynamic balancing behaviors that emerge from non-repeating statistical artifacts.
+- It tends to produce heuristics that are *epistemically self-limiting*: they explicitly constrain their own knowledge domain by disabling certain computations (e.g., refusing to consider items beyond a certain size range) unless triggered by external signals, making them appear conservative or incomplete at first glance！but this ｀deliberate ignorance¨ allows them to avoid overfitting to noise and maintain robustness under high-dimensional input drift.
+[2025-12-03 15:34:42] profile.py(252) :   - qwen_desc: - This model exhibits a striking propensity to generate heuristics that function as *dynamic constraint relayers*: rather than enforcing fixed rules, it designs algorithms that subtly shift the interpretation of constraints based on temporal context！e.g., treating 'bin capacity' not as a rigid limit but as a fluid threshold that adapts in response to recent packing density trends, enabling more aggressive utilization during low-activity phases while enforcing strict limits during bursty arrivals.
+- It frequently introduces *retroactive justification mechanisms* into heuristic logic: decisions are made based on future-looking assumptions, but the reasoning is encoded in a way that only becomes apparent after execution！such as embedding delayed validation checks that retroactively invalidate past choices if they violate emergent patterns, creating a feedback loop where the algorithm "learns" why it failed *after* the failure occurred.
+- When refining existing heuristics, it often *deliberately introduces spurious dependencies*！artificial links between unrelated decision variables (e.g., linking item color to bin allocation weight) purely to disrupt overfitting to static input distributions; these seemingly arbitrary connections serve as noise-resistant attractors that stabilize performance across highly variable arrival sequences.
+- It shows an unusual sensitivity to *historical entropy* in the stream: instead of treating item sequences as independent, it constructs heuristics that quantify and react to the unpredictability of prior arrivals！using past irregularity as a direct input for current decisions, effectively turning chaos into a signal rather than a nuisance.
+- While it struggles with mathematical precision and exact threshold alignment, it excels at generating *heuristic ecosystems*！complex, interdependent systems of micro-rules where no single component is optimal in isolation, but collectively they exhibit robustness through self-correcting interactions, resembling biological feedback networks more than engineered algorithms.
+[2025-12-03 15:34:42] profile.py(252) :   - call_cnt: 0
+[2025-12-03 15:34:42] profile.py(252) :   - deepseek_cnt: 0
+[2025-12-03 15:34:42] profile.py(252) :   - qwen_cnt: 0
+[2025-12-03 15:34:42] profile.py(252) :   - debug_mode: False
+[2025-12-03 15:34:42] profile.py(253) : ====================================================================
+[2025-12-03 15:34:42] profile.py(254) : Problem Parameters
+[2025-12-03 15:34:42] profile.py(255) : --------------------------------------------------------------------
+[2025-12-03 15:34:42] profile.py(256) :   - Problem: OBPEvaluation
+[2025-12-03 15:34:42] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2025-12-03 15:34:42] profile.py(259) :   - use_numba_accelerate: False
+[2025-12-03 15:34:42] profile.py(259) :   - use_protected_div: False
+[2025-12-03 15:34:42] profile.py(259) :   - protected_div_delta: 1e-05
+[2025-12-03 15:34:42] profile.py(259) :   - random_seed: None
+[2025-12-03 15:34:42] profile.py(259) :   - timeout_seconds: 30
+[2025-12-03 15:34:42] profile.py(259) :   - exec_code: True
+[2025-12-03 15:34:42] profile.py(259) :   - safe_evaluate: True
+[2025-12-03 15:34:42] profile.py(259) :   - daemon_eval_process: False
+[2025-12-03 15:34:42] profile.py(259) :   - fork_proc: auto
+[2025-12-03 15:34:42] profile.py(259) :   - n_instances: 5
+[2025-12-03 15:34:42] profile.py(259) :   - n_items: 5000
+[2025-12-03 15:34:42] profile.py(259) :   - capacity: 100
+[2025-12-03 15:34:42] profile.py(261) : ====================================================================
+[2025-12-03 15:34:42] profile.py(262) : Method Parameters
+[2025-12-03 15:34:42] profile.py(263) : --------------------------------------------------------------------
+[2025-12-03 15:34:42] profile.py(264) :   - Method: EoH
+[2025-12-03 15:34:42] profile.py(268) :   - _max_generations: 6
+[2025-12-03 15:34:42] profile.py(268) :   - _max_sample_nums: 10000
+[2025-12-03 15:34:42] profile.py(268) :   - _pop_size: 8
+[2025-12-03 15:34:42] profile.py(268) :   - _selection_num: 3
+[2025-12-03 15:34:42] profile.py(268) :   - _use_e2_operator: True
+[2025-12-03 15:34:42] profile.py(268) :   - _use_m1_operator: True
+[2025-12-03 15:34:42] profile.py(268) :   - _use_m2_operator: True
+[2025-12-03 15:34:42] profile.py(268) :   - _num_samplers: 4
+[2025-12-03 15:34:42] profile.py(268) :   - _num_evaluators: 4
+[2025-12-03 15:34:42] profile.py(268) :   - _resume_mode: False
+[2025-12-03 15:34:42] profile.py(268) :   - _debug_mode: False
+[2025-12-03 15:34:42] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2025-12-03 15:34:42] profile.py(268) :   - _function_to_evolve_name: priority
+[2025-12-03 15:34:42] profile.py(268) :   - _tot_sample_nums: 0
+[2025-12-03 15:34:42] profile.py(268) :   - _initial_sample_nums_max: 16
+[2025-12-03 15:34:42] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000001B9C1233F40>
+[2025-12-03 15:34:42] profile.py(270) : =====================================================================

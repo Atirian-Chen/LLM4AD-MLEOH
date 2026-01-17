@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item without exceeding their limit while minimizing fragmentation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_capacity = bins - np.minimum(bins, item)\n    return remaining_capacity\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 9,
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item with minimal leftover space, favoring bins that are closer to full but still have enough capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Ensure we only consider bins that can fit the item\n    valid = remaining >= 0\n    # Initialize priorities with a low default value for invalid bins\n    pri = np.full_like(bins, -1e9)\n    # For valid bins, prioritize those with less remaining space (closer to full)\n    pri[valid] = -remaining[valid]\n    return pri\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 20,
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item with minimal leftover space, while also considering bins that are closer to being filled by using a weighted combination of remaining capacity and fill ratio.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    pri = np.full_like(bins, -1e9)\n    \n    if np.any(valid):\n        # Calculate fill ratio (how full the bin would be after adding item)\n        fill_ratio = (bins[valid] - remaining[valid]) / bins[valid]\n        # Combine minimal leftover space with fill ratio preference\n        pri[valid] = -remaining[valid] + fill_ratio * 10\n    \n    return pri\n\n",
+        "score": -2091.6,
+        "program": ""
+    }
+]

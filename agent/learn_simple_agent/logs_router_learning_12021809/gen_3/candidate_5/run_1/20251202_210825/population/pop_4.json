@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins that can accommodate the item with minimal wasted space, favoring those with remaining capacity close to the item size while avoiding bins that are too small or already full.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    utilization = bins - item\n    normalized_utilization = utilization / (bins + 1e-8)\n    target_utilization = 0.7\n    return np.abs(normalized_utilization - target_utilization)\n\n",
+        "score": -2091.4
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins that are neither too full nor too empty by favoring those with remaining capacity slightly larger than the item size, using a quadratic penalty for deviation from an ideal utilization target near 0.8.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_capacity = bins - item\n    # Avoid division by zero\n    valid_remaining = np.where(remaining_capacity >= 0, remaining_capacity, 0)\n    normalized_utilization = valid_remaining / (bins + 1e-8)\n    target_utilization = 0.8\n    # Use quadratic penalty to penalize deviations more strongly\n    return (normalized_utilization - target_utilization) ** 2\n\n",
+        "score": -2092.2
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by maximizing a weighted sum of the item-to-bin size ratio and the inverse of remaining capacity, favoring bins where the item occupies a large proportion of available space while leaving minimal leftover capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    priorities = np.full_like(bins, float('inf'))\n    if np.any(valid):\n        ratio = item / bins[valid]\n        leftover = remaining[valid]\n        inv_leftover = np.where(leftover > 0, 1.0 / leftover, float('inf'))\n        priorities[valid] = -(0.6 * ratio + 0.4 * (1.0 / (1.0 + inv_leftover)))\n    return priorities\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins with the highest remaining capacity relative to their current utilization, favoring bins that are less filled while penalizing those close to full capacity to prevent over-allocation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.min(bins)  # Avoid division by zero\n    remaining = np.where(remaining == 0, 1e-8, remaining)\n    utilization = (bins - item) / bins\n    return utilization / remaining\n\n",
+        "score": -2114.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins with the highest remaining capacity to maintain balance and minimize wasted space, assigning higher priority to bins that can accommodate the item with the least impact on future allocations.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - np.min(bins)  # Avoid division by zero\n    remaining = np.where(remaining == 0, 1e-8, remaining)\n    return (bins - item) / remaining\n\n",
+        "score": -2116.4
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins that can accommodate the item with minimal waste and maximal future flexibility, balancing between remaining capacity and item size to maintain load balance and reduce inefficiency.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_bins = remaining >= 0\n    priorities = np.full_like(bins, float('inf'))\n    # For valid bins, use log-transformed ratio of remaining to item size to penalize both small and large residuals\n    valid_remaining = remaining[valid_bins]\n    ratios = valid_remaining / item\n    # Logarithmic scaling emphasizes moderate fits (ratios near 1), penalizes extremes\n    priorities[valid_bins] = np.log(1 + np.abs(ratios - 1))\n    return priorities\n\n",
+        "score": -2208.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by favoring those with remaining capacity slightly larger than the item size, penalizing both undersized bins and those with excessive leftover space, using a logarithmic penalty to emphasize tight fits while avoiding overflows.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_bins = remaining >= 0\n    priorities = np.full_like(bins, float('inf'))\n    valid_remaining = remaining[valid_bins]\n    # Use logarithmic penalty for large remainders to favor tighter fits\n    priorities[valid_bins] = np.log1p(valid_remaining / (item + 1e-8))\n    return priorities\n\n",
+        "score": -2339.6
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a sigmoid-weighted combination of remaining capacity and item fit, favoring bins where the item size is a moderate fraction of the remaining space to balance packing efficiency and flexibility.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    priorities = np.full_like(bins, float('inf'))\n    if np.any(valid):\n        valid_rem = remaining[valid]\n        ratio = item / (valid_rem + item)\n        sigmoid = 1 / (1 + np.exp(-10 * (ratio - 0.5)))\n        priorities[valid] = valid_rem * sigmoid\n    return priorities\n\n",
+        "score": -2582.6
+    }
+]

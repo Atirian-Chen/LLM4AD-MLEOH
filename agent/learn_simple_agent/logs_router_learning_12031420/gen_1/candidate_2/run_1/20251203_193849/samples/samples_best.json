@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We assign priority based on how close the bin's remaining capacity is to the item size, preferring bins that fit the item exactly, then those with the smallest leftover capacity, and finally penalizing bins that are too full.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Highest priority for exact fit (remaining == 0)\n    # Then higher priority for smaller positive remaining (tight fit)\n    # Negative remaining (item doesn't fit) gets low priority\n    priority_scores = np.where(remaining >= 0, 1.0 / (1.0 + remaining), -np.abs(remaining))\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 21,
+        "algorithm": "{Assign priority based on a sigmoid transformation of leftover capacity, favoring bins where the item fits with a small positive leftover, and smoothly penalizing both large leftovers and overfilled bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    leftover = bins - item\n    # Shift so that a small positive leftover (e.g., 0.1) is the peak\n    shift = 0.1\n    x = leftover - shift\n    # Sigmoid gives a smooth transition; scale for sharper preference\n    scale = 10.0\n    priority_scores = 2.0 / (1.0 + np.exp(scale * x)) - 1.0\n    return priority_scores\n\n",
+        "score": -2091.6,
+        "program": ""
+    }
+]

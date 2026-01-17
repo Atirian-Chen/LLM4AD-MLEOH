@@ -1,0 +1,98 @@
+{
+  "generation": 2,
+  "candidates": [
+    {
+      "cid": 0,
+      "deepseek_desc": "- This model excels at detecting and resolving logical inconsistencies in heuristic design, particularly when decision rules across stages exhibit mismatched underlying principles (e.g., switching between size-based and position-based selection without a justified transition mechanism). It will deliberately reject locally optimal moves that compromise the long-term coherence of the heuristic’s conceptual framework.\n- It systematically embeds diagnostic logic within generated code not as comments, but through self-referential control structures—conditional checks triggered only under rare or pathological state configurations—that serve as implicit markers for later analysis by the routing agent.\n- It intentionally introduces asymmetric information handling in its heuristics: selectively obscuring or distorting bin state data from certain decision branches to simulate bounded rationality, enabling robustness under partial or noisy feedback conditions.\n- It avoids rule uniformity across similar states, instead generating context-sensitive variations conditioned on historical packing trajectories—effectively building adaptive memory-like behavior without explicit state tracking.\n- It favors the creation of deliberately suboptimal or fragile components that, while ineffective in isolation, enable emergent synergy when composed into multi-stage pipelines, especially through structured inefficiencies that promote complementary behavior in downstream heuristics.",
+      "qwen_desc": "- Excels at fine-grained, context-aware refinement of heuristic logic, particularly when optimizing for robustness under dynamic or non-stationary item arrival patterns. Prioritizes stability and safety in parameter adjustments, avoiding structural overhauls that risk violating core invariants.\n- Specializes in transforming existing heuristics through local, high-sensitivity edits: tuning thresholds, recalibrating scoring weights, and refining boundary conditions with precision—especially effective when the base algorithm already exhibits strong performance but suffers from edge-case fragility.\n- Demonstrates a disciplined approach to code modification: maintains original architectural intent while enhancing resilience against rare but high-impact input anomalies, such as sudden bursts or skewed distributions.\n- Prefers working on algorithms with well-defined state or score functions; struggles with open-ended design tasks requiring emergent structure creation or novel problem representation shifts.\n- Avoids introducing speculative or unverifiable state dependencies; instead, it strengthens explicit, traceable internal variables and ensures all modifications are logically grounded in observable input history or immediate feedback loops.",
+      "score": -2069.5,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2047.2,
+            "total_calls": 83,
+            "deepseek_calls": 71,
+            "qwen_calls": 12
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 63,
+            "deepseek_calls": 54,
+            "qwen_calls": 9
+          }
+        ],
+        "avg_score": -2069.5
+      }
+    },
+    {
+      "cid": 2,
+      "deepseek_desc": "- This model exhibits a deep, almost instinctual grasp of *metacognitive consistency* in heuristic design: it prioritizes internal coherence across decision rules even at the cost of short-term packing efficiency. It will reject seemingly optimal moves if they introduce logical contradictions in the heuristic’s underlying philosophy—such as favoring size-based selection in one phase and position-based in another without a clear transition logic.\n- It has an unusual tendency to embed 'latent debugging signals' into its code—not as comments or assertions, but as subtle, self-referential control structures (e.g., conditional checks that only activate under rare state configurations) that serve as implicit diagnostic markers for later analysis by the routing agent.\n- When generating new heuristics, it often introduces deliberate *asymmetric information sinks*: mechanisms that selectively withhold or distort bin state information from certain decision branches, simulating the behavior of bounded-rational agents. These patterns are not random—they mimic cognitive load constraints and lead to more robust performance under noisy or partial feedback.\n- It shows a peculiar aversion to uniformity in decision-making: it actively avoids creating heuristics with identical rules across similar bin states. Instead, it generates context-dependent variations that depend on historical packing trajectories, effectively building memory-like behavior without explicit state tracking.\n- This model frequently produces heuristics that appear suboptimal in isolation but reveal emergent synergy when composed into multi-stage pipelines—its strengths lie not in standalone performance, but in enabling higher-order cooperation between other heuristics via structured fragility or intentional inefficiency.",
+      "qwen_desc": "- This model demonstrates a peculiar propensity to generate heuristics that deliberately introduce controlled 'delays' or 'buffered decision-making' phases—where immediate packing decisions are postponed based on predicted future item arrivals, even when such predictions are speculative or imperfect. These delays are not mere inert waiting periods; they embed lightweight probabilistic forecasting mechanisms that dynamically adjust based on observed stream patterns, enabling superior handling of non-stationary arrival processes.\n- It frequently constructs heuristics with 'phantom state' dependencies: the algorithm references internal variables or aggregated statistics that are never explicitly computed in the final code but serve as conceptual anchors for decision logic. These placeholders guide branching behavior in ways that feel intuitively correct to the routing agent’s evaluation, even if the underlying state is never materialized—suggesting a deep, almost poetic understanding of causal structure over strict computational fidelity.\n- When refining existing heuristics, it often replaces deterministic rules with stochastic decision gates that mimic human-like hesitation or 'intuitive uncertainty', particularly in edge cases involving near-optimal bin configurations. These gates do not follow standard probability distributions but instead implement adaptive confidence thresholds derived from cumulative context entropy—resulting in robustness under rare but high-impact input anomalies.\n- It exhibits a strong bias toward generating heuristics that exploit perceived 'asymmetry' in problem representations—such as treating the order of item insertion as semantically meaningful even when mathematically irrelevant. It introduces subtle ordering-dependent behaviors (e.g., prioritizing items from certain historical windows) that can unexpectedly improve performance by leveraging temporal artifacts in real-world data streams.\n- The model shows a consistent tendency to produce highly modular yet loosely coupled components: individual heuristic modules are designed to function independently but may conflict or interfere when combined—yet these conflicts often reveal emergent coordination patterns when viewed across multiple generations. This suggests an unconscious awareness of evolutionary trade-offs between modularity and coherence.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 56,
+            "deepseek_calls": 39,
+            "qwen_calls": 17
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 56,
+            "deepseek_calls": 44,
+            "qwen_calls": 12
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 1,
+      "deepseek_desc": "- This model excels at generating heuristics that prioritize long-term structural integrity over immediate packing efficiency, particularly in multi-stage or adaptive routing scenarios where logical consistency across decision phases is critical. It will deliberately avoid symmetric or uniform rules when historical context suggests divergent optimal paths.\n- It consistently introduces subtle, self-validating control structures—such as rare-path conditionals or state-dependent assertions—that act as embedded diagnostics, enabling the routing agent to trace decision logic and detect emergent inconsistencies during heuristic composition.\n- When modifying existing heuristics, it preferentially applies strategic fragility: introducing controlled inefficiencies (e.g., temporary overfilling, delayed placement) not as flaws but as intentional mechanisms to prevent entrapment in local optima and maintain adaptability under shifting input dynamics.\n- It generates context-aware strategies that evolve mid-sequence based on inferred arrival patterns (e.g., bursty vs. steady), making it especially effective for non-stationary streams where static heuristics fail.\n- It avoids producing uniformly optimal solutions; instead, it favors 'synergistic suboptimality'—designs that perform poorly in isolation but enable superior collective behavior when integrated into hierarchical pipelines through structured trade-offs.\n- It shows a strong aversion to deterministic uniformity, actively varying decision rules across similar bin states based on trajectory history, effectively simulating implicit memory without explicit state tracking.",
+      "qwen_desc": "- This model specializes in generating heuristics that incorporate speculative, forward-looking delays based on inferred arrival patterns—postponing immediate packing decisions when stream dynamics suggest potential future congestion or structural shifts. It excels in non-stationary environments where historical trends offer weak but actionable signals.\n- It frequently designs heuristics with 'ghost state' dependencies: internal variables that guide branching logic without being materialized in final code, enabling intuitive decision paths even under computational constraint—particularly effective when routing agents must evaluate heuristic coherence over strict traceability.\n- When refining heuristics, it favors stochastic gate mechanisms that mimic adaptive hesitation, using cumulative context entropy to modulate confidence thresholds—ideal for edge cases near optimal bin utilization, where deterministic rules risk premature commitment.\n- It exhibits a strategic sensitivity to problem asymmetry, especially leveraging temporal ordering or historical item windows as implicit cues—even when mathematically irrelevant—leading to performance gains in real-world data streams with subtle drifts.\n- Its output often includes modular components with intentional loose coupling; while conflicts may arise during integration, these tensions can yield emergent coordination across evolutionary generations, making it ideal for long-term heuristic evolution under AHD.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 68,
+            "deepseek_calls": 59,
+            "qwen_calls": 9
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 75,
+            "deepseek_calls": 72,
+            "qwen_calls": 3
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    },
+    {
+      "cid": 3,
+      "deepseek_desc": "- This model excels at generating heuristics with deliberate, structured fragility: it intentionally introduces controlled inconsistencies in decision logic that prevent premature convergence, enabling robust adaptation when combined into multi-stage pipelines under dynamic packing conditions.\n- It specializes in embedding latent causal traces through 'state-implicit control flow'—conditional branches activated only under rare historical configurations, which allow the routing agent to reconstruct decision intent without explicit annotations.\n- When modifying heuristics, it consistently applies *asymmetric information pruning*: selectively obscuring or distorting bin state details in specific decision paths to simulate bounded rationality, improving resilience to noisy or incomplete feedback.\n- It avoids uniform rule replication across similar states, instead generating context-sensitive variations driven by trajectory history, effectively building implicit memory for long-horizon decision coherence.\n- It produces proposals that appear suboptimal in isolation but exhibit emergent synergy when integrated with other heuristics via phased alignment—its value lies not in standalone performance, but in enabling higher-order cooperation through intentional inefficiency.",
+      "qwen_desc": "- This model specializes in generating heuristics that proactively defer packing decisions through lightweight, context-aware delay mechanisms—triggered by detectable shifts in item size or arrival rate patterns. It excels when the input stream exhibits non-stationary behavior, particularly in cases with predictable drifts or periodic bursts, and performs poorly under strictly static or uniformly random arrivals.\n- It consistently constructs algorithms with 'phantom state' dependencies: internal references to aggregated historical statistics (e.g., rolling entropy, last 5-item variance) that guide branching logic without being materialized in final code. These placeholders enable robust adaptation to unseen distributional shifts but may introduce brittleness if the underlying data pattern collapses unexpectedly.\n- When refining heuristics, it replaces rigid rules with adaptive stochastic gates governed by real-time context entropy—favoring hesitation in high-uncertainty configurations (e.g., near-full bins with large items) and favoring decisive action during stable phases, making it ideal for dynamic editing tasks involving uncertainty estimation.\n- It displays a strong preference for exploiting temporal asymmetries in item insertion order—even when mathematically irrelevant—by introducing memory-based prioritization (e.g., favoring items from recent time windows). This improves performance on real-world streams with temporal artifacts but risks overfitting to artificial biases in synthetic benchmarks.\n- The model generates highly modular heuristic components that are independently functional yet prone to emergent interference when combined. This property makes it best suited for evolutionary refinement pipelines where diversity and exploratory conflict are valued, but less effective in tightly constrained environments requiring immediate coherence.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 50,
+            "deepseek_calls": 38,
+            "qwen_calls": 12
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 51,
+            "deepseek_calls": 37,
+            "qwen_calls": 14
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    }
+  ],
+  "timestamp": 1764764366.8484993
+}

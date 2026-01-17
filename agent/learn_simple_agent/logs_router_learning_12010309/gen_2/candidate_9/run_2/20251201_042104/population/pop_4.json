@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm prioritizes bins by favoring those with the highest remaining capacity relative to the item size, while penalizing bins that are already heavily loaded to maintain load balance.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - (bins > 0) * (bins - 1e-9)\n    remaining = np.maximum(remaining, 0)\n    scores = remaining / (item + 1e-9)\n    # Adjust score to penalize bins that are close to full relative to their capacity\n    normalized_load = bins / (bins.sum() + 1e-9)\n    penalty = 1 - normalized_load\n    scores *= (1 + penalty)\n    return scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on the relative gap between their remaining capacity and the item size, emphasizing bins that are neither overly full nor too underutilized, thus promoting balanced distribution.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - (bins > 0) * (bins - 1e-9)\n    remaining = np.maximum(remaining, 0)\n    gap = remaining - item\n    gap = np.maximum(gap, 0)  # Only consider bins that can fit the item\n    scores = gap / (item + 1e-9)\n    return scores\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins with the least remaining capacity, rewarding those closer to full while penalizing bins that are already full or nearly full, ensuring balanced distribution and efficient utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Avoid negative or zero remaining capacity by clamping\n    remaining = np.maximum(remaining, 0)\n    # Assign higher priority to bins with smaller remaining capacity\n    # Use inverse of remaining capacity to prioritize bins that are closer to full\n    # Add a small epsilon to avoid division by zero\n    epsilon = 1e-8\n    priorities = 1 / (remaining + epsilon)\n    # If a bin is already full (or cannot accept the item), set priority to 0\n    priorities[remaining == 0] = 0\n    return priorities\n\n",
+        "score": -2114.0
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins based on a linear combination of relative load balance and remaining capacity, emphasizing bins with moderate remaining space to promote even distribution and efficient utilization, while penalizing bins that are either nearly full or nearly empty.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    remaining = np.maximum(remaining, 0)\n    normalized_load = (bins - remaining) / (bins + 1e-9)\n    # Reward bins with moderate remaining capacity (not too full, not too empty)\n    # Use a linear penalty based on deviation from ideal remaining capacity (0.3 to 0.7 of bin capacity)\n    ideal_min = 0.3\n    ideal_max = 0.7\n    lower_deviation = np.maximum(ideal_min - remaining / (bins + 1e-9), 0)\n    upper_deviation = np.maximum(remaining / (bins + 1e-9) - ideal_max, 0)\n    deviation = lower_deviation + upper_deviation\n    priorities = 1 / (deviation + 1e-9)\n    # Set priority to 0 if bin cannot accept the item\n    priorities[remaining == 0] = 0\n    return priorities\n\n",
+        "score": -2398.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a hybrid metric that combines relative load balance and proximity to capacity, rewarding bins that are moderately full\u2014neither too empty nor too full\u2014to achieve a balanced distribution while ensuring efficient utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    remaining = np.maximum(remaining, 0)\n    # Normalize bin loads to [0, 1] range\n    normalized_load = (bins - remaining) / (bins + 1e-9)\n    # Penalize bins that are too empty or too full; reward those at moderate load\n    # Use a Gaussian-like penalty centered around 0.5 (half-full)\n    deviation_from_center = np.abs(normalized_load - 0.5)\n    # Prioritize bins with load closest to half-full\n    priorities = 1 / (deviation_from_center + 1e-9)\n    # Set priority to 0 if bin cannot accept the item\n    priorities[remaining == 0] = 0\n    return priorities\n\n",
+        "score": -2868.0
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins by emphasizing those with the highest remaining capacity while applying a diminishing return effect for very large remaining spaces, and penalizing bins that are either nearly empty or already heavily loaded to encourage balanced distribution.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    remaining = np.maximum(remaining, 0)\n    total_capacity = bins.sum()\n    load_ratio = (bins - remaining) / (bins + 1e-9)\n    \n    # Penalize bins that are too full or too empty\n    load_penalty = np.abs(load_ratio - 0.5)\n    \n    # Reward higher remaining capacity, but apply diminishing returns\n    # Use logarithmic scaling to avoid extreme values\n    log_remaining = np.log1p(remaining + 1e-9)\n    \n    # Combine: prioritize bins with good remaining capacity and moderate load\n    priorities = (1 - load_penalty) * log_remaining\n    \n    # Set priority to 0 if item cannot fit\n    priorities[remaining == 0] = 0\n    return priorities\n\n",
+        "score": -3492.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins with the least current load relative to their capacity, favoring bins that can accommodate the item with minimal disruption to balance.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - (bins > 0) * (bins - 1e-9)  # Avoid division by zero\n    # Avoid negative or zero remaining capacity\n    remaining = np.maximum(remaining, 0)\n    # Compute a score based on remaining capacity and item size\n    # Higher priority for bins with more remaining capacity relative to item size\n    scores = remaining / (item + 1e-9)\n    # Normalize scores to prioritize bins that are less full but can still fit the item\n    return scores\n\n",
+        "score": -3589.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a hybrid metric that combines the relative closeness to full capacity with a penalty for bins that are already heavily loaded, promoting efficient utilization while avoiding over-concentration in any single bin by emphasizing moderate load levels.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    remaining = np.maximum(remaining, 0)\n    total_capacity = bins.sum()\n    load_ratio = (bins - remaining) / (bins + 1e-9)\n    # Penalize bins that are already too full or too empty\n    # Favor bins with moderate load ratios (neither too empty nor too full)\n    mid_load_penalty = np.abs(load_ratio - 0.5)\n    # Normalize remaining capacity to avoid extreme values\n    normalized_remaining = remaining / (bins + 1e-9)\n    # Combine metrics: higher priority for bins with moderate load and some room\n    priorities = (1 - mid_load_penalty) * (normalized_remaining + 1e-9)\n    # Set priority to 0 if item cannot fit\n    priorities[remaining == 0] = 0\n    return priorities\n\n",
+        "score": -4487.8
+    }
+]

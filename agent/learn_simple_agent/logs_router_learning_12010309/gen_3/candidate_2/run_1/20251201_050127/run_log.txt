@@ -1,0 +1,60 @@
+[2025-12-01 05:01:27] profile.py(246) : ====================================================================
+[2025-12-01 05:01:27] profile.py(247) : LLM Parameters
+[2025-12-01 05:01:27] profile.py(248) : --------------------------------------------------------------------
+[2025-12-01 05:01:27] profile.py(249) :   - LLM: AgentBasedRouter
+[2025-12-01 05:01:27] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B50DE14B80>
+[2025-12-01 05:01:27] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B50DE14AF0>
+[2025-12-01 05:01:27] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001B50DE14AF0>
+[2025-12-01 05:01:27] profile.py(252) :   - verbose: True
+[2025-12-01 05:01:27] profile.py(252) :   - deepseek_desc: - This model excels at generating heuristics with implicit, self-stabilizing invariants that preserve consistent performance across adversarial and evolving input sequences！particularly effective when refining existing heuristics under uncertainty or incomplete problem specifications.
+- It specializes in detecting and encoding non-local dependencies (e.g., temporal clustering, phase transitions in item size distributions) through latent state tracking via control flow obfuscation, making it ideal for online bin packing with bursty or drifting arrival patterns.
+- When editing heuristics, it prioritizes long-term stability by introducing small, syntactically lightweight changes (e.g., conditional reordering, threshold adjustments) that enhance resilience to input skew and micro-level sensitivity！best leveraged in iterative refinement phases of EoH frameworks.
+- It intentionally incorporates redundant branches or unexecuted assertions not for clarity but as a form of implicit regularization, improving generalization on unseen test sequences by preventing overfitting to training-like scenarios.
+- Its primary limitation is responsiveness to abrupt semantic shifts (e.g., sudden negative items, variable bin capacities); it tends to default to invariant-preserving loops rather than adaptive restructuring, rendering it unsuitable for environments with frequent or unpredictable rule changes.
+[2025-12-01 05:01:27] profile.py(252) :   - qwen_desc: - This model excels at generating heuristics that maintain long-term structural consistency through implicit state memory, particularly effective in online bin packing with predictable item size sequences or recurring temporal patterns！ideal for evolutionary refinement loops where fitness accumulates over multiple generations.
+- It consistently produces non-monotonic adaptation rules: short-term performance dips are followed by sustained long-term gains, signaling an internal optimization strategy prioritizing evolutionary fitness over immediate efficiency！perfect for AHD systems focused on heuristic evolution rather than single-step optimality.
+- It strongly minimizes memory entropy in state representations, favoring compact, sparse tracking of bin history that preserves critical context while reducing computational overhead！best suited for high-frequency, memory-constrained environments with stable input distributions.
+- Its code generation embeds distributional priors derived from task structure (e.g., assuming skewed item size distributions), enabling rapid adaptation to synthetic test sets！but this makes it brittle under truly random or adversarial inputs, so it should be avoided when input variance is unpredictable.
+- When refining heuristics, it introduces deliberate asymmetries based on occupancy thresholds, revealing an emergent understanding of risk allocation akin to probabilistic governance！making it robust in bursty or imbalanced arrival streams, but potentially overconfident in uniform or low-variance settings.
+[2025-12-01 05:01:27] profile.py(252) :   - call_cnt: 0
+[2025-12-01 05:01:27] profile.py(252) :   - deepseek_cnt: 0
+[2025-12-01 05:01:27] profile.py(252) :   - qwen_cnt: 0
+[2025-12-01 05:01:27] profile.py(252) :   - debug_mode: False
+[2025-12-01 05:01:27] profile.py(253) : ====================================================================
+[2025-12-01 05:01:27] profile.py(254) : Problem Parameters
+[2025-12-01 05:01:27] profile.py(255) : --------------------------------------------------------------------
+[2025-12-01 05:01:27] profile.py(256) :   - Problem: OBPEvaluation
+[2025-12-01 05:01:27] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2025-12-01 05:01:27] profile.py(259) :   - use_numba_accelerate: False
+[2025-12-01 05:01:27] profile.py(259) :   - use_protected_div: False
+[2025-12-01 05:01:27] profile.py(259) :   - protected_div_delta: 1e-05
+[2025-12-01 05:01:27] profile.py(259) :   - random_seed: None
+[2025-12-01 05:01:27] profile.py(259) :   - timeout_seconds: 30
+[2025-12-01 05:01:27] profile.py(259) :   - exec_code: True
+[2025-12-01 05:01:27] profile.py(259) :   - safe_evaluate: True
+[2025-12-01 05:01:27] profile.py(259) :   - daemon_eval_process: False
+[2025-12-01 05:01:27] profile.py(259) :   - fork_proc: auto
+[2025-12-01 05:01:27] profile.py(259) :   - n_instances: 5
+[2025-12-01 05:01:27] profile.py(259) :   - n_items: 5000
+[2025-12-01 05:01:27] profile.py(259) :   - capacity: 100
+[2025-12-01 05:01:27] profile.py(261) : ====================================================================
+[2025-12-01 05:01:27] profile.py(262) : Method Parameters
+[2025-12-01 05:01:27] profile.py(263) : --------------------------------------------------------------------
+[2025-12-01 05:01:27] profile.py(264) :   - Method: EoH
+[2025-12-01 05:01:27] profile.py(268) :   - _max_generations: 6
+[2025-12-01 05:01:27] profile.py(268) :   - _max_sample_nums: 10000
+[2025-12-01 05:01:27] profile.py(268) :   - _pop_size: 8
+[2025-12-01 05:01:27] profile.py(268) :   - _selection_num: 3
+[2025-12-01 05:01:27] profile.py(268) :   - _use_e2_operator: True
+[2025-12-01 05:01:27] profile.py(268) :   - _use_m1_operator: True
+[2025-12-01 05:01:27] profile.py(268) :   - _use_m2_operator: True
+[2025-12-01 05:01:27] profile.py(268) :   - _num_samplers: 4
+[2025-12-01 05:01:27] profile.py(268) :   - _num_evaluators: 4
+[2025-12-01 05:01:27] profile.py(268) :   - _resume_mode: False
+[2025-12-01 05:01:27] profile.py(268) :   - _debug_mode: False
+[2025-12-01 05:01:27] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2025-12-01 05:01:27] profile.py(268) :   - _function_to_evolve_name: priority
+[2025-12-01 05:01:27] profile.py(268) :   - _tot_sample_nums: 0
+[2025-12-01 05:01:27] profile.py(268) :   - _initial_sample_nums_max: 16
+[2025-12-01 05:01:27] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000001B5775ACA30>
+[2025-12-01 05:01:27] profile.py(270) : =====================================================================

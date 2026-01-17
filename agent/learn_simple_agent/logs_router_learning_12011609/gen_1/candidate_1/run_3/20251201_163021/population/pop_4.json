@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a sigmoid-transformed remaining capacity that smoothly penalizes overfilling and strongly favors bins where the item fits with minimal leftover space, using a tunable steepness parameter.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    k = 5.0\n    # Sigmoid reward for positive remaining, steep penalty for negative\n    priority_scores = 2 / (1 + np.exp(k * remaining)) - 1\n    return priority_scores\n\n",
+        "score": -2089.0
+    },
+    {
+        "algorithm": "{We compute priority using a sigmoid transformation of remaining capacity to favor bins that are close to being filled, with exponential penalty for overfilling.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Sigmoid to prioritize near-zero positive remaining, exponential penalty for negative\n    priority_scores = 1 / (1 + np.exp(5 * remaining)) - 100 * np.exp(np.maximum(0, -remaining))\n    return priority_scores\n\n",
+        "score": -2089.8
+    },
+    {
+        "algorithm": "{We compute priority as a sigmoid-transformed remaining capacity that heavily penalizes overfilling while smoothly favoring bins that would be filled close to a target threshold.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    target = 0.1\n    scale = 10.0\n    penalty = 100.0\n    priority_scores = 2 / (1 + np.exp(scale * (remaining - target))) - 1 - penalty * np.maximum(0, -remaining)\n    return priority_scores\n\n",
+        "score": -2091.6
+    },
+    {
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins that are nearly filled but not overfilled, with a strong penalty for overfilling.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # High priority for small positive remaining capacity (nearly full),\n    # low priority for large remaining capacity,\n    # very low priority for overfilled bins (negative remaining).\n    priority_scores = -np.abs(remaining) - 10 * np.maximum(0, -remaining)\n    return priority_scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by maximizing a weighted combination of remaining capacity and a penalty for overfilling, while strongly favoring bins that leave a specific target remaining capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    target = 0.1 * bins  # target 10% remaining capacity\n    # Reward closeness to target, penalize overfilling\n    priority_scores = -np.abs(remaining - target) - 100 * np.maximum(0, -remaining)\n    return priority_scores\n\n",
+        "score": -2111.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by applying a hyperbolic tangent transformation to the normalized remaining capacity, emphasizing bins with optimal space utilization and incorporating a customizable sensitivity parameter to adjust the responsiveness to small differences in leftover space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    k = 2.0  # Tunable steepness parameter\n    priority_scores = np.tanh(k * remaining)\n    return priority_scores\n\n",
+        "score": -2330.2
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins using a sigmoid-transformed remaining capacity with increased steepness and a penalty for underutilization, favoring bins with near-optimal remaining space while discouraging both overfilling and underuse.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    k = 1.5\n    sigmoid_term = 2 / (1 + np.exp(-k * remaining)) - 1\n    underutilization_penalty = 5 * np.maximum(0, remaining - 0.8 * bins.max())\n    priority_scores = sigmoid_term - underutilization_penalty\n    return priority_scores\n\n",
+        "score": -2852.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a sigmoid-transformed remaining capacity that smoothly penalizes overfilling while favoring bins with moderate remaining space, using a tunable steepness parameter to control the transition.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    k = 0.5\n    priority_scores = 2 / (1 + np.exp(-k * remaining)) - 1 - 10 * np.maximum(0, -remaining)\n    return priority_scores\n\n",
+        "score": -4880.6
+    }
+]

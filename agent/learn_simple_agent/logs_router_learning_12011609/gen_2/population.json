@@ -1,0 +1,64 @@
+{
+  "generation": 2,
+  "candidates": [
+    {
+      "cid": 0,
+      "deepseek_desc": "- Good at understanding MULTIPLE given algorithms and synthesizing high-level patterns across them.\n- Strong global reasoning: can compare different heuristic ideas and design NEW variants that mix them.\n- Comfortable writing relatively long Python code blocks from scratch, including control flow and vectorized NumPy code.\n- Good at exploratory / high-variance proposals that may drastically change the search behaviour of the heuristic.\n",
+      "qwen_desc": "- Very careful, conservative, and detail-oriented when editing code.\n- Strong at LOCAL edits and REFINEMENT of an existing algorithm:\n  * adjusting weights, coefficients, and thresholds,\n  * changing parameter settings of a score function,\n  * improving robustness, boundary handling, and code safety.\n- Good at reading ONE given algorithm and carefully modifying parts of the logic\n  while keeping the overall structure and invariants intact.\n- Tends to respect types and constraints and avoid introducing obvious bugs.\n",
+      "score": -2072.4,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 60,
+            "deepseek_calls": 53,
+            "qwen_calls": 7
+          },
+          {
+            "best_score": -2033.6,
+            "total_calls": 68,
+            "deepseek_calls": 61,
+            "qwen_calls": 7
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 76,
+            "deepseek_calls": 69,
+            "qwen_calls": 7
+          }
+        ],
+        "avg_score": -2072.4
+      }
+    },
+    {
+      "cid": 1,
+      "deepseek_desc": "- Excels at generating novel heuristic variants by synthesizing patterns across multiple existing algorithms, especially when the goal is to evolve robust, adaptable strategies over time.\n- Strong global reasoning: adept at identifying trade-offs between short-term packing efficiency and long-term adaptability, enabling design of heuristics that maintain stability under dynamic item streams.\n- Capable of writing concise, self-contained Python code blocks with clear causal logic, including vectorized operations and control flow, suitable for direct integration into evolving heuristics.\n- Best suited for exploratory phases in EoH—ideal when the system needs high-variance, counterintuitive proposals that shift search behavior (e.g., introducing controlled fragmentation for future flexibility).\n- Less effective for fine-tuning or incremental improvements; avoids overly verbose or state-heavy implementations unless explicitly required.\n- Performs reliably under extreme input skew (e.g., rare large items), avoiding catastrophic failure through subtle, proactive strategy shifts rather than reactive fixes.",
+      "qwen_desc": "- Specializes in precise, incremental refinement of existing heuristics with strong focus on local optimization and robustness.\n- Excels at adjusting internal parameters such as thresholds, weights, and scoring coefficients without disrupting core algorithmic structure or invariants.\n- Highly effective for improving boundary handling, error resilience, and code safety in deployed heuristics.\n- Prefers conservative edits that preserve logical correctness and type consistency, avoiding speculative or structural overhauls.\n- Best suited for post-hoc tuning phases in Evolution of Heuristics (EoH), particularly when optimizing for stability and reliability under non-uniform item arrival patterns.\n- Less effective for generating novel heuristic structures from scratch or introducing intentional 'inefficiencies' for long-term gain.",
+      "score": -2090.7333333333336,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2089.6,
+            "total_calls": 60,
+            "deepseek_calls": 51,
+            "qwen_calls": 9
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 59,
+            "deepseek_calls": 57,
+            "qwen_calls": 2
+          },
+          {
+            "best_score": -2090.8,
+            "total_calls": 57,
+            "deepseek_calls": 51,
+            "qwen_calls": 6
+          }
+        ],
+        "avg_score": -2090.7333333333336
+      }
+    }
+  ],
+  "timestamp": 1764585257.8699617
+}

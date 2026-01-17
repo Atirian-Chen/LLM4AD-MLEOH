@@ -1,0 +1,9 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins by maximizing the remaining capacity after placing the item, preferring bins where the item fits exactly or leaves the smallest positive remaining capacity, while heavily penalizing overfull bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Large penalty for overfull bins, then prioritize smallest positive remaining capacity\n    priority_scores = np.where(remaining >= 0, remaining, -np.inf)\n    # Invert so smallest positive remaining gets highest priority\n    priority_scores = np.where(priority_scores >= 0, -priority_scores, priority_scores)\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

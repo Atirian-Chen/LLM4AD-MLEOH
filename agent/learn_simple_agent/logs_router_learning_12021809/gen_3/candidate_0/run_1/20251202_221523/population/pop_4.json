@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins where the resulting capacity is positive and closest to zero, and assign negative infinity if the item does not fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    priorities = np.where(remaining >= 0, -remaining, -np.inf)\n    return priorities\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item while minimizing wasted space, favoring bins with the smallest remaining capacity that is still sufficient to fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_bins = remaining >= 0\n    priorities = np.zeros_like(bins)\n    priorities[valid_bins] = 1 / (remaining[valid_bins] + 1e-9)\n    return priorities\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item and minimizes wasted space by favoring bins with the largest remaining capacity that is still sufficient to fit the item, thus promoting efficient utilization of bin space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid_bins = remaining >= 0\n    priorities = np.zeros_like(bins)\n    priorities[valid_bins] = remaining[valid_bins] / (bins[valid_bins] + 1e-9)\n    return priorities\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The algorithm uses a scaled and shifted sigmoid function that emphasizes bins with remaining capacity slightly above the item size, while heavily penalizing bins that cannot accommodate the item, with adjustable steepness and threshold parameters.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Adjustable parameters\n    steepness = 2.0  # Controls the slope of the sigmoid\n    threshold = 0.5  # Shifts the sigmoid center\n    priorities = 1 / (1 + np.exp(-steepness * (remaining - threshold)))\n    return priorities\n\n",
+        "score": -2552.4
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins by favoring those with moderate remaining capacity relative to the item size, using a logarithmic fit penalty and a proximity-based score to balance utilization and avoid both underfilling and overfilling.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_bins = remaining >= 0\n    fit_ratio = np.where(bins > 0, item / bins, 0)\n    log_fit_penalty = np.log1p(fit_ratio)\n    mean_remaining = np.mean(remaining[valid_bins]) if np.any(valid_bins) else 1.0\n    proximity_score = 1.0 / (1.0 + np.abs(remaining - mean_remaining))\n    priorities = np.where(valid_bins, (1.0 - log_fit_penalty) * proximity_score, -np.inf)\n    return priorities\n\n",
+        "score": -3347.4
+    },
+    {
+        "algorithm": "{We compute priority as the ratio of the item size to the remaining capacity after adding the item, favoring bins where the item fits with minimal relative waste, and assign negative infinity if the item does not fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Check if item fits in each bin\n    fits = remaining >= 0\n    # Initialize priorities with negative infinity\n    priorities = np.full_like(remaining, -np.inf)\n    # Compute ratio only for bins where item fits\n    valid_remaining = remaining[fits]\n    # Avoid division by zero; set ratio to a large value if remaining is zero\n    ratios = np.where(valid_remaining == 0, np.inf, item / valid_remaining)\n    # Assign inverse ratio (lower ratio means higher priority)\n    priorities[fits] = -ratios\n    return priorities\n\n",
+        "score": -3384.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a weighted combination of how well the item fits relative to the bin's current capacity and the overall distribution of remaining space, favoring bins where the item uses a moderate proportion of the remaining capacity to avoid extreme fragmentation or overfilling.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    fit_ratio = np.where(bins > 0, item / bins, 0)\n    distribution_score = 1.0 / (1.0 + np.abs(bins - np.mean(bins)))\n    priorities = np.where(remaining >= 0, (1.0 - fit_ratio) * distribution_score, -np.inf)\n    return priorities\n\n",
+        "score": -3438.2
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a sigmoid function of the remaining capacity after adding the item, smoothly favoring bins that fit the item well while strongly penalizing bins that do not fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    priorities = 1 / (1 + np.exp(-remaining))\n    return priorities\n\n",
+        "score": -3578.2
+    }
+]

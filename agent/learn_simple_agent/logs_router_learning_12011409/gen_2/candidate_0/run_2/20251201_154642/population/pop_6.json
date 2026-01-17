@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The new algorithm prioritizes bins by maximizing a smooth, bounded function of the remaining capacity, using a sigmoid to heavily penalize overflow and a quadratic reward for near\u2011perfect fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Sigmoid penalty for overflow: near 0 for safe, near -1 for large overflow\n    overflow_penalty = 1 / (1 + np.exp(5 * remaining)) - 1\n    # Quadratic reward for remaining close to zero (perfect fit)\n    fit_reward = np.exp(-0.5 * (remaining ** 2))\n    # Combined score: reward minus penalty, scaled to be positive\n    priority_scores = fit_reward + overflow_penalty\n    return priority_scores\n\n",
+        "score": -2089.6
+    },
+    {
+        "algorithm": "{The algorithm calculates priority as the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves minimal positive slack, while heavily penalizing overflows.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # For bins that overflow (remaining < 0), assign very low priority proportional to overflow\n    # For bins that fit (remaining >= 0), assign higher priority, preferring smaller positive remaining\n    priority_scores = np.where(remaining >= 0, bins.max() + 1 - remaining, remaining)\n    return priority_scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{Assign priority based on the inverse of remaining capacity after placing the item, preferring bins that leave the smallest positive leftover space, and assign negative infinity priority to bins that would overflow.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    fit_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    priority_scores[fit_mask] = 1.0 / (remaining[fit_mask] + 1.0)\n    return priority_scores\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{Assign priority based on the ratio of item size to bin capacity, preferring bins where the item occupies a larger proportion of the remaining space, while penalizing overflows with the lowest priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    fit_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    priority_scores[fit_mask] = item / (bins[fit_mask] + 1e-12)\n    return priority_scores\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{Assign priority based on the inverse of the remaining space after adding the item, favoring bins with less leftover capacity, while penalizing bins that cannot accommodate the item with the lowest priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    fit_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    priority_scores[fit_mask] = 1 / (remaining[fit_mask] + 1e-12)\n    return priority_scores\n\n",
+        "score": -2122.2
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins by favoring those with remaining capacity closest to a target threshold, penalizing both underutilization and overflow, with a logarithmic penalty for overflow to emphasize avoiding overfilling.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Target threshold for ideal fit\n    target_threshold = 0.1 * bins.max()\n    # Prioritize bins where remaining is close to target_threshold\n    deviation_from_target = np.abs(remaining - target_threshold)\n    # For bins that overflow (remaining < 0), apply logarithmic penalty to heavily discourage\n    overflow_penalty = np.where(remaining < 0, np.log1p(-remaining) * 100, 0)\n    # Priority score: lower deviation is better, overflow penalty reduces priority\n    priority_scores = 1 / (1 + deviation_from_target + overflow_penalty)\n    return priority_scores\n\n",
+        "score": -2178.0
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins by favoring those with remaining capacity closest to a target fraction of the bin's original capacity, applying a quadratic penalty for overflow and a linear penalty for underutilization relative to that target.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    target_fraction = 0.15\n    target = target_fraction * bins\n    \n    deviation = remaining - target\n    overflow_penalty = np.where(deviation < 0, 50 * deviation**2, 0)\n    underuse_penalty = np.where(deviation > 0, 10 * np.abs(deviation), 0)\n    \n    penalty = overflow_penalty + underuse_penalty\n    priority_scores = 1 / (1 + penalty)\n    return priority_scores\n\n",
+        "score": -2179.2
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by maximizing a smooth function of remaining capacity that peaks near a target utilization, using exponential decay for overflow and a Gaussian-like preference for ideal fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    target = 0.15 * bins.max()\n    scale = bins.max() / 10\n    ideal_fit = np.exp(-((remaining - target) ** 2) / (2 * scale ** 2))\n    overflow_penalty = np.where(remaining < 0, np.exp(remaining / scale) * 0.01, 1)\n    priority_scores = ideal_fit * overflow_penalty\n    return priority_scores\n\n",
+        "score": -2221.0
+    }
+]

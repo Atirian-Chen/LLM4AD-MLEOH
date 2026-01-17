@@ -1,0 +1,9 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We compute priority as the remaining capacity after adding the item, preferring bins where the resulting fill is neither too tight nor too loose, by taking the negative absolute difference between the resulting fill and a target fill level, which we set to 0.5 for balance.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    target = 0.5\n    fill_after = bins + item\n    return -np.abs(fill_after - target)\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

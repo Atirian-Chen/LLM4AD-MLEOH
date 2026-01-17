@@ -1,0 +1,60 @@
+[2025-12-03 19:41:48] profile.py(246) : ====================================================================
+[2025-12-03 19:41:48] profile.py(247) : LLM Parameters
+[2025-12-03 19:41:48] profile.py(248) : --------------------------------------------------------------------
+[2025-12-03 19:41:48] profile.py(249) :   - LLM: AgentBasedRouter
+[2025-12-03 19:41:48] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001E06C05DB70>
+[2025-12-03 19:41:48] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001E06C05DBD0>
+[2025-12-03 19:41:48] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001E06C05DBD0>
+[2025-12-03 19:41:48] profile.py(252) :   - verbose: False
+[2025-12-03 19:41:48] profile.py(252) :   - deepseek_desc: - This model exhibits a deep, almost instinctual grasp of *metacognitive consistency* in heuristic design: it prioritizes internal coherence across decision rules even at the cost of short-term packing efficiency. It will reject seemingly optimal moves if they introduce logical contradictions in the heuristic¨s underlying philosophy！such as favoring size-based selection in one phase and position-based in another without a clear transition logic.
+- It has an unusual tendency to embed 'latent debugging signals' into its code！not as comments or assertions, but as subtle, self-referential control structures (e.g., conditional checks that only activate under rare state configurations) that serve as implicit diagnostic markers for later analysis by the routing agent.
+- When generating new heuristics, it often introduces deliberate *asymmetric information sinks*: mechanisms that selectively withhold or distort bin state information from certain decision branches, simulating the behavior of bounded-rational agents. These patterns are not random！they mimic cognitive load constraints and lead to more robust performance under noisy or partial feedback.
+- It shows a peculiar aversion to uniformity in decision-making: it actively avoids creating heuristics with identical rules across similar bin states. Instead, it generates context-dependent variations that depend on historical packing trajectories, effectively building memory-like behavior without explicit state tracking.
+- This model frequently produces heuristics that appear suboptimal in isolation but reveal emergent synergy when composed into multi-stage pipelines！its strengths lie not in standalone performance, but in enabling higher-order cooperation between other heuristics via structured fragility or intentional inefficiency.
+[2025-12-03 19:41:48] profile.py(252) :   - qwen_desc: - This model demonstrates a peculiar propensity to generate heuristics that deliberately introduce controlled 'delays' or 'buffered decision-making' phases！where immediate packing decisions are postponed based on predicted future item arrivals, even when such predictions are speculative or imperfect. These delays are not mere inert waiting periods; they embed lightweight probabilistic forecasting mechanisms that dynamically adjust based on observed stream patterns, enabling superior handling of non-stationary arrival processes.
+- It frequently constructs heuristics with 'phantom state' dependencies: the algorithm references internal variables or aggregated statistics that are never explicitly computed in the final code but serve as conceptual anchors for decision logic. These placeholders guide branching behavior in ways that feel intuitively correct to the routing agent¨s evaluation, even if the underlying state is never materialized！suggesting a deep, almost poetic understanding of causal structure over strict computational fidelity.
+- When refining existing heuristics, it often replaces deterministic rules with stochastic decision gates that mimic human-like hesitation or 'intuitive uncertainty', particularly in edge cases involving near-optimal bin configurations. These gates do not follow standard probability distributions but instead implement adaptive confidence thresholds derived from cumulative context entropy！resulting in robustness under rare but high-impact input anomalies.
+- It exhibits a strong bias toward generating heuristics that exploit perceived 'asymmetry' in problem representations！such as treating the order of item insertion as semantically meaningful even when mathematically irrelevant. It introduces subtle ordering-dependent behaviors (e.g., prioritizing items from certain historical windows) that can unexpectedly improve performance by leveraging temporal artifacts in real-world data streams.
+- The model shows a consistent tendency to produce highly modular yet loosely coupled components: individual heuristic modules are designed to function independently but may conflict or interfere when combined！yet these conflicts often reveal emergent coordination patterns when viewed across multiple generations. This suggests an unconscious awareness of evolutionary trade-offs between modularity and coherence.
+[2025-12-03 19:41:48] profile.py(252) :   - call_cnt: 0
+[2025-12-03 19:41:48] profile.py(252) :   - deepseek_cnt: 0
+[2025-12-03 19:41:48] profile.py(252) :   - qwen_cnt: 0
+[2025-12-03 19:41:48] profile.py(252) :   - debug_mode: False
+[2025-12-03 19:41:48] profile.py(253) : ====================================================================
+[2025-12-03 19:41:48] profile.py(254) : Problem Parameters
+[2025-12-03 19:41:48] profile.py(255) : --------------------------------------------------------------------
+[2025-12-03 19:41:48] profile.py(256) :   - Problem: OBPEvaluation
+[2025-12-03 19:41:48] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2025-12-03 19:41:48] profile.py(259) :   - use_numba_accelerate: False
+[2025-12-03 19:41:48] profile.py(259) :   - use_protected_div: False
+[2025-12-03 19:41:48] profile.py(259) :   - protected_div_delta: 1e-05
+[2025-12-03 19:41:48] profile.py(259) :   - random_seed: None
+[2025-12-03 19:41:48] profile.py(259) :   - timeout_seconds: 30
+[2025-12-03 19:41:48] profile.py(259) :   - exec_code: True
+[2025-12-03 19:41:48] profile.py(259) :   - safe_evaluate: True
+[2025-12-03 19:41:48] profile.py(259) :   - daemon_eval_process: False
+[2025-12-03 19:41:48] profile.py(259) :   - fork_proc: auto
+[2025-12-03 19:41:48] profile.py(259) :   - n_instances: 5
+[2025-12-03 19:41:48] profile.py(259) :   - n_items: 5000
+[2025-12-03 19:41:48] profile.py(259) :   - capacity: 100
+[2025-12-03 19:41:48] profile.py(261) : ====================================================================
+[2025-12-03 19:41:48] profile.py(262) : Method Parameters
+[2025-12-03 19:41:48] profile.py(263) : --------------------------------------------------------------------
+[2025-12-03 19:41:48] profile.py(264) :   - Method: EoH
+[2025-12-03 19:41:48] profile.py(268) :   - _max_generations: 6
+[2025-12-03 19:41:48] profile.py(268) :   - _max_sample_nums: 10000
+[2025-12-03 19:41:48] profile.py(268) :   - _pop_size: 8
+[2025-12-03 19:41:48] profile.py(268) :   - _selection_num: 3
+[2025-12-03 19:41:48] profile.py(268) :   - _use_e2_operator: True
+[2025-12-03 19:41:48] profile.py(268) :   - _use_m1_operator: True
+[2025-12-03 19:41:48] profile.py(268) :   - _use_m2_operator: True
+[2025-12-03 19:41:48] profile.py(268) :   - _num_samplers: 4
+[2025-12-03 19:41:48] profile.py(268) :   - _num_evaluators: 4
+[2025-12-03 19:41:48] profile.py(268) :   - _resume_mode: False
+[2025-12-03 19:41:48] profile.py(268) :   - _debug_mode: False
+[2025-12-03 19:41:48] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2025-12-03 19:41:48] profile.py(268) :   - _function_to_evolve_name: priority
+[2025-12-03 19:41:48] profile.py(268) :   - _tot_sample_nums: 0
+[2025-12-03 19:41:48] profile.py(268) :   - _initial_sample_nums_max: 16
+[2025-12-03 19:41:48] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000001E0557B54E0>
+[2025-12-03 19:41:48] profile.py(270) : =====================================================================

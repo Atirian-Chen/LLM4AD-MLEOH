@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{\nNew algorithm: Compute priority as the negative absolute difference between the bin capacity and the item size, preferring bins whose remaining capacity is closest to the item size.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return -np.abs(bins - item)\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 32,
+        "algorithm": "{The common backbone idea in the provided algorithms is to evaluate the desirability of adding an item to each bin based on post-addition utilization metrics (e.g., deviation from target, remaining space, or utilization ratio), while ensuring feasibility and breaking ties via bin capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    if np.any(valid):\n        # Compute geometric mean of item size and remaining capacity\n        geometric_mean = np.sqrt(item * remaining[valid])\n        # Higher geometric mean implies better balance; use negative for sorting\n        priority_scores[valid] = -geometric_mean + bins[valid] * 1e-10\n    return priority_scores\n\n",
+        "score": -2091.4,
+        "program": ""
+    }
+]

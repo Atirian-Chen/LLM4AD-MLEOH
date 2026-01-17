@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins by their remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the smallest positive remaining capacity, while heavily penalizing overflows.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Large penalty for overflow, then prioritize smallest positive remaining capacity\n    priority_scores = np.where(remaining >= 0, remaining, np.inf)\n    # Invert so smallest positive remaining gets highest priority (lowest number)\n    # Perfect fit (remaining == 0) will be highest priority.\n    return priority_scores\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{The algorithm calculates priority by first determining each bin's remaining capacity after hypothetically adding the item, then prioritizes bins with the smallest non\u2011negative remaining capacity, and finally assigns lower priority (negative score) to bins that would overflow.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    priority_scores = np.full_like(bins, -1.0)\n    valid_mask = remaining >= 0\n    if np.any(valid_mask):\n        # For valid bins, higher priority = smaller remaining capacity\n        # Use negative remaining so that smallest remaining gets highest priority\n        priority_scores[valid_mask] = -remaining[valid_mask]\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

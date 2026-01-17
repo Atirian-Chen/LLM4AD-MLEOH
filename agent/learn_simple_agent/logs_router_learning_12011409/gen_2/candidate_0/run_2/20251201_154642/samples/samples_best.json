@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We assign priority based on the remaining capacity after placing the item, preferring bins where the remaining capacity is smallest but non\u2011negative, and penalizing bins that would overflow.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    priority_scores = np.where(remaining >= 0, remaining, np.inf)\n    return priority_scores\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{The algorithm calculates priority as the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves minimal positive slack, while heavily penalizing overflows.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # For bins that overflow (remaining < 0), assign very low priority proportional to overflow\n    # For bins that fit (remaining >= 0), assign higher priority, preferring smaller positive remaining\n    priority_scores = np.where(remaining >= 0, bins.max() + 1 - remaining, remaining)\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 29,
+        "algorithm": "{The new algorithm prioritizes bins by maximizing a smooth, bounded function of the remaining capacity, using a sigmoid to heavily penalize overflow and a quadratic reward for near\u2011perfect fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Sigmoid penalty for overflow: near 0 for safe, near -1 for large overflow\n    overflow_penalty = 1 / (1 + np.exp(5 * remaining)) - 1\n    # Quadratic reward for remaining close to zero (perfect fit)\n    fit_reward = np.exp(-0.5 * (remaining ** 2))\n    # Combined score: reward minus penalty, scaled to be positive\n    priority_scores = fit_reward + overflow_penalty\n    return priority_scores\n\n",
+        "score": -2089.6,
+        "program": ""
+    }
+]

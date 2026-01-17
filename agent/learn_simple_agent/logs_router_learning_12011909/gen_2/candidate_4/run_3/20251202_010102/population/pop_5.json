@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{We prioritize bins where adding the item would leave the smallest remaining capacity, but only among bins that can fit the item; otherwise, they get the lowest priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    priority_scores[valid_mask] = -remaining[valid_mask]\n    return priority_scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{We prioritize bins by the ratio of the item size to the bin's remaining capacity after adding the item, preferring bins where the item fills a larger proportion of the remaining space, and assign zero priority to bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    priority_scores = np.zeros_like(bins)\n    priority_scores[valid] = item / (remaining[valid] + item)\n    return priority_scores\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{We prioritize bins based on the relative utilization ratio after adding the item, favoring bins that will have the highest utilization (closest to full) while penalizing bins that cannot fit the item by assigning them the lowest possible priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    utilization_ratio = (bins[valid_mask] - item) / bins[valid_mask]\n    priority_scores[valid_mask] = -utilization_ratio  # Minimize utilization gap \u2192 maximize priority\n    return priority_scores\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{We prioritize bins by favoring those with remaining capacity closest to a target fraction of the item size, using an exponential decay of the absolute difference, while setting zero priority for bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priority_scores = np.zeros_like(bins)\n    if not valid_mask.any():\n        return priority_scores\n    target = item * 0.5\n    differences = np.abs(remaining[valid_mask] - target)\n    scale = max(item, 1e-8)\n    priority_scores[valid_mask] = np.exp(-differences / scale)\n    return priority_scores\n\n",
+        "score": -2109.8
+    },
+    {
+        "algorithm": "{We prioritize bins based on the inverse of the remaining capacity after adding the item, favoring bins that will have the smallest leftover space, while assigning the lowest priority to bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    priority_scores[valid_mask] = 1.0 / (remaining[valid_mask] + 1e-12)\n    return priority_scores\n\n",
+        "score": -2122.2
+    },
+    {
+        "algorithm": "{We prioritize bins where adding the item would bring the bin's remaining capacity closest to a fixed fraction of the item size, but only among bins that can fit the item; otherwise, they get the lowest priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    target_fraction = 0.3\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    target_remaining = item * target_fraction\n    priority_scores[valid_mask] = -np.abs(remaining[valid_mask] - target_remaining)\n    return priority_scores\n\n",
+        "score": -2148.0
+    },
+    {
+        "algorithm": "{We prioritize bins where adding the item would leave remaining capacity closest to a fraction of the item size, favoring bins that become nearly perfectly filled relative to the item's scale.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    target_remaining = item * 0.5\n    priority_scores[valid_mask] = -np.abs(remaining[valid_mask] - target_remaining)\n    return priority_scores\n\n",
+        "score": -2197.4
+    },
+    {
+        "algorithm": "{We prioritize bins based on a hybrid metric that rewards bins with moderate remaining capacity\u2014neither too full nor too empty\u2014by computing a normalized deviation from the median remaining capacity, while penalizing bins that cannot fit the item with zero priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priority_scores = np.full_like(bins, 0.0)\n    if not valid_mask.any():\n        return priority_scores\n    valid_remaining = remaining[valid_mask]\n    median_remaining = np.median(valid_remaining)\n    deviations = np.abs(valid_remaining - median_remaining)\n    normalized_deviation = deviations / (median_remaining + 1e-8)\n    priority_scores[valid_mask] = 1.0 / (1.0 + normalized_deviation)\n    return priority_scores\n\n",
+        "score": -3476.2
+    }
+]

@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item without exceeding their capacity while minimizing fragmentation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.fmax(0, bins - item)\n    return remaining\n\n",
+        "score": -2099.4,
+        "program": ""
+    },
+    {
+        "sample_order": 3,
+        "algorithm": "{We assign priority based on the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the least wasted space, while penalizing overfull bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Perfect fit gets highest priority\n    perfect_fit = (remaining == 0)\n    # For bins that fit, priority is higher the smaller the remaining capacity (less waste)\n    fit_priority = -remaining * (remaining >= 0)\n    # Overfull bins get negative penalty based on how overfull they are\n    penalty = remaining * (remaining < 0)\n    # Combine: perfect fit is max, then other fits, then penalties\n    priority_scores = fit_priority + penalty\n    # Ensure perfect fit bins have strictly highest score\n    if np.any(perfect_fit):\n        max_non_perfect = np.max(priority_scores[~perfect_fit]) if np.any(~perfect_fit) else 0\n        priority_scores[perfect_fit] = max_non_perfect + 1\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

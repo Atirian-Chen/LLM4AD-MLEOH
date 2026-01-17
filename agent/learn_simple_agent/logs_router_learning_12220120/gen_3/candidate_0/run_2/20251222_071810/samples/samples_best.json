@@ -1,0 +1,23 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm calculates priority as the remaining capacity after adding the item, preferring bins that are nearly filled but not overflowed, by using a transformed score where bins that cannot fit the item get lowest priority, while others are prioritized by higher remaining capacity after insertion.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_after = bins - item\n    # Bins that cannot fit the item get priority -inf\n    priority_scores = np.where(remaining_after >= 0, remaining_after, -np.inf)\n    return priority_scores\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{We prioritize bins where adding the item would leave the smallest remaining capacity, but only if the bin can fit the item; otherwise, priority is zero.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    priority_scores = np.where(valid, -remaining, 0.0)\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 39,
+        "algorithm": "{The new algorithm prioritizes bins by favoring perfect fits, then assigns scores based on a logarithmic improvement in remaining capacity for partial fits, and penalizes overflows with a quadratic function of overflow size to discourage large overflows more severely.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    priorities = np.zeros_like(bins)\n    \n    perfect_fit = (remaining == 0)\n    fits = (remaining > 0)\n    overflows = (remaining < 0)\n    \n    # Perfect fit gets highest fixed priority\n    priorities[perfect_fit] = 100.0\n    \n    # For fits: priority = log(remaining + 1) / log(item + 2)\n    # This emphasizes tighter fits via logarithmic scaling\n    priorities[fits] = np.log(remaining[fits] + 1.0) / np.log(item + 2.0)\n    \n    # For overflows: priority = - (abs(remaining) + item)^2\n    # Stronger penalty for larger overflows\n    overflow_penalty = (np.abs(remaining[overflows]) + item) ** 2\n    priorities[overflows] = -overflow_penalty\n    \n    return priorities\n\n",
+        "score": -2047.6,
+        "program": ""
+    }
+]

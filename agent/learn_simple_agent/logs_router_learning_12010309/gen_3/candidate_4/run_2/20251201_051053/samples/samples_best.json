@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the highest remaining capacity relative to their total capacity, favoring bins that are less filled to maintain balance and reduce fragmentation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_capacity = bins - item\n    # Avoid negative or zero values by clamping to a small positive value\n    remaining_capacity = np.maximum(remaining_capacity, 1e-8)\n    # Prioritize bins with higher remaining capacity relative to total capacity\n    priority_scores = remaining_capacity / bins\n    return priority_scores\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item with minimal leftover space, favoring bins with the smallest excess capacity after adding the item, while penalizing bins that cannot fit the item at all.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    leftover = bins - item\n    # Penalize bins that cannot fit the item (negative or zero leftover)\n    # Use a large penalty value for infeasible bins\n    penalty = 1e9\n    # Priority is higher when leftover space is small (but non-negative)\n    # Use negative leftover to make smaller leftover = higher priority\n    priorities = np.where(leftover < 0, -penalty, -leftover)\n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

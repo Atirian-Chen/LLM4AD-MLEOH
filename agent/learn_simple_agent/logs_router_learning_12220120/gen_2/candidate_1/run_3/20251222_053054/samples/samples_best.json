@@ -1,0 +1,9 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins with remaining capacity closest to the item size, preferring exact fits first, then underfits, and finally overfits, while avoiding negative remaining capacities.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Separate into three categories: exact fits (0), underfits (>0), overfits (<0)\n    exact = (remaining == 0)\n    under = (remaining > 0)\n    over = (remaining < 0)\n    \n    # Initialize priorities: overfits get lowest priority\n    priorities = np.full_like(bins, -np.inf, dtype=float)\n    \n    # Underfits: higher priority for smaller positive remaining (closer to item)\n    priorities[under] = 1.0 / (remaining[under] + 1)  # +1 to avoid division by zero\n    \n    # Exact fits: highest priority\n    priorities[exact] = 2.0\n    \n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

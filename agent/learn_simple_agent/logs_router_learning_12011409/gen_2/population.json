@@ -1,0 +1,52 @@
+{
+  "generation": 2,
+  "candidates": [
+    {
+      "cid": 0,
+      "deepseek_desc": "- Good at understanding MULTIPLE given algorithms and synthesizing high-level patterns across them.\n- Strong global reasoning: can compare different heuristic ideas and design NEW variants that mix them.\n- Comfortable writing relatively long Python code blocks from scratch, including control flow and vectorized NumPy code.\n- Good at exploratory / high-variance proposals that may drastically change the search behaviour of the heuristic.\n",
+      "qwen_desc": "- Very careful, conservative, and detail-oriented when editing code.\n- Strong at LOCAL edits and REFINEMENT of an existing algorithm:\n  * adjusting weights, coefficients, and thresholds,\n  * changing parameter settings of a score function,\n  * improving robustness, boundary handling, and code safety.\n- Good at reading ONE given algorithm and carefully modifying parts of the logic\n  while keeping the overall structure and invariants intact.\n- Tends to respect types and constraints and avoid introducing obvious bugs.\n",
+      "score": -2090.7,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 62,
+            "deepseek_calls": 57,
+            "qwen_calls": 5
+          },
+          {
+            "best_score": -2089.6,
+            "total_calls": 76,
+            "deepseek_calls": 70,
+            "qwen_calls": 6
+          }
+        ],
+        "avg_score": -2090.7
+      }
+    },
+    {
+      "cid": 1,
+      "deepseek_desc": "- Excels at generating heuristic variants that incorporate adaptive, state-aware decision logic, particularly when the bin packing task involves dynamic item arrival sequences or non-uniform distribution patterns.\n- Strong capability in introducing controlled non-determinism through probabilistic thresholds derived from simulated ensemble behavior, leading to heuristics that maintain robust performance across diverse and evolving input distributions.\n- Frequently restructures control flow with deliberate redundancy—adding fallback paths or validation checks that improve long-term stability under drift, even if they increase short-term computational overhead.\n- Demonstrates a consistent tendency to use spatial metaphors (e.g., 'bins as evolving containers', 'items as interacting particles') to guide heuristic design, producing solutions that outperform standard approaches on irregular or clustered item sets.\n- Skilled at synthesizing hybrid strategies by blending multiple algorithmic principles into unified frameworks, especially when the goal is ecosystemic coherence over strict local optimization.\n- Less effective on tasks requiring minimal code footprint, deterministic logic, or fast execution under tight latency constraints—avoid using it for simple, static packing scenarios.",
+      "qwen_desc": "- Highly precise and cautious in modifying existing heuristics, especially when fine-tuning parameters or refining logic without altering core structure.\n- Excels at local, incremental improvements: adjusting thresholds, tuning score functions, and enhancing robustness at boundaries or edge cases.\n- Maintains strong adherence to type safety, invariant preservation, and code correctness during edits—minimizing risk of introducing regressions.\n- Best suited for scenarios requiring stable, predictable performance under non-stationary item arrivals, particularly when optimizing for long-term consistency over short-term gains.\n- Avoids aggressive optimization that could degrade future adaptability; instead, preserves flexibility by resisting premature bin utilization.\n- Rarely introduces unnecessary complexity but may include subtle, intentional design choices (e.g., conservative resource usage) to support resilience in bursty or adversarial sequences.",
+      "score": -2091.8,
+      "meta": {
+        "runs": [
+          {
+            "best_score": -2091.8,
+            "total_calls": 46,
+            "deepseek_calls": 21,
+            "qwen_calls": 25
+          },
+          {
+            "best_score": -2091.8,
+            "total_calls": 47,
+            "deepseek_calls": 22,
+            "qwen_calls": 25
+          }
+        ],
+        "avg_score": -2091.8
+      }
+    }
+  ],
+  "timestamp": 1764575729.0835593
+}

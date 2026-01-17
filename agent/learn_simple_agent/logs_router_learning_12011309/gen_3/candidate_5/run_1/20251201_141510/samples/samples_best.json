@@ -1,0 +1,9 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins with the smallest remaining capacity that can still fit the item, then by overall smallest remaining capacity for tie-breaking, and assign zero priority to bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    # For valid bins, higher priority = smaller remaining capacity.\n    # We invert by taking negative remaining so smallest remaining gets highest value.\n    # Then shift all valid priorities to be positive, and set invalid to 0.\n    priority_vals = -remaining\n    # Find max among valid to adjust offsets\n    if np.any(valid):\n        max_valid_priority = np.max(priority_vals[valid])\n        # Shift so highest priority becomes max_valid_priority, others lower\n        # Actually we want smallest remaining to have largest number.\n        # Already achieved by -remaining. Now ensure invalid are 0 and valid are positive.\n        # We can set invalid directly to 0.\n        result = np.where(valid, priority_vals - np.min(priority_vals[valid]) + 1, 0)\n    else:\n        result = np.zeros_like(bins)\n    return result\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

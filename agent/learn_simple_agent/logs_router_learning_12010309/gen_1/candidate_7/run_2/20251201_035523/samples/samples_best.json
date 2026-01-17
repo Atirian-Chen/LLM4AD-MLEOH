@@ -1,0 +1,16 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns higher priority to bins that have more remaining capacity relative to their total capacity, favoring bins that are less full while also considering the item size to avoid overflow.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.finfo(float).eps  # Avoid division by zero\n    normalized_remaining = remaining / bins\n    priorities = normalized_remaining * (1 - item / bins)\n    priorities = np.where(bins >= item, priorities, -np.inf)\n    return priorities\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{The algorithm assigns higher priority to bins that are less full, using a normalized inverse of the current load relative to capacity, ensuring balanced distribution across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    load_ratio = bins / (bins + item)\n    # Avoid division by zero; if bin capacity is 0, assign lowest priority\n    load_ratio = np.where(bins == 0, 0, load_ratio)\n    # Prioritize bins with lower load ratios (less full)\n    priorities = 1 - load_ratio\n    return priorities\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins that are less full, favoring bins with more remaining capacity while avoiding bins that are already close to full, and uses a smooth function to balance between these preferences.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Avoid negative or zero remaining capacity\n    remaining = np.maximum(remaining, 1e-8)\n    # Prioritize bins with more remaining capacity using inverse of remaining\n    # Add a small constant to prevent division by very small numbers\n    priorities = 1.0 / remaining\n    return priorities\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{This algorithm assigns priority by calculating the remaining capacity after hypothetically adding the item, then normalizing these values to prioritize bins where the item fits best without excessive wasted space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priorities = np.full_like(bins, -np.inf)\n    priorities[valid_mask] = 1.0 / (1.0 + remaining[valid_mask])\n    return priorities\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins by emphasizing remaining capacity while applying a steeper exponential penalty for bins that are close to being filled, using a higher decay rate and a minimum threshold to avoid very low scores for nearly full bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priorities = np.full_like(bins, -np.inf)\n    # Use a steeper decay rate (1.5) and ensure minimal priority for near-full bins\n    decay_rate = 1.5\n    min_priority = 0.1\n    exp_term = np.exp(-decay_rate * (bins[valid_mask] - remaining[valid_mask]))\n    raw_priorities = exp_term * remaining[valid_mask]\n    # Apply minimum priority threshold\n    priorities[valid_mask] = np.maximum(raw_priorities, min_priority)\n    return priorities\n\n",
+        "score": -2099.2
+    },
+    {
+        "algorithm": "{This algorithm assigns priority based on the ratio of remaining capacity to bin capacity after hypothetically adding the item, favoring bins where the item fits proportionally well without leaving too much unused space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priorities = np.full_like(bins, -np.inf)\n    ratios = remaining[valid_mask] / bins[valid_mask]\n    priorities[valid_mask] = 1.0 / (1.0 + (1.0 - ratios))\n    return priorities\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by maximizing a utility function that combines both the current remaining capacity and a penalty for bins that would become nearly full after adding the item, using a weighted exponential decay.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priorities = np.full_like(bins, -np.inf)\n    priorities[valid_mask] = np.exp(-0.5 * (bins[valid_mask] - remaining[valid_mask])) * remaining[valid_mask]\n    return priorities\n\n",
+        "score": -2101.8
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins by maximizing a Gaussian function centered at an ideal remaining capacity ratio of 0.6, emphasizing bins that maintain a larger proportion of free space after item placement.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priorities = np.full_like(bins, -np.inf)\n    if not valid_mask.any():\n        return priorities\n    remaining_valid = remaining[valid_mask]\n    bins_valid = bins[valid_mask]\n    ideal_ratio = 0.6\n    ratio = remaining_valid / bins_valid\n    priorities[valid_mask] = np.exp(-5.0 * (ratio - ideal_ratio) ** 2)\n    return priorities\n\n",
+        "score": -2102.4
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins by maximizing a Gaussian function centered at an ideal remaining capacity ratio, favoring bins that leave a specific proportion of free space after placement.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priorities = np.full_like(bins, -np.inf)\n    if not valid_mask.any():\n        return priorities\n    remaining_valid = remaining[valid_mask]\n    bins_valid = bins[valid_mask]\n    ideal_ratio = 0.3\n    ratio = remaining_valid / bins_valid\n    priorities[valid_mask] = np.exp(-10.0 * (ratio - ideal_ratio) ** 2)\n    return priorities\n\n",
+        "score": -2102.6
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins based on the harmonic mean between the absolute remaining capacity and the proportional fit, favoring bins where both the absolute and relative remaining space are balanced after item placement.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    priorities = np.full_like(bins, -np.inf)\n    if not valid_mask.any():\n        return priorities\n    remaining_valid = remaining[valid_mask]\n    bins_valid = bins[valid_mask]\n    absolute_remaining = remaining_valid\n    proportional_fit = remaining_valid / bins_valid\n    harmonic_mean = 2.0 / (1.0 / (absolute_remaining + 1e-8) + 1.0 / (proportional_fit + 1e-8))\n    priorities[valid_mask] = harmonic_mean\n    return priorities\n\n",
+        "score": -2429.2
+    }
+]

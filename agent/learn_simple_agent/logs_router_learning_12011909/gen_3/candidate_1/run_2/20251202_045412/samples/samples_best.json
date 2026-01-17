@@ -1,0 +1,9 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We prioritize bins with the smallest remaining capacity that can still fit the item, then by overall smallest remaining capacity if no bin fits.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    fits = bins >= item\n    remaining = bins - item\n    # Primary: bins that fit (1) over those that don't (0)\n    primary = fits.astype(int)\n    # Secondary: for bins that fit, lower remaining capacity is better (smaller positive number)\n    # for bins that don't fit, lower total capacity is better (smaller negative number)\n    # We invert sign so that sorting descending by priority works\n    secondary = -remaining\n    # Combine: primary dominates, secondary breaks ties\n    priority_vals = primary * 1e9 + secondary\n    return priority_vals\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

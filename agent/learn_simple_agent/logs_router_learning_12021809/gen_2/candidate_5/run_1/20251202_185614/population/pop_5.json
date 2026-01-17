@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm prioritizes bins with the least remaining capacity, favoring those that are closest to full while avoiding overfilling, and assigns higher priority to bins that can accommodate the item with minimal leftover space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Avoid negative values (overfilled bins)\n    remaining = np.maximum(remaining, 0)\n    # Higher priority for bins with smaller remaining space (closer to full)\n    # Use inverse of remaining space to prioritize tighter fits\n    priorities = 1 / (remaining + 1e-9)  # Add small epsilon to avoid division by zero\n    return priorities\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm assigns priority based on the exponential of remaining capacity, favoring bins with moderate remaining space to balance load while avoiding extremes.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    remaining = np.maximum(remaining, 0)\n    priorities = np.exp(-np.abs(remaining - 1))\n    return priorities\n\n",
+        "score": -2098.8
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins by combining a quadratic penalty on underutilization with a linear penalty on overutilization, emphasizing bins that are neither too empty nor too full, while normalizing the score based on item size.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    feasible = remaining >= 0\n    # Quadratic penalty for underutilization, linear penalty for overutilization\n    underutilized_penalty = (0.5 * item - remaining) ** 2\n    overutilized_penalty = np.maximum(0, remaining - 0.5 * item)\n    penalties = underutilized_penalty + overutilized_penalty\n    # Normalize by item size and invert to form priority\n    normalized_penalties = penalties / (item + 1e-9)\n    priorities = 1 / (1 + normalized_penalties)\n    return priorities * feasible\n\n",
+        "score": -2197.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by maximizing a Gaussian function centered at a target remaining capacity, favoring bins where the leftover space after adding the item is near a desired fraction of the bin's total capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    feasible = remaining >= 0\n    target = 0.3 * bins  # target remaining capacity after placement\n    sigma = 0.2 * bins + 1e-9  # scale width by bin size\n    gaussian = np.exp(-0.5 * ((remaining - target) / sigma) ** 2)\n    priorities = gaussian * feasible\n    return priorities\n\n",
+        "score": -2214.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by the product of remaining capacity and a Gaussian centered at zero leftover space, favoring bins that fit the item exactly while still allowing some flexibility for larger remaining capacities.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    feasible = remaining >= 0\n    # Gaussian centered at zero leftover space (remaining = 0)\n    sigma = max(item * 0.5, 1e-9)\n    gaussian = np.exp(-0.5 * (remaining / sigma) ** 2)\n    # Multiply by remaining to also favor bins with larger capacity when leftover is similar\n    priorities = gaussian * (remaining + 1e-9) * feasible\n    return priorities\n\n",
+        "score": -2238.0
+    },
+    {
+        "algorithm": "{The algorithms all prioritize bins based on remaining capacity after accounting for the item, either by favoring tighter fits (smaller leftover space) or more open space, but they consistently use the residual capacity as a key metric.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    current_load = bins - (bins - item)  # This is just item, but we need to consider existing load\n    # Actually, let's compute actual current load as bins minus remaining, but we don't have that.\n    # So we assume bins represent current capacities, and we're adding item.\n    # We can't know exact current load \u2014 so instead, we infer the *remaining* capacity after adding.\n    # But we want to estimate \"how close\" a bin is to ideal utilization.\n    \n    # Instead, we compute the new remaining capacity if item is added\n    new_remaining = bins - item\n    new_remaining = np.maximum(new_remaining, 0)  # Avoid negative values\n    \n    # Compute utilization ratio after adding (if applicable)\n    # Note: utilization is (capacity - remaining) / capacity\n    # But since we don't know current load, we can't get true utilization.\n    # Alternative: assume that current load is zero? No, not reasonable.\n    \n    # Let's reinterpret: the goal is to avoid overfilling and balance load.\n    # We can use the idea of how close the *new* remaining capacity is to a desired middle range.\n    # Define target utilization = 0.5 \u2192 target remaining = 0.5 * bins\n    target_remaining = 0.5 * bins\n    \n    # Use absolute difference from target remaining capacity\n    deviation = np.abs(new_remaining - target_remaining)\n    \n    # Higher priority for bins where new remaining is closer to target (i.e., smaller deviation)\n    # Invert the deviation to turn low error into high priority\n    priorities = 1 / (deviation + 1e-9)\n    \n    return priorities\n\n",
+        "score": -2626.4
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins based on the ratio of the item size to the bin capacity, favoring bins where the item constitutes a moderate fraction of the capacity to promote balanced utilization and avoid both underuse and overfilling.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    bins = np.maximum(bins, 1e-9)\n    \n    # Compute the ratio of item size to bin capacity\n    ratio = item / bins\n    \n    # Define ideal ratio range: avoid very small (underused) or very large (overfilled) ratios\n    target_ratio = 0.5\n    deviation = np.abs(ratio - target_ratio)\n    \n    # Prioritize bins where the ratio is closest to the target\n    priorities = 1 / (deviation + 1e-9)\n    \n    return priorities\n\n",
+        "score": -2868.0
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins by emphasizing those with remaining capacity close to the item size, using a steeper sigmoid centered at the item size to strongly favor bins that can accommodate the item without excessive leftover space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    feasible = remaining >= 0\n    # Steeper sigmoid centered at the item size\n    sigmoid_input = (remaining - item) / (item + 1e-9)\n    weights = 1 / (1 + np.exp(-5 * sigmoid_input))  # Increased steepness\n    priorities = weights * feasible\n    return priorities\n\n",
+        "score": -4955.8
+    }
+]

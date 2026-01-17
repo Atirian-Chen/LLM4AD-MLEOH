@@ -1,0 +1,30 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{We compute priority as the remaining capacity after adding the item if it fits, otherwise assign the lowest priority (e.g., negative infinity).}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    priorities = np.where(remaining >= 0, remaining, -np.inf)\n    return priorities\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 2,
+        "algorithm": "{The algorithm assigns priority based on the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the least wasted space, while penalizing overfull bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Perfect fit gets highest priority\n    perfect_fit = (remaining == 0)\n    # For bins where item fits (remaining >= 0), priority is higher for smaller remaining capacity\n    fits = (remaining >= 0)\n    # For bins where item does not fit (remaining < 0), priority is negative and worse for larger overflow\n    priority_scores = np.where(perfect_fit, 2.0, \n                               np.where(fits, 1.0 / (1.0 + remaining), \n                                        -np.abs(remaining)))\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 17,
+        "algorithm": "{We prioritize bins by how close their current capacity is to the item size, preferring bins that are nearly full but still have space for the item, while using a smooth scoring function that naturally penalizes overfull bins without explicit conditionals.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    scores = np.exp(-remaining**2) - np.tanh(np.maximum(remaining, 0))\n    return scores\n\n",
+        "score": -2091.6,
+        "program": ""
+    },
+    {
+        "sample_order": 25,
+        "algorithm": "{The algorithm prioritizes bins based on a combination of the ratio of item size to bin capacity and the absolute remaining space, favoring bins where the item occupies a large proportion of the remaining capacity without exceeding it, using a piecewise scoring function that smoothly transitions between fit and overfill conditions.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    ratio = item / np.maximum(bins, 1e-9)\n    \n    # Core score: high when ratio is high (item uses much of bin) and remaining is positive\n    base_score = ratio * np.exp(-np.abs(remaining))\n    \n    # Adjust: boost near-perfect fits, penalize overfill with a smooth transition\n    fit_boost = np.exp(-(remaining**2) * 10)\n    overfill_penalty = 1.0 / (1.0 + np.exp(-remaining * 5))\n    \n    scores = base_score * fit_boost * overfill_penalty\n    return scores\n\n",
+        "score": -2089.6,
+        "program": ""
+    }
+]

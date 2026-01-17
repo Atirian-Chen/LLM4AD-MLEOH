@@ -1,0 +1,30 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm prioritizes bins with the highest remaining capacity, ensuring a balanced distribution by favoring bins that can accommodate the item with the least wastage.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return bins - item\n\n",
+        "score": -5000.0,
+        "program": ""
+    },
+    {
+        "sample_order": 3,
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item while minimizing wasted space, and uses a normalized score based on the ratio of remaining capacity to total capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.zeros_like(bins)\n    valid = remaining >= item\n    scores = np.zeros_like(bins)\n    scores[valid] = remaining[valid] / bins[valid]\n    return scores\n\n",
+        "score": -2099.4,
+        "program": ""
+    },
+    {
+        "sample_order": 7,
+        "algorithm": "{The algorithm assigns higher priority to bins that are less filled, favoring bins with more remaining capacity to balance the load across all bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_capacity = bins - item\n    # Prioritize bins with more remaining capacity\n    # Use a small positive offset to avoid division by zero and ensure all values are positive\n    priority_scores = 1 / (remaining_capacity + 1e-8)\n    return priority_scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    },
+    {
+        "sample_order": 43,
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins based on their remaining capacity after adding the item, favoring bins that can accommodate the item while minimizing waste and promoting balanced load distribution.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    scores = np.zeros_like(bins)\n    normalized_remaining = remaining[valid] / bins[valid]\n    # Penalize bins that are already close to full (high normalized remaining means low fill)\n    scores[valid] = 1.0 / (normalized_remaining + 1e-8) * (1 - normalized_remaining)\n    return scores\n\n",
+        "score": -2091.0,
+        "program": ""
+    }
+]

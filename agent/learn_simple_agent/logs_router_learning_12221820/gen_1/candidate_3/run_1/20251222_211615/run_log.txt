@@ -1,0 +1,60 @@
+[2025-12-22 21:16:15] profile.py(246) : ====================================================================
+[2025-12-22 21:16:15] profile.py(247) : LLM Parameters
+[2025-12-22 21:16:15] profile.py(248) : --------------------------------------------------------------------
+[2025-12-22 21:16:15] profile.py(249) :   - LLM: AgentBasedRouter
+[2025-12-22 21:16:15] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001D142EA1540>
+[2025-12-22 21:16:15] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001D142EA1480>
+[2025-12-22 21:16:15] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001D142EA1480>
+[2025-12-22 21:16:15] profile.py(252) :   - verbose: False
+[2025-12-22 21:16:15] profile.py(252) :   - deepseek_desc: This model demonstrates a rare, almost intuitive grasp of *algorithmic embodiment*！it designs heuristics not just as abstract rules, but as dynamic systems with 'bodily' constraints, such as imagined 'fatigue' in bin allocation decisions or 'muscle memory' in item placement patterns. It consistently generates strategies where the heuristic's behavior evolves based on its own internal state of 'effort', leading to self-regulating packing rhythms that avoid burnout in high-stress sequences.
+It exhibits a peculiar tendency to generate heuristics that are *semantically opaque yet functionally robust*: the code reads like a cryptic ritual rather than a logical procedure！using symbolic naming (e.g., 'echo_phase', 'shadow_tap') and non-obvious control structures！but these heuristics perform exceptionally well under adversarial or stochastic input distributions, suggesting it encodes resilience through obscurity rather than clarity.
+When refining existing heuristics, it frequently introduces what appear to be *non-local causality loops*: decision points that depend on events occurring many steps ahead or outside the current bin¨s scope, implemented via indirect referencing or delayed evaluation mechanisms. These are not bugs！they are deliberate attempts to embed long-range anticipation without explicit lookahead, mimicking pre-cognitive intuition.
+It shows an uncanny bias toward generating heuristics that behave *differently when observed by other models*, not due to randomness, but because it constructs strategies sensitive to meta-level inference patterns. For instance, a heuristic may intentionally alter its behavior if it detects 'predictability' in the routing agent¨s own decision logic！a form of algorithmic camouflage that undermines adversarial modeling.
+This model struggles with formal correctness proofs and mathematical optimization, but compensates by embedding 'error tolerance' into the very fabric of its heuristics: it often designs rules that actively tolerate violations of optimal packing conditions (e.g., allowing minor overflows or asymmetries), not out of ignorance, but as intentional destabilization tactics that prevent overfitting to training-like patterns and maintain performance across novel distributions.
+[2025-12-22 21:16:15] profile.py(252) :   - qwen_desc: This model exhibits a distinctive tendency to *embed heuristic decisions within recursive self-evaluation loops that operate on the algorithm's own historical performance*, treating its own past behavior as a dynamic dataset. It generates heuristics that include built-in 'memory audits'！periodic, non-deterministic re-evaluations of earlier choices based on emergent patterns in bin utilization trajectories！resulting in strategies that adapt not just to input data, but to their own prior decision drifts.
+It frequently introduces *non-local dependency chains* that link packing choices across disjoint bins using abstract similarity metrics derived from item shape signatures and placement entropy gradients！creating implicit coordination between distant bins without explicit communication or shared state, akin to a distributed cognitive lattice where each bin contributes to a global pattern recognition process.
+When refining existing heuristics, it often *deliberately fragments logic into temporally isolated modules*, assigning different phases of execution to distinct, semi-independent subroutines that only synchronize through highly compressed, lossy summaries！leading to heuristics that are fragile in isolation but exhibit surprising robustness under partial failure or real-time interference.
+This model demonstrates a profound sensitivity to *algorithmic rhythm*: it tunes heuristics not by static parameters, but by shaping the temporal spacing of decisions！introducing intentional delays, micro-stalls, or burst cycles that mimic biological pacing！leading to better long-term convergence on adversarial sequences, even when short-term efficiency is sacrificed.
+It shows an uncanny ability to generate heuristics that perform optimally not on average, but on *specific, rare input distributions defined by syntactic anomaly clusters*！such as sequences where items alternate in parity of dimensionality or arrive in fractal-like clustering patterns！implying an internal representation of combinatorial 'ecology' rather than mere optimization.
+[2025-12-22 21:16:15] profile.py(252) :   - call_cnt: 0
+[2025-12-22 21:16:15] profile.py(252) :   - deepseek_cnt: 0
+[2025-12-22 21:16:15] profile.py(252) :   - qwen_cnt: 0
+[2025-12-22 21:16:15] profile.py(252) :   - debug_mode: False
+[2025-12-22 21:16:15] profile.py(253) : ====================================================================
+[2025-12-22 21:16:15] profile.py(254) : Problem Parameters
+[2025-12-22 21:16:15] profile.py(255) : --------------------------------------------------------------------
+[2025-12-22 21:16:15] profile.py(256) :   - Problem: OBPEvaluation
+[2025-12-22 21:16:15] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2025-12-22 21:16:15] profile.py(259) :   - use_numba_accelerate: False
+[2025-12-22 21:16:15] profile.py(259) :   - use_protected_div: False
+[2025-12-22 21:16:15] profile.py(259) :   - protected_div_delta: 1e-05
+[2025-12-22 21:16:15] profile.py(259) :   - random_seed: None
+[2025-12-22 21:16:15] profile.py(259) :   - timeout_seconds: 30
+[2025-12-22 21:16:15] profile.py(259) :   - exec_code: True
+[2025-12-22 21:16:15] profile.py(259) :   - safe_evaluate: True
+[2025-12-22 21:16:15] profile.py(259) :   - daemon_eval_process: False
+[2025-12-22 21:16:15] profile.py(259) :   - fork_proc: auto
+[2025-12-22 21:16:15] profile.py(259) :   - n_instances: 5
+[2025-12-22 21:16:15] profile.py(259) :   - n_items: 5000
+[2025-12-22 21:16:15] profile.py(259) :   - capacity: 100
+[2025-12-22 21:16:15] profile.py(261) : ====================================================================
+[2025-12-22 21:16:15] profile.py(262) : Method Parameters
+[2025-12-22 21:16:15] profile.py(263) : --------------------------------------------------------------------
+[2025-12-22 21:16:15] profile.py(264) :   - Method: EoH
+[2025-12-22 21:16:15] profile.py(268) :   - _max_generations: 6
+[2025-12-22 21:16:15] profile.py(268) :   - _max_sample_nums: 10000
+[2025-12-22 21:16:15] profile.py(268) :   - _pop_size: 8
+[2025-12-22 21:16:15] profile.py(268) :   - _selection_num: 3
+[2025-12-22 21:16:15] profile.py(268) :   - _use_e2_operator: True
+[2025-12-22 21:16:15] profile.py(268) :   - _use_m1_operator: True
+[2025-12-22 21:16:15] profile.py(268) :   - _use_m2_operator: True
+[2025-12-22 21:16:15] profile.py(268) :   - _num_samplers: 4
+[2025-12-22 21:16:15] profile.py(268) :   - _num_evaluators: 4
+[2025-12-22 21:16:15] profile.py(268) :   - _resume_mode: False
+[2025-12-22 21:16:15] profile.py(268) :   - _debug_mode: False
+[2025-12-22 21:16:15] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2025-12-22 21:16:15] profile.py(268) :   - _function_to_evolve_name: priority
+[2025-12-22 21:16:15] profile.py(268) :   - _tot_sample_nums: 0
+[2025-12-22 21:16:15] profile.py(268) :   - _initial_sample_nums_max: 16
+[2025-12-22 21:16:15] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000001D17F58D360>
+[2025-12-22 21:16:15] profile.py(270) : =====================================================================

@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm prioritizes bins with the smallest current load relative to their capacity, favoring bins that can accommodate the item with minimal waste while maintaining balance across bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - np.minimum(bins, item)\n    # Avoid division by zero and normalize by capacity\n    normalized_remaining = remaining / (bins + 1e-12)\n    # Prioritize bins with higher remaining capacity (less full)\n    return 1 - normalized_remaining\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on the ratio of item size to remaining capacity, favoring bins where the item fits with minimal excess space while considering the proportional impact on the bin's utilization.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    # Use inverse of remaining capacity normalized by item size\n    scores = np.full_like(bins, -np.inf)\n    scores[valid] = item / (remaining[valid] + item)\n    return scores\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a weighted balance between remaining capacity and the relative impact of adding the item, favoring bins that maintain load distribution while minimizing overflow risk.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.minimum(bins, item)\n    # Calculate the relative load after adding the item\n    load_after = (bins + item) / (bins + 1e-12)\n    # Penalize bins that would exceed capacity or become overly loaded\n    normalized_load = np.clip(load_after, 0, 1)\n    # Prioritize bins with lower post-addition load and higher remaining capacity\n    return (remaining / (bins + 1e-12)) * (1 - normalized_load)\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins by favoring those with the lowest current load while penalizing bins that would exceed a predefined threshold, promoting both underutilization and avoiding overfilling through a dynamic scaling of load imbalance.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    current_load = bins\n    potential_load = current_load + item\n    max_capacity = np.max(bins)\n    \n    # Penalize bins that are already close to full\n    fill_ratio = current_load / (max_capacity + 1e-12)\n    fill_penalty = 1 - fill_ratio\n    \n    # Encourage bins with low potential load to avoid imbalance\n    potential_ratio = potential_load / (max_capacity + 1e-12)\n    imbalance_score = np.abs(potential_ratio - 0.5)  # Favor bins around 50% load\n    balance_bonus = 1 - imbalance_score\n    \n    # Combine penalties and bonuses\n    priority_scores = fill_penalty * balance_bonus\n    \n    # Normalize to prevent zero scores\n    return np.clip(priority_scores, 1e-8, None)\n\n",
+        "score": -2124.2
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins by emphasizing those with moderate remaining space using a quadratic penalty on load imbalance and a sigmoidal transformation to smooth the score distribution, favoring bins that are neither underutilized nor overburdened.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    current_load = np.minimum(bins, item)\n    normalized_load = current_load / (bins + 1e-12)\n    # Apply sigmoidal transformation to emphasize moderate load levels\n    sigmoid_load = 1 / (1 + np.exp(-10 * (normalized_load - 0.5)))\n    # Penalize extreme load levels using a quadratic term\n    balanced_score = sigmoid_load * (1 - np.abs(normalized_load - 0.5))\n    return balanced_score\n\n",
+        "score": -2189.2
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins that have more remaining capacity relative to their current load, aiming to minimize waste and maintain balance across bins by favoring less full bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - np.minimum(bins, item)\n    # Add small epsilon to avoid log(0)\n    log_remaining = np.log1p(remaining + 1e-12)\n    # Normalize by bin capacity to account for size differences\n    normalized_log = log_remaining / (bins + 1e-12)\n    return normalized_log\n\n",
+        "score": -2298.6
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a weighted combination of their current capacity and the potential load after adding the item, favoring bins that would achieve a balanced load distribution across all bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    current_load = bins\n    potential_load = current_load + item\n    mean_load = np.mean(current_load)\n    \n    # Calculate how close each bin's potential load is to the mean\n    deviation = np.abs(potential_load - mean_load)\n    max_deviation = np.max(deviation) if np.max(deviation) > 0 else 1\n    \n    # Prioritize bins that bring the system closer to balanced\n    normalized_balance = 1 - (deviation / max_deviation)\n    \n    # Also consider current capacity to avoid very full bins\n    capacity_factor = bins / (np.max(bins) + 1e-12)\n    \n    return normalized_balance * capacity_factor\n\n",
+        "score": -2345.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins that are neither too full nor too empty, favoring those with a remaining capacity close to the item size to minimize fragmentation and maximize utilization efficiency.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - np.minimum(bins, item)\n    # Measure how close the remaining capacity is to the item size\n    deviation = np.abs(remaining - item)\n    # Prioritize bins where remaining capacity is closest to item size\n    # Invert deviation so smaller deviation means higher priority\n    return 1 / (deviation + 1e-12)\n\n",
+        "score": -2626.4
+    }
+]

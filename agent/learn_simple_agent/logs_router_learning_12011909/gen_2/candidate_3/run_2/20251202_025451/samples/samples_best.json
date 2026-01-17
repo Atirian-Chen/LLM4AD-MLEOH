@@ -1,0 +1,9 @@
+[
+    {
+        "sample_order": 1,
+        "algorithm": "{The algorithm assigns priority based on the remaining capacity after adding the item, preferring bins where the item fits perfectly, then bins with minimal leftover capacity, and finally penalizing bins where the item does not fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Priority 1: perfect fit (remaining == 0) gets highest score\n    # Priority 2: positive leftover (remaining > 0) gets higher score for smaller leftover\n    # Priority 3: negative leftover (item does not fit) gets lowest score\n    # Use negative of absolute remaining to prioritize smaller leftover,\n    # but add a large constant to keep positive leftovers above negative ones.\n    # Perfect fit will have score 1.0, other positives in (0,1), negatives < 0.\n    scores = np.where(remaining >= 0, 1.0 - remaining / (bins.max() + 1e-9), -remaining)\n    return scores\n\n",
+        "score": -2091.8,
+        "program": ""
+    }
+]

@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm prioritizes bins with the smallest current total load relative to their capacity, favoring bins that can accommodate the item with minimal disruption to balance.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_capacity = bins - (bins > 0) * item  # Adjust for bins that can't fit the item\n    # Avoid division by zero; set remaining capacity to a small value if bin is full\n    remaining_capacity = np.where(remaining_capacity <= 0, 1e-9, remaining_capacity)\n    # Prioritize bins with higher remaining capacity relative to their total capacity\n    # Use inverse of remaining capacity ratio to prioritize bins with more space left\n    priorities = 1.0 / remaining_capacity\n    return priorities\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a sigmoid-weighted combination of remaining capacity and a penalty for overflows, emphasizing bins where the item fits well while smoothly demoting near-overflows.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    overflow_mask = remaining < 0\n    valid_mask = ~overflow_mask\n    \n    priorities = np.full_like(bins, -np.inf)\n    \n    if np.any(valid_mask):\n        sigmoid_input = remaining[valid_mask] / (item + 1e-9)\n        sigmoid = 1 / (1 + np.exp(-sigmoid_input))\n        priorities[valid_mask] = sigmoid * (1 + 1 / (1 + np.abs(remaining[valid_mask])))\n    \n    priorities[overflow_mask] = -1e9 - np.abs(remaining[overflow_mask])\n    \n    return priorities\n\n",
+        "score": -2094.4
+    },
+    {
+        "algorithm": "{The algorithm calculates priority as the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves minimal wasted space, while heavily penalizing overflows.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Perfect fit gets highest priority\n    perfect_fit = (remaining == 0)\n    # Valid fits (remaining >= 0) get priority based on minimal leftover space\n    valid_fits = (remaining > 0)\n    # Overflows (remaining < 0) get heavily penalized\n    priorities = np.full_like(bins, -np.inf)\n    priorities[valid_fits] = 1.0 / (1.0 + remaining[valid_fits])  # Higher for smaller leftover\n    priorities[perfect_fit] = 2.0  # Higher than any valid non-perfect fit\n    return priorities\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item without exceeding their capacity while minimizing fragmentation.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - (bins - 1e-9)  # Ensure we don't divide by zero; actually, this is just a placeholder\n    # Correct calculation of remaining capacity\n    remaining = bins - (np.sum(bins) - np.sum(bins))  # This is incorrect; let's fix it\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The common backbone idea in the provided algorithms is to prioritize bins that can accommodate the item while minimizing wasted space, with preference given to bins that leave minimal remaining capacity or achieve a perfect fit, and penalizing bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    priorities = np.full_like(bins, -np.inf)\n    # For valid bins, prioritize higher utilization (item / remaining_capacity)\n    # Use small epsilon to avoid division by zero (perfect fit case)\n    priorities[valid] = item / (remaining[valid] + 1e-10)\n    return priorities\n\n",
+        "score": -2114.6
+    },
+    {
+        "algorithm": "{We prioritize bins based on a harmonic balance between the relative utilization of the bin and the item's size, favoring bins that are neither too empty nor too full relative to the item, while penalizing overflows logarithmically.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid_mask = remaining >= 0\n    overflow_mask = remaining < 0\n    \n    priorities = np.full_like(bins, -np.inf)\n    \n    # For valid bins (can fit the item), use harmonic balance\n    if np.any(valid_mask):\n        utilization_ratio = item / (bins[valid_mask] + 1e-9)\n        # Favor moderate utilization (neither too low nor too high)\n        balance_score = 1 / (1 + np.abs(utilization_ratio - 0.5))\n        # Boost bins with higher remaining capacity proportionally\n        remaining_ratio = remaining[valid_mask] / (bins[valid_mask] + 1e-9)\n        score = balance_score * (1 + remaining_ratio)\n        priorities[valid_mask] = score\n    \n    # Penalize overflow bins logarithmically by how much they overflow\n    if np.any(overflow_mask):\n        overflow_penalty = np.log1p(-remaining[overflow_mask])  # log(1 - |overflow|/bin_cap)\n        priorities[overflow_mask] = -1e9 + overflow_penalty\n    \n    return priorities\n\n",
+        "score": -2320.8
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a hybrid metric that combines the relative utilization of each bin before adding the item, penalizing bins that are already heavily utilized, while also rewarding bins where the item would bring the bin closer to an optimal fill level defined as half of the bin's capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    current_utilization = (bins > 0) * item  # Only consider bins that can fit the item\n    # Avoid division by zero; use small epsilon for empty bins\n    effective_bins = np.where(bins <= 0, 1e-9, bins)\n    relative_utilization = current_utilization / effective_bins\n    # Reward bins where the item brings them close to half-capacity\n    target_deviation = np.abs((current_utilization + item) / effective_bins - 0.5)\n    # Prioritize bins with low utilization and small deviation from target\n    priorities = 1.0 / (1.0 + relative_utilization + 2.0 * target_deviation)\n    return priorities\n\n",
+        "score": -4489.6
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins based on the harmonic mean of their current load and remaining capacity after adding the item, emphasizing bins that maintain a balanced utilization and space availability while penalizing extreme imbalances.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    priorities = np.full_like(bins, -np.inf)\n    if np.any(valid):\n        # Current load before adding (assuming bins is remaining capacity)\n        current_remaining = bins\n        current_load = current_remaining - remaining  # Not directly usable; reinterpret: used portion is item if placed\n        # Instead, use: after adding, used = original_capacity - (remaining_capacity - item)\n        # But since bins is current remaining capacity, original capacity = bins + current_load\n        # Simpler: assume bins is current remaining capacity, so current load = original - bins\n        # But we don't have original. So let\u2019s define:\n        # After adding, the new remaining capacity is `new_remaining = bins - item`\n        # The \"used\" part after adding would be original_capacity - new_remaining, but again, no original.\n        # So reinterpret: use the amount being added (item) as the new load contribution,\n        # and balance it with the new remaining capacity.\n\n        # Harmonic mean of (item) and (new_remaining), avoiding zeros\n        new_remaining = bins[valid] - item\n        used = item\n        used = np.maximum(used, 1e-9)\n        new_remaining = np.maximum(new_remaining, 1e-9)\n        # Harmonic mean: 2 * a * b / (a + b)\n        harmonic_mean = 2 * used * new_remaining / (used + new_remaining)\n        priorities[valid] = harmonic_mean\n    return priorities\n\n",
+        "score": -4856.2
+    }
+]

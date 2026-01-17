@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{Assign priority based on a Gaussian transformation centered at a positive remaining capacity, smoothly favoring bins where the item fits well without leaving too much empty space, while sharply dropping for overflows and for large leftover capacities.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    # Gaussian centered at remaining = 0.2, scale = 0.3\n    scores = np.exp(-((remaining - 0.2) ** 2) / (2 * 0.3 ** 2))\n    scores = np.where(remaining < 0, 0, scores)\n    return scores\n\n",
+        "score": -2089.6
+    },
+    {
+        "algorithm": "{New algorithm: Assign priority based on the relative utilization of each bin after adding the item, favoring bins that achieve higher utilization (closer to full) while penalizing overflows with a steep negative penalty.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    priority_scores = np.full_like(bins, -np.inf)\n    fits = remaining >= 0\n    # Use inverse of remaining capacity + 1 to favor smaller leftovers, but scale by bin capacity for relative utilization\n    utilization = item / bins\n    # Reward higher utilization and small leftover space\n    priority_scores[fits] = utilization[fits] + (1.0 / (1.0 + remaining[fits]))\n    return priority_scores\n\n",
+        "score": -2090.8
+    },
+    {
+        "algorithm": "{\nNew algorithm: Assign priority based on the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the smallest positive remaining capacity, while heavily penalizing overflows.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Large penalty for overflow\n    priority_scores = np.where(remaining >= 0, remaining, -1e9)\n    # Prefer smallest positive remaining (closest to perfect fit)\n    # Invert so smallest positive is highest priority\n    priority_scores = np.where(priority_scores >= 0, -priority_scores, priority_scores)\n    return priority_scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{New algorithm: Assign priority based on the inverse of the remaining capacity after adding the item, with a bonus for bins where the item size is a large fraction of the bin's total capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    priority_scores = np.full_like(bins, -np.inf)\n    fits = remaining >= 0\n    # Priority is the inverse of remaining space plus a scaled utilization term\n    priority_scores[fits] = (1.0 / (remaining[fits] + 1e-6)) + (item / bins[fits]) * 0.5\n    return priority_scores\n\n",
+        "score": -2094.6
+    },
+    {
+        "algorithm": "{New algorithm: Assign priority based on a logarithmic penalty for leftover space, favoring bins with minimal positive remaining capacity after item placement, and applying a steep exponential penalty for overflows to strongly discourage exceeding bin capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Initialize priority scores with a large negative value for overflows\n    priority_scores = np.full_like(bins, -np.inf)\n    # For bins that can fit the item, use log-based priority: smaller remaining \u2192 higher priority\n    fits = remaining >= 0\n    # Use log(1 + remaining) to penalize leftover space softly but increasingly\n    priority_scores[fits] = -np.log1p(remaining[fits])\n    return priority_scores\n\n",
+        "score": -2094.8
+    },
+    {
+        "algorithm": "{\nNew algorithm: Assign priority based on the remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the smallest positive remaining capacity, while heavily penalizing overflows.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Large negative priority for overfull bins\n    priority_scores = np.full_like(bins, -np.inf)\n    # For bins that can fit the item, priority is higher when remaining is smaller but non-negative\n    fits = remaining >= 0\n    priority_scores[fits] = 1.0 / (1.0 + remaining[fits])  # Best when remaining is 0\n    return priority_scores\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{The algorithm prioritizes bins based on a balance between remaining capacity and bin utilization, favoring bins that are neither too full nor too empty by applying a logarithmic utility function to the ratio of remaining to total capacity, with a strong preference for bins that are approximately half-filled.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Prevent negative or zero remaining capacity from causing issues\n    valid_remaining = np.where(remaining < 0, 0, remaining)\n    # Avoid division by zero or near-zero when bins are nearly full\n    effective_capacity = np.where(bins > 1e-9, bins, 1e-9)\n    # Compute ratio of remaining to total capacity\n    ratio = valid_remaining / effective_capacity\n    # Apply logarithmic utility: peak at ratio ~0.5 (half-full), decline symmetrically\n    # Use a transformation that gives high priority near 0.5\n    log_utility = -np.abs(ratio - 0.5)\n    # Scale and shift to ensure positive priorities; use soft clamp to avoid extremes\n    priority_scores = np.exp(log_utility * 2)  # Peaks around 0.5\n    # Ensure bins that can't fit the item have zero priority\n    priority_scores = np.where(remaining < 0, 0, priority_scores)\n    return priority_scores\n\n",
+        "score": -2868.0
+    },
+    {
+        "algorithm": "{Assign priority based on a sigmoid transformation of the remaining capacity, smoothly favoring bins where the item fits while sharply penalizing overflows.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Sigmoid-like transformation: high positive scores for positive remaining, near zero for negative remaining\n    scores = 1 / (1 + np.exp(-remaining))\n    # Optional: scale to make priorities more distinct\n    scores = np.where(remaining < 0, 0, scores)\n    return scores\n\n",
+        "score": -3578.2
+    }
+]

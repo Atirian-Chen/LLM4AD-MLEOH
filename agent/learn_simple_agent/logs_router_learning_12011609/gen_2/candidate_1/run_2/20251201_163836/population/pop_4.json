@@ -1,0 +1,42 @@
+[
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins that can accommodate the item with minimal leftover space, favoring bins with smaller remaining capacity that still fit the item, and penalizing bins that cannot fit the item at all.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Mask for bins that cannot fit the item\n    cannot_fit = remaining < 0\n    # Prioritize bins that can fit the item, with lower remaining space having higher priority\n    # Use a large penalty for bins that cannot fit the item\n    priorities = np.where(cannot_fit, -np.inf, remaining)\n    # Invert the priority so that smaller remaining space means higher priority\n    return -priorities\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins with remaining capacity exactly matching the item size to minimize fragmentation, then to bins with larger remaining capacity, using a normalized score that penalizes bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    available = bins.copy()\n    priorities = np.zeros_like(bins)\n    fit_mask = available >= item\n    if np.any(fit_mask):\n        exact_fit = np.abs(available - item) < 1e-9\n        if np.any(exact_fit):\n            priorities[exact_fit] = 2.0\n        else:\n            priorities[fit_mask] = 1.0 + (available[fit_mask] - item) / bins[fit_mask]\n    return priorities\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item while minimizing fragmentation, and uses a normalized score based on available space relative to bin capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    available = bins - np.zeros_like(bins)\n    # Ensure no negative available space\n    available = np.clip(available, 0, None)\n    # Prioritize bins with more available space, but cap at 1.0 for bins that can fit the item\n    priorities = np.where(available >= item, available / bins, 0)\n    return priorities\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins where the item size is closest to a configurable target proportion of the bin capacity, using a linear penalty for larger gaps and a configurable weight for favoring bins with less remaining capacity after placement.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    cannot_fit = remaining < 0\n    target_proportion = 0.75\n    utilization_weight = 0.3\n    target = bins * target_proportion\n    fit_score = 1.0 - np.minimum(np.abs(item - target) / bins, 1.0)\n    util_score = 1.0 - (remaining / bins)\n    combined_score = fit_score + utilization_weight * util_score\n    priorities = np.where(cannot_fit, -np.inf, combined_score)\n    return priorities\n\n",
+        "score": -2152.8
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins where the item size is closest to a fraction of the remaining capacity, using a harmonic balance between fitting the item and utilizing bin space efficiently.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    cannot_fit = remaining < 0\n    # Calculate how close the item is to a golden ratio proportion of the bin capacity\n    golden_ratio = 0.618\n    target = bins * golden_ratio\n    # Priority peaks when item is near the target, penalizes cannot_fit\n    score = 1.0 / (np.abs(item - target) + 1e-9)\n    priorities = np.where(cannot_fit, -np.inf, score)\n    return priorities\n\n",
+        "score": -2244.4
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins where the item size is closest to a fraction of the remaining capacity, favoring bins that achieve a target fill ratio while penalizing those that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    cannot_fit = remaining < 0\n    target_ratio = 0.8\n    ratio = item / np.clip(bins, 1e-9, None)\n    fill_score = 1.0 - np.abs(ratio - target_ratio)\n    priorities = np.where(cannot_fit, -np.inf, fill_score + remaining / np.clip(bins, 1e-9, None))\n    return priorities\n\n",
+        "score": -2310.8
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins where the item size is closest to a fraction of the remaining capacity, favoring bins that achieve a target fill ratio while penalizing those that cannot fit the item, with adjusted parameters for target ratio and weighting.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    cannot_fit = remaining < 0\n    target_ratio = 0.6\n    ratio = item / np.clip(bins, 1e-9, None)\n    fill_score = 1.0 - np.abs(ratio - target_ratio)\n    priorities = np.where(cannot_fit, -np.inf, fill_score + 0.5 * remaining / np.clip(bins, 1e-9, None))\n    return priorities\n\n",
+        "score": -2606.2
+    },
+    {
+        "algorithm": "{The new algorithm prioritizes bins where the item size is closest to a fixed fraction of the bin's remaining capacity, emphasizing efficient space utilization while avoiding overfilling by penalizing bins that cannot accommodate the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    cannot_fit = remaining < 0\n    # Use a fixed fraction of remaining capacity as target\n    target_ratio = 0.7\n    target = remaining * target_ratio\n    # Score based on how close the item is to the target\n    score = 1.0 / (np.abs(item - target) + 1e-9)\n    priorities = np.where(cannot_fit, -np.inf, score)\n    return priorities\n\n",
+        "score": -3320.8
+    }
+]
