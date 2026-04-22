@@ -1,0 +1,52 @@
+[
+    {
+        "algorithm": "{For each bin, assign a priority of 0 if the item cannot fit inside the bin, otherwise compute the priority score as 1 divided by (1 plus the remainder when the remaining space after adding one item is divided by the item's size), to prioritize bins whose remaining space after one item can fit additional full copies of the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    valid = bins >= item\n    remaining_after_one = bins - item\n    mod = remaining_after_one % item\n    return np.where(valid, 1 / (mod + 1), 0.0)\n\n",
+        "score": -2089.6
+    },
+    {
+        "algorithm": "{\nFirst, compute the remaining capacity after adding the item to each bin; then assign higher priority to bins where the remaining capacity is non\u2011negative and as small as possible, while giving zero priority to bins that would overflow.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    priority_scores = np.where(valid, 1 / (remaining + 1), 0.0)\n    return priority_scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{My new algorithm filters bins that can fit the item, then assigns higher priority to bins where the remaining capacity after adding the item is a perfect square number, and assigns a base priority inversely proportional to the post-add remaining capacity for all valid bins, with zero priority for overflowing bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    post_add_remaining = bins - item\n    valid_mask = post_add_remaining >= 0\n    priority_scores = np.zeros_like(bins, dtype=np.float64)\n    \n    if not np.any(valid_mask):\n        return priority_scores\n    \n    valid_remaining = post_add_remaining[valid_mask]\n    sqrt_vals = np.sqrt(valid_remaining)\n    rounded_roots = np.rint(sqrt_vals)\n    is_perfect_square = np.isclose(rounded_roots ** 2, valid_remaining, atol=1e-9)\n    \n    base_score = 1.0 / (valid_remaining + 1e-8)\n    bonus_score = 1000.0 + base_score\n    priority_scores[valid_mask] = np.where(is_perfect_square, bonus_score, base_score)\n    \n    return priority_scores\n\n",
+        "score": -2095.2
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins where the item fits well without leaving too much unused space, favoring bins that would become nearly full.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    score = np.full_like(bins, -np.inf)\n    score[valid] = 1.0 / (remaining[valid] + 1e-9)\n    return score\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{The algorithm assigns higher priority to bins with more remaining capacity, favoring bins that can accommodate the item without exceeding their capacity while minimizing wasted space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_capacity = bins - (bins - item).clip(min=0)\n    return remaining_capacity\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{My new algorithm calculates the remaining capacity of each bin after adding the item, then assigns higher priority to bins that can fit the item and whose remaining capacity post-addition is as close as possible to 6% of the item\u2019s size, and zero priority to overflowing bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    target = 0.06 * item\n    return np.where(valid, 1 / (np.abs(remaining - target) + 1), 0.0)\n\n",
+        "score": -2101.4
+    },
+    {
+        "algorithm": "{My new algorithm assigns higher priority to bins that can fit the item and whose remaining capacity after adding the item is as close as possible to 10% of each bin\u2019s total capacity, with zero priority to overflowing bins.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    target_remaining = 0.1 * bins\n    return np.where(valid, 1 / (np.abs(remaining - target_remaining) + 1), 0.0)\n\n",
+        "score": -2111.4
+    },
+    {
+        "algorithm": "{My new algorithm assigns higher priority to bins that can fit the item and whose remaining capacity after adding the item is as close as possible to 15% of each bin\u2019s total capacity, with zero priority to overflowing bins, and uses a squared difference for stronger penalty.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    target_remaining = 0.15 * bins\n    return np.where(valid, 1 / ((remaining - target_remaining) ** 2 + 1), 0.0)\n\n",
+        "score": -2125.8
+    },
+    {
+        "algorithm": "{My new algorithm assigns a priority of 0 to bins that cannot accommodate the item, otherwise computes a priority score as 1 divided by (the absolute difference between the bin\u2019s remaining capacity after adding the item and 20% of the bin\u2019s total capacity plus 1) to prioritize bins that retain exactly one-fifth of their original capacity after storing the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    valid = bins >= item\n    remaining_after_add = bins - item\n    target_remaining = 0.2 * bins\n    return np.where(valid, 1 / (np.abs(remaining_after_add - target_remaining) + 1), 0.0)\n\n",
+        "score": -2140.2
+    },
+    {
+        "algorithm": "{Assign priority 0 to bins that cannot fit the given item, otherwise calculate the priority score as the natural logarithm of one plus the number of full times the item fits into the bin plus the inverse of one plus the squared ratio of the leftover space after placing one copy of the item to the item\u2019s size, to balance between accommodating multiple copies of the item and minimizing immediate wasted space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    valid = bins >= item\n    fit_count = np.floor_divide(bins, item)\n    leftover_single = bins - item\n    term1 = np.log(fit_count + 1)\n    term2 = 1 / (1 + (leftover_single / item) ** 2)\n    scores = np.where(valid, term1 + term2, 0.0)\n    return scores\n\n",
+        "score": -2184.4
+    }
+]

@@ -1,0 +1,27 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    # Initialize priority scores with a large negative penalty for overfull bins
+    priority_scores = np.full_like(bins, -1e9)
+    # For valid bins (where item fits), compute ratio of item size to remaining capacity
+    valid_mask = remaining > 0
+    if np.any(valid_mask):
+        # Avoid division by zero; only consider bins with positive remaining
+        ratio = item / remaining[valid_mask]
+        # Higher ratio means item takes up more of the remaining space → higher priority
+        priority_scores[valid_mask] = ratio
+    # For bins with exactly zero remaining capacity (perfect fit), assign high priority based on original bin capacity
+    zero_remaining_mask = remaining == 0
+    if np.any(zero_remaining_mask):
+        priority_scores[zero_remaining_mask] = 1e6 + bins[zero_remaining_mask]
+    return priority_scores
+

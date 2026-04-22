@@ -1,0 +1,22 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    import numpy as np
+    priorities = np.full_like(bins, -np.inf)
+    valid_mask = bins >= item
+    if not np.any(valid_mask):
+        return priorities
+    remaining_cap = bins[valid_mask] - item
+    remainder = remaining_cap % item
+    distance = np.minimum(remainder, item - remainder)
+    priorities[valid_mask] = -distance
+    return priorities
+

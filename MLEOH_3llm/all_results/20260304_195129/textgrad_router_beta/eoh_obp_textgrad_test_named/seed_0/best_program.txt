@@ -1,0 +1,25 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    # 1. If item does not fit (remaining < 0), assign negative score proportional to overfill.
+    # 2. If item fits (remaining >= 0), compute utilization ratio and apply log-scale boost for high utilization.
+    utilization = np.where(remaining >= 0, item / bins, 0)
+    # Logarithmic boost for high utilization bins, with smoothing
+    log_utility = np.log1p(utilization)
+    # Penalize overfilled bins with increasing negativity
+    overfill_penalty = np.where(remaining < 0, -1.0 / (abs(remaining) + 1.0), 0)
+    # Final priority: scaled log utility plus overfill penalty
+    priority_scores = log_utility + overfill_penalty
+    # Ensure maximum score is capped for perfect fits
+    priority_scores = np.where(remaining == 0, 1.5, priority_scores)
+    return priority_scores
+

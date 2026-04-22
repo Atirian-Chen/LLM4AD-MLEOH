@@ -1,0 +1,52 @@
+[
+    {
+        "algorithm": "{This best-fit priority algorithm assigns each bin a priority score equal to the negative of its remaining capacity after adding the item if the bin can fit the item, otherwise negative infinity, so bins with smaller remaining space after insertion receive higher priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    prio = np.full_like(bins, -np.inf, dtype=np.float64)\n    valid_mask = bins >= item\n    prio[valid_mask] = -(bins[valid_mask] - item)\n    return prio\n\n",
+        "score": -2095.2
+    },
+    {
+        "algorithm": "{This new priority algorithm assigns each invalid bin a priority of negative infinity, for valid bins computes the post-insertion remaining space, uses a threshold equal to 30% of each bin's original capacity, and if the remaining space is greater than this threshold, the priority is the reciprocal of the square root of the remaining space, otherwise the priority is the negative of the cube of the remaining space.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    prio = np.full_like(bins, -np.inf, dtype=np.float64)\n    valid_mask = bins >= item\n    remaining_space = bins[valid_mask] - item\n    threshold = 0.3 * bins[valid_mask]\n    prio_vals = np.empty_like(remaining_space)\n    high_remaining = remaining_space > threshold\n    prio_vals[high_remaining] = 1.0 / np.sqrt(remaining_space[high_remaining])\n    prio_vals[~high_remaining] = - (remaining_space[~high_remaining] ** 3)\n    prio[valid_mask] = prio_vals\n    return prio\n\n",
+        "score": -2106.6
+    },
+    {
+        "algorithm": "{This priority algorithm assigns each valid bin a priority score equal to the negative of the absolute difference between its post-insertion remaining space and one-quarter of the item's size if the bin can fit the item, otherwise assigns negative infinity, so bins with post-insertion remaining space closest to one-quarter the item's size receive the highest priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    prio = np.full_like(bins, -np.inf, dtype=np.float64)\n    valid_mask = bins >= item\n    remaining_space = bins[valid_mask] - item\n    target = 0.25 * item\n    prio[valid_mask] = -np.abs(remaining_space - target)\n    return prio\n\n",
+        "score": -2141.6
+    },
+    {
+        "algorithm": "{This modified priority algorithm assigns each valid bin a priority score equal to the negative squared difference between its post-insertion remaining space and one-third of the item's size if the bin can fit the item, otherwise assigns negative infinity, so bins with post-insertion remaining space closest to one-third the item's size receive the highest priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    prio = np.full_like(bins, -np.inf, dtype=np.float64)\n    valid_mask = bins >= item\n    remaining_space = bins[valid_mask] - item\n    target = (1/3) * item\n    prio[valid_mask] = -np.square(remaining_space - target)\n    return prio\n\n",
+        "score": -2159.2
+    },
+    {
+        "algorithm": "{This priority algorithm assigns each valid bin a priority score equal to the negative of the absolute difference between its post-insertion remaining space and one-half of the item's size if the bin can fit the item, otherwise assigns negative infinity, so bins with post-insertion remaining space closest to one-half the item's size receive the highest priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    prio = np.full_like(bins, -np.inf, dtype=np.float64)\n    valid_mask = bins >= item\n    remaining_space = bins[valid_mask] - item\n    target = 0.5 * item\n    prio[valid_mask] = -np.abs(remaining_space - target)\n    return prio\n\n",
+        "score": -2197.4
+    },
+    {
+        "algorithm": "{This modified priority algorithm assigns each valid bin (one that can fit the item) a priority score equal to its post-insertion remaining space if the remaining space is less than half the bin's total capacity, otherwise uses the negative of the post-insertion remaining space, with invalid bins assigned negative infinity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    prio = np.full_like(bins, -np.inf, dtype=np.float64)\n    valid_mask = bins >= item\n    remaining_space = bins[valid_mask] - item\n    threshold = 0.5 * bins[valid_mask]\n    prio[valid_mask] = np.where(remaining_space < threshold, remaining_space, -remaining_space)\n    return prio\n\n",
+        "score": -2236.0
+    },
+    {
+        "algorithm": "{Our new algorithm first identifies valid bins that can fit the item, assigns a priority score equal to the negative of the post-insertion remaining space if the post-insertion remaining space is less than the item\u2019s size, otherwise assigns the square root of the post-insertion remaining space as the priority score, with invalid bins assigned negative infinity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    prio = np.full_like(bins, -np.inf, dtype=np.float64)\n    valid_mask = bins >= item\n    remaining_space = bins[valid_mask] - item\n    prio[valid_mask] = np.where(remaining_space < item, -remaining_space, np.sqrt(remaining_space))\n    return prio\n\n",
+        "score": -3782.4
+    },
+    {
+        "algorithm": "{This new priority algorithm assigns each valid bin (one that can fit the item) a priority score that is the negative of its post-insertion remaining space if the remaining space is less than half the item's size, otherwise uses the post-insertion remaining space as the priority score, with invalid bins assigned negative infinity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    prio = np.full_like(bins, -np.inf, dtype=np.float64)\n    valid_mask = bins >= item\n    remaining_space = bins[valid_mask] - item\n    threshold = 0.5 * item\n    prio[valid_mask] = np.where(remaining_space < threshold, -remaining_space, remaining_space)\n    return prio\n\n",
+        "score": -4805.6
+    },
+    {
+        "algorithm": "{This modified priority algorithm assigns each valid bin (one that can fit the item) a priority score that is the negative of its post-insertion remaining space if the remaining space is less than a third of the item's size, otherwise uses the post-insertion remaining space as the priority score, with invalid bins assigned negative infinity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    prio = np.full_like(bins, -np.inf, dtype=np.float64)\n    valid_mask = bins >= item\n    remaining_space = bins[valid_mask] - item\n    threshold = (1/3) * item\n    prio[valid_mask] = np.where(remaining_space < threshold, -remaining_space, remaining_space)\n    return prio\n\n",
+        "score": -4956.6
+    },
+    {
+        "algorithm": "{This new priority algorithm assigns each valid bin a priority score that is the negative of its post-insertion remaining space if the remaining space is less than a quarter of the item's size, otherwise uses the post-insertion remaining space as the priority score, with invalid bins assigned negative infinity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    prio = np.full_like(bins, -np.inf, dtype=np.float64)\n    valid_mask = bins >= item\n    remaining_space = bins[valid_mask] - item\n    threshold = 0.25 * item\n    prio[valid_mask] = np.where(remaining_space < threshold, -remaining_space, remaining_space)\n    return prio\n\n",
+        "score": -4987.6
+    }
+]

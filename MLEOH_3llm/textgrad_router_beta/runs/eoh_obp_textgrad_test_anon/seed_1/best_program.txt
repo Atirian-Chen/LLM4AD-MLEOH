@@ -1,0 +1,35 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    fits = (remaining >= 0)
+    result = np.full_like(bins, -1.0)
+
+    # Only consider bins where item fits
+    valid_bins = bins[fits]
+    if len(valid_bins) == 0:
+        return result
+
+    # Compute relative wasted space: (remaining / bin_capacity) if positive
+    relative_waste = remaining[fits] / valid_bins
+    # Apply logarithmic penalty: smaller waste → higher priority
+    # Log(1 + waste) penalizes larger waste more, and avoids log(0)
+    log_penalty = np.log(1 + relative_waste + 1e-8)
+    # Invert to make lower waste → higher score
+    scores = 1.0 / (log_penalty + 1e-8)
+
+    # Boost perfect fits
+    perfect_fit = (remaining == 0)
+    scores[perfect_fit[fits]] *= 2.0
+
+    result[fits] = scores
+    return result
+

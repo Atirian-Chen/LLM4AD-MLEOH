@@ -1,0 +1,52 @@
+[
+    {
+        "algorithm": "{New algorithm: Assign the highest priority to bins where the item fits perfectly, assign priority scores that decrease exponentially with the amount of remaining slack for bins that can accommodate the item without overfilling, and assign negative priority scores proportional to the square of the overfill volume for bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    priorities = np.zeros_like(bins)\n    # Perfect fit: highest priority score\n    perfect_mask = remaining == 0\n    priorities[perfect_mask] = 1.2e6\n    # Bins with positive slack: score decreases exponentially with remaining space\n    positive_mask = remaining > 0\n    priorities[positive_mask] = 1000 * np.exp(-remaining[positive_mask])\n    # Overfull bins: quadratic penalty scaled by overfill amount\n    negative_mask = remaining < 0\n    overfill = -remaining[negative_mask]\n    priorities[negative_mask] = -1.5e6 * (overfill ** 2)\n    return priorities\n\n",
+        "score": -2089.8
+    },
+    {
+        "algorithm": "{\nNew algorithm: Assign priority based on the exponential of negative remaining capacity after adding the item, scaled by the bin's current capacity, so that bins where the item fits are prioritized by how tightly it fits and how full the bin already is.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    scores = np.full_like(bins, -np.inf)\n    scores[valid] = bins[valid] * np.exp(-remaining[valid])\n    return scores\n\n",
+        "score": -2091.4
+    },
+    {
+        "algorithm": "{\nNew algorithm: Assign priority based on the remaining capacity after adding the item, preferring bins where the resulting remaining capacity is minimized but non\u2011negative, and breaking ties by preferring bins with larger current capacity.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    # For valid bins, priority is higher when remaining is smaller (negative so that sorting ascending works),\n    # and ties are broken by larger original bin capacity.\n    scores = np.full_like(bins, -np.inf)\n    scores[valid] = -remaining[valid] - 1e-10 * bins[valid]\n    return scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{New algorithm: Assign priority based on the remaining capacity after adding the item, preferring bins where the resulting remaining capacity is minimized but non-negative, and breaking ties by preferring bins with smaller total bin capacity instead of larger one.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    scores = np.full_like(bins, -np.inf)\n    scores[valid] = -remaining[valid] + 1e-10 * bins[valid]\n    return scores\n\n",
+        "score": -2092.8
+    },
+    {
+        "algorithm": "{\nNew algorithm: Assign priority inversely proportional to remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves minimal slack, while penalizing overfull bins heavily.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Perfect fit gets highest priority\n    perfect_fit = (remaining == 0)\n    # Positive slack (fits with room left)\n    positive_slack = (remaining > 0)\n    # Negative slack (doesn't fit)\n    negative_slack = (remaining < 0)\n    \n    # Initialize priorities\n    priorities = np.zeros_like(bins)\n    # Bins where item fits perfectly: priority = large positive constant\n    priorities[perfect_fit] = 1e6\n    # Bins where item fits with slack: priority = 1 / (slack + epsilon)\n    epsilon = 1e-12\n    priorities[positive_slack] = 1.0 / (remaining[positive_slack] + epsilon)\n    # Bins where item doesn't fit: priority = negative large magnitude\n    priorities[negative_slack] = -1e6 * np.abs(remaining[negative_slack])\n    \n    return priorities\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{New algorithm: Assign priority score for each bin as the product of the remaining capacity after adding the item (only if the item fits) and the exponential of the negative bin's original capacity, with bins unable to fit the item given a priority of negative infinity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    scores = np.full_like(bins, -np.inf)\n    scores[valid] = remaining[valid] * np.exp(-bins[valid])\n    return scores\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{\nThe common backbone idea in the provided algorithms is to prioritize bins where adding the item results in minimal leftover space (i.e., fitting tightly), while avoiding overfilled bins and favoring bins with tighter fits through inverse or negative scoring of remaining capacity.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Avoid division by zero and handle overfull bins\n    epsilon = 1e-12\n    # For overfull bins, use large negative exponential penalty\n    overfull = remaining < 0\n    priorities = np.zeros_like(bins)\n    priorities[overfull] = -np.exp(-remaining[overfull] / epsilon) * 1e6\n\n    # For valid bins, use log-inverse of slack + bonus for high current bin capacity\n    valid = ~overfull\n    slack = remaining[valid]\n    # Use log(1 + slack) to penalize larger slack more gradually\n    log_penalty = np.log1p(slack)\n    # Add bonus proportional to original bin capacity (favoring fuller bins)\n    bonus = 1.0 / (1 + 1e-6 * (bins[valid] - np.min(bins[valid])))\n    # Combine: higher priority when slack is small and bin was previously full\n    priorities[valid] = 1.0 / (log_penalty + epsilon) + bonus\n\n    return priorities\n\n",
+        "score": -2117.0
+    },
+    {
+        "algorithm": "{\nNew algorithm: Assign priority based on the ratio of item size to bin capacity, preferring bins where the item fills a larger proportion of the remaining space, and breaking ties by preferring bins with smaller total capacity.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    scores = np.full_like(bins, -np.inf)\n    # Higher priority for larger item/bin ratio (use negative for ascending sort later)\n    ratio = item / bins[valid]\n    scores[valid] = -ratio - 1e-10 * bins[valid]\n    return scores\n\n",
+        "score": -2122.2
+    },
+    {
+        "algorithm": "{My new algorithm assigns highest priority to bins with a small positive remaining slack after placing the item, penalizes both bins that cannot fit the item and those with too much remaining space using a quadratic score function centered at a predefined target slack value, with ties broken by preferring bins with smaller total capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    import numpy as np\n    slack = bins - item\n    target_slack = 0.2 * item\n    priorities = np.zeros_like(bins, dtype=float)\n    invalid = slack < 0\n    priorities[invalid] = -1e6 * np.abs(slack[invalid])\n    valid = ~invalid\n    valid_slack = slack[valid]\n    priorities[valid] = - (valid_slack - target_slack) ** 2\n    priorities[valid] -= 1e-10 * bins[valid]\n    return priorities\n\n",
+        "score": -2130.4
+    },
+    {
+        "algorithm": "{\nNew algorithm: Assign priority using a sigmoid transformation of the slack that heavily penalizes overfull bins, moderately rewards tight fits, and smoothly transitions between positive and negative slack with a tunable steepness parameter.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    import numpy as np\n    slack = bins - item\n    k = 10.0\n    priorities = 2.0 / (1.0 + np.exp(-k * slack)) - 1.0\n    return priorities\n\n",
+        "score": -2189.2
+    }
+]

@@ -1,0 +1,52 @@
+[
+    {
+        "algorithm": "{For each bin in the input array, calculate the remaining capacity after placing the given item into the bin, assign a priority score equal to the negative of this remaining capacity if the bin can fit the item, otherwise assign negative infinity to indicate the item cannot be added to the bin.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    mask = bins >= item\n    priorities = np.full_like(bins, -np.inf, dtype=np.float64)\n    priorities[mask] = -(bins[mask] - item)\n    return priorities\n\n",
+        "score": -2095.2
+    },
+    {
+        "algorithm": "{For each bin, compute the reciprocal of the remaining capacity after adding the given item (adding a small epsilon to avoid division by zero) if the bin can accommodate the item, otherwise set the priority score to negative infinity, where higher priority scores correspond to tighter preferred fits for bin packing.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    mask = bins >= item\n    scores = np.full_like(bins, -np.inf)\n    scores[mask] = 1 / (bins[mask] - item + 1e-9)\n    return scores\n\n",
+        "score": -2098.4
+    },
+    {
+        "algorithm": "{For each bin, compute the remaining capacity after adding the given item, set the priority score to this remaining capacity if the bin can accommodate the item, otherwise set the priority to negative infinity, where higher priority scores correspond to tighter preferred fits for bin packing.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    mask = bins >= item\n    scores = np.full_like(bins, -np.inf)\n    scores[mask] = bins[mask] - item\n    return scores\n\n",
+        "score": -5000.0
+    },
+    {
+        "algorithm": "{For each bin, if the bin's current capacity is insufficient to hold the item (bin capacity < item size), assign a priority of negative infinity, otherwise assign the negative of the remaining capacity in the bin after adding the item such that bins with smaller remaining post-add capacity have higher priority scores.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    mask = bins >= item\n    priorities = np.full_like(bins, -np.inf)\n    priorities[mask] = -(bins[mask] - item)\n    return priorities\n\n",
+        "score": -Infinity
+    },
+    {
+        "algorithm": "{For each bin, assign a priority score of negative infinity if the bin cannot fit the item, otherwise assign a score equal to the negative of the remaining space in the bin after adding the item, such that higher scores correspond to bins that would leave the least empty space following placement of the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return np.where(bins >= item, item - bins, -np.inf)\n\n",
+        "score": -Infinity
+    },
+    {
+        "algorithm": "{\\text{For each bin capacity, if the bin can fit the given item, assign a priority equal to the negative of the remaining bin space after adding the item, otherwise assign negative infinity to indicate the item cannot fit in the bin.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    return np.where(remaining >= 0, -remaining, -np.inf)\n\n",
+        "score": -Infinity
+    },
+    {
+        "algorithm": "{ For each bin, compute the remaining capacity after placing the given item into the bin, assign a priority of negative infinity to bins that cannot accommodate the item, otherwise assign the negative of the remaining capacity as the priority score such that bins leading to smaller remaining space have higher priority }",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return np.where(bins >= item, -(bins - item), -np.inf)\n\n",
+        "score": -Infinity
+    },
+    {
+        "algorithm": "{The priority for each bin is calculated as the negative of the remaining capacity after inserting the item into the bin if the bin has sufficient capacity, otherwise assigned negative infinity to indicate the item cannot fit in the bin.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    residual = bins - item\n    return np.where(residual >= 0, -residual, -np.inf)\n\n",
+        "score": -Infinity
+    },
+    {
+        "algorithm": "{For each bin, calculate a priority score where the score is the negative of the remaining capacity in the bin after adding the given item if the bin has enough capacity to hold the item, otherwise assign a very low priority of negative infinity, such that bins that will be the fullest after adding the item receive the highest priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return np.where(bins >= item, -(bins - item), -np.inf)\n\n",
+        "score": -Infinity
+    },
+    {
+        "algorithm": "{The priority for each bin is defined as the remaining capacity after inserting the item if the bin can accommodate the item, otherwise a negative infinity, with higher priority given to bins with smaller remaining capacity to achieve tight bin packing.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    return np.where(bins >= item, bins - item, -np.inf)\n\n",
+        "score": -Infinity
+    }
+]

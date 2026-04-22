@@ -1,0 +1,22 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining_space = bins - item
+    can_fit = bins >= item
+    priorities = np.full_like(bins, -np.inf)
+    valid_bins = can_fit & (remaining_space > 0)
+    # Use log-scale penalty that increases sharply as remaining space shrinks
+    priorities[valid_bins] = -np.log(1 + item / (remaining_space[valid_bins] + 1e-6))
+    # Exact fit gets highest priority (log(1) = 0)
+    zero_remaining = (bins == item)
+    priorities[zero_remaining] = 0.0
+    return priorities
+

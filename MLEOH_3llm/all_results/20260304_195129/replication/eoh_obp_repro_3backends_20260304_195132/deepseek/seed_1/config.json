@@ -1,0 +1,20 @@
+{
+  "backend": "deepseek",
+  "seed": 1,
+  "time_start": "2026-03-04T19:54:56",
+  "host": "api.deepseek.com",
+  "model": "deepseek-chat",
+  "timeout": 60,
+  "eoh": {
+    "pop_size": 10,
+    "max_generations": 6,
+    "max_sample_nums": 10000,
+    "selection_num": 3,
+    "use_e2_operator": true,
+    "use_m1_operator": true,
+    "use_m2_operator": true,
+    "num_samplers": 4,
+    "num_evaluators": 4,
+    "debug_mode": false
+  }
+}

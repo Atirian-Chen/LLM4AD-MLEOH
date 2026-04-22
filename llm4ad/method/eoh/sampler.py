@@ -15,17 +15,23 @@ class EoHSampler:
 
     def get_thought_and_function(self, prompt: str) -> Tuple[str, Function]:
         response = self.llm.draw_sample(prompt)
+
+        # print("INNNNNN Sampler",response)
+
         thought = self.__class__.trim_thought_from_response(response)
         code = SampleTrimmer.trim_preface_of_function(response)
 
         function = SampleTrimmer.sample_to_function(code, self._template_program)
+        # print("Outtttttt Sampler Though：",thought)
         return thought, function
 
     @classmethod
     def trim_thought_from_response(cls, response: str) -> str | None:
         try:
-            pattern = r'\{.*?\}'  # Compared with r'\{(.*)\}'
+            # print("FFFFIND THOUHGHT",response)
+            pattern = r'\{[\s\S]*?\}'  # Compared with r'\{(.*)\}'
             bracketed_texts = re.findall(pattern, response)
+            # print("THOUGHT!!!!:",bracketed_texts)
             return bracketed_texts[0]
         except:
             return None

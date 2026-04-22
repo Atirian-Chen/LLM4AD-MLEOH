@@ -1,0 +1,27 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    valid = remaining >= 0
+    
+    # For valid bins, compute fill ratio: item / remaining (handle zero remaining by using inf)
+    # Higher ratio means the item fills a larger proportion of the leftover space.
+    ratio = np.where(remaining > 0, item / remaining, np.inf)
+    scores = np.where(valid, ratio, -np.inf)
+    
+    # Break ties by preferring smaller original bin capacity.
+    # Subtract a tiny term proportional to original capacity.
+    eps = 1e-10
+    tie_breaker = bins * eps
+    scores = np.where(valid, scores - tie_breaker, scores)
+    
+    return scores
+

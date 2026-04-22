@@ -1,0 +1,22 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    perfect_fit = (remaining == 0)
+    fits = (remaining > 0)
+    # Priority inversely proportional to remaining space if it fits, with a steeper penalty
+    fit_priority = np.where(fits, 1.0 / (remaining + 1e-6), -np.inf)
+    # Perfect fit gets the highest possible priority
+    perfect_priority = 1e6
+    # Combine priorities
+    priorities = np.where(perfect_fit, perfect_priority, fit_priority)
+    return priorities
+

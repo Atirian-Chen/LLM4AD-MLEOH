@@ -1,0 +1,632 @@
+{
+  "profile_mode": "named",
+  "policy_version": 30,
+  "policy_text": "[Routing Policy v30: Signal-Weighted with Catastrophic Failure Prevention]\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures.\n\nSignals (from input):\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\n- has_error (bool), n_chars, n_lines, code_density\n- fix_score, explore_score\n- prior_stats: per-operator mean score and fail counts for each backend (frozen in test)\n\nDecision procedure:\n1) Hard constraints (safety first):\n   - If has_error=true → deepseek (debugging focus).\n   - If prior_stats for operator show any backend with fail_count > 0 AND mean_score < -3500 → exclude that backend.\n   - If prior_stats mean_score < -4500 for any backend → exclude it.\n   - If n_chars > 4000 → qwen only (long-context advantage).\n   - If operator ∈ {M1,M2} AND prior_stats for doubao show mean_score < -2500 → exclude doubao.\n   - If code_density > 0.9 AND n_chars > 2000 → qwen only (complex restructuring).\n   - If explore_score > 0.6 AND operator ∈ {E1,E2} AND n_chars < 2500 AND code_density < 0.8 → doubao only (strong exploration signal).\n   - If n_chars > 3500 AND code_density > 0.8 → qwen only (long complex code).\n   - If operator ∈ {M1,M2} AND fix_score > 0.5 → deepseek only (strong patching signal).\n   - If n_chars > 3000 AND code_density > 0.85 → qwen only (high-density long code).\n   - If operator ∈ {M1,M2} AND n_chars > 2000 AND code_density > 0.6 → exclude doubao (modification complexity risk).\n   - If operator ∈ {E1,E2} AND n_chars > 2500 AND code_density > 0.8 → exclude doubao (exploration fails on complex code).\n   - If operator ∈ {M1,M2} AND n_chars < 1500 AND code_density < 0.5 → exclude doubao (high risk for small modifications).\n\n2) Score each backend using weighted scorecard:\n   Score = w_op + w_error + w_len + w_density + w_fix + w_explore + w_prior + w_cost + w_risk\n   \n   Weights (updated):\n   - w_op: operator-specific boost (E1/E2: +80 doubao, M1/M2: +100 deepseek, UNKNOWN: +0)\n   - w_error: has_error=true → +250 deepseek, else 0\n   - w_len: n_chars > 3500 → +300 qwen, n_chars < 1500 → +200 doubao, n_chars > 5000 → +350 qwen, n_chars > 2500 AND n_chars ≤ 3500 → +220 qwen\n   - w_density: code_density > 0.8 → +250 qwen, code_density < 0.3 → +180 doubao, code_density > 0.95 → +280 qwen, code_density > 0.7 AND code_density ≤ 0.8 → +200 qwen\n   - w_fix: fix_score > 0.4 → +180 deepseek, fix_score > 0.7 → +230 deepseek\n   - w_explore: explore_score > 0.4 → +200 doubao, explore_score > 0.7 → +250 doubao\n   - w_prior: (mean_score_normalized - 600.0*normalized_fail_count) * 100 (stronger failure penalty)\n   - w_cost: doubao +150, others 0\n   - w_risk: -1200 if prior_stats fail_count > 0 for this operator AND mean_score < -3000\n\n3) Choose backend with highest Score.\n4) Tie-breaking (if top-2 scores within 40.0 points):\n   - If any backend has prior_stats fail_count=0 AND mean_score > -500 → choose it.\n   - Else if n_chars > 2500 AND code_density > 0.7 → choose qwen.\n   - Else if explore_score > 0.5 AND operator ∈ {E1,E2} AND n_chars < 2500 AND code_density < 0.8 → choose doubao.\n   - Else if fix_score > 0.5 OR operator ∈ {M1,M2} → choose deepseek.\n   - Else if n_chars < 2000 AND code_density < 0.6 → choose doubao (cost advantage for simpler tasks).\n   - Else if n_chars > 3000 → choose qwen (long-context default).\n   - Else choose cheaper (doubao > deepseek > qwen).\n   - Set confidence=low if tie occurred.\n\nOutput JSON with backend + confidence + reason citing 3+ signals.",
+  "updates": 30,
+  "history": [
+    {
+      "time": 1772607839.616863,
+      "ok": true,
+      "policy_version_after": 1,
+      "rationale": "This policy improves OBP by: 1) Adding risk-aware exclusion for backends with high fail counts, reducing catastrophic failures. 2) Incorporating length and density signals to better match backend strengths (qwen for long/structured tasks). 3) Using normalized prior_stats that penalizes failures, not just mean scores. 4) More robust tie-breaking that prioritizes reliability over cost when scores are close. The data shows doubao performs well for exploratory tasks but fails catastrophically (-5000",
+      "changes": [
+        "Added risk exclusion for backends with >2 fails per operator",
+        "Added length thresholds (n_chars) to route long tasks to qwen",
+        "Added code_density signal for structured code preference",
+        "Modified prior_stats weighting to penalize failures",
+        "Enhanced tie-breaking to prioritize zero-fail backends",
+        "Added operator-specific boosts based on observed patterns"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "34add6f4ab0e318f9a5d5de469999a57e64c19512b7708997c19833b2aa244c9",
+      "new_policy_sha256": "010e6cbc42749627ae81df78c7d2d923c2273d34ec4b9c78e9e41e033554786e"
+    },
+    {
+      "time": 1772607887.5144181,
+      "ok": true,
+      "policy_version_after": 2,
+      "rationale": "This improves objective by: 1) Adding catastrophic failure prevention (-4000 threshold) to avoid backends with disastrous performance, 2) Strengthening prior_stats weight with heavier failure penalty to reduce risky choices, 3) Better handling long-context tasks with progressive qwen boosts, 4) Using code_density as exploratory vs structured signal, 5) Stronger operator-specific boosts based on observed patterns (E1/E2→doubao, M1/M2→deepseek). The changes address observed issues where doubao som",
+      "changes": [
+        "Added catastrophic failure exclusion (mean_score < -4000)",
+        "Stricter failure exclusion (fail_count > 1 → exclude)",
+        "Increased prior_stats weight with heavier failure penalty (0.7*normalized_fail_count)",
+        "Progressive length boosts for qwen (3000→+2, 5000→+3)",
+        "Added code_density thresholds for both structured (qwen) and exploratory (doubao) tasks",
+        "Stronger operator boosts (E1/E2: +3 doubao, M1/M2: +2 deepseek)",
+        "Enhanced tie-breaking with fail_count=0 AND mean_score > -3000 condition",
+        "Increased fix_score and explore_score weights for clearer signal differentiation"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "010e6cbc42749627ae81df78c7d2d923c2273d34ec4b9c78e9e41e033554786e",
+      "new_policy_sha256": "7816d536d8cc4c0daca7057d88a4706b60b1045fea497a54238a8ee05ce4825d"
+    },
+    {
+      "time": 1772607925.2357426,
+      "ok": true,
+      "policy_version_after": 3,
+      "rationale": "This improves objective by: 1) Stricter failure exclusion (any fail_count>0) prevents catastrophic failures seen with doubao on M1/M2 operators, 2) Added length threshold (n_chars>4000→qwen) leverages qwen's long-context strength for large tasks, 3) Stronger operator-specific weights (M1/M2: +3 deepseek) aligns with observed better deepseek performance on modification tasks, 4) Enhanced tie-breaking uses explore_score/fix_score as discriminators when scores are close, 5) Increased cost bonus for",
+      "changes": [
+        "Stricter failure exclusion: exclude any backend with fail_count>0 for operator",
+        "Added hard constraint: n_chars>4000 → qwen only",
+        "Increased operator-specific weights: M1/M2: +3 deepseek (was +2)",
+        "Enhanced tie-breaking with explore_score/fix_score as discriminators",
+        "Increased cost bonus for doubao to +2",
+        "Added code_density threshold in tie-breaking for qwen selection",
+        "Increased penalty for any failure history to -4"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "7816d536d8cc4c0daca7057d88a4706b60b1045fea497a54238a8ee05ce4825d",
+      "new_policy_sha256": "23c86e12d378f29119f52c9e54ec4f85a13b428b52f685234b86cbf5beffeab8"
+    },
+    {
+      "time": 1772608022.1593764,
+      "ok": true,
+      "policy_version_after": 4,
+      "rationale": "This improves objective by: 1) Increasing operator-specific weights to better match observed patterns (E1/E2→doubao, M1/M2→deepseek), 2) Adjusting length thresholds based on data (doubao struggles with medium-long content), 3) Strengthening prior_stats weight to prevent catastrophic failures seen with M1/M2 operators, 4) Adding operator-awareness to tie-breaking for more reliable decisions, 5) Increasing failure penalties to reduce risk.",
+      "changes": [
+        "Increased operator-specific weights: E1/E2→+3 doubao (was +2), M1/M2→+4 deepseek (was +3)",
+        "Adjusted length thresholds: doubao boost now <1500 chars (was <1200), qwen boost >3500 chars (was >3000)",
+        "Increased prior_stats weight from *5 to *6 with stronger failure penalty (1.0× vs 0.8×)",
+        "Increased risk penalty from -4 to -6 for any prior failures",
+        "Modified tie-breaking: added operator conditions (explore_score+E1/E2→doubao, fix_score+M1/M2→deepseek)",
+        "Increased tie threshold from 2.0 to 3.0 points for more stable decisions",
+        "Raised mean_score threshold in tie-breaking from -2000 to -1500 for safer choices"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "23c86e12d378f29119f52c9e54ec4f85a13b428b52f685234b86cbf5beffeab8",
+      "new_policy_sha256": "b2dda9632c77f0945a69bc13aa394ac9480a31faf8bdc5e097e5178b64dc76bf"
+    },
+    {
+      "time": 1772608063.418617,
+      "ok": true,
+      "policy_version_after": 5,
+      "rationale": "This improves objective by: 1) Adding operator-specific exclusion for doubao on modification tasks where it catastrophically fails (M1/M2 with mean_score < -3000), preventing -5000 scores. 2) Strengthening operator weights to better align with observed patterns (E1/E2→doubao, M1/M2→deepseek). 3) Increasing failure penalties in w_prior and w_risk to prioritize reliability. 4) Tightening tie-breaking threshold to 2.0 points for more decisive routing. 5) Adding code_density and n_chars signals more",
+      "changes": [
+        "Added hard constraint: exclude doubao for M1/M2 operators when its prior mean_score < -3000",
+        "Increased operator-specific weights (E1/E2: +3→+4, M1/M2: +4→+5)",
+        "Increased failure penalty multiplier in w_prior from 1.0 to 1.5",
+        "Tightened tie-breaking threshold from 3.0 to 2.0 points",
+        "Increased cost advantage for doubao from +3 to +4",
+        "Added code_density thresholds to tie-breaking rules",
+        "Increased deepseek error bonus from +8 to +10"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "b2dda9632c77f0945a69bc13aa394ac9480a31faf8bdc5e097e5178b64dc76bf",
+      "new_policy_sha256": "3fb81b542fac49be8df1d99d4d65e857ac92941cabd71a02c68e71e7c02324cf"
+    },
+    {
+      "time": 1772608103.0255182,
+      "ok": true,
+      "policy_version_after": 6,
+      "rationale": "This revision addresses observed failures: 1) Doubao shows catastrophic failures (-5000) on M1/M2 tasks despite operator boost, requiring stricter exclusion; 2) High code_density (>0.9) with moderate length indicates complex restructuring where qwen excels; 3) Prior stats show fail_count>1 is more predictive of future failures than >2; 4) Increased operator-specific weights (E1/E2:+6→+8, M1/M2:+5→+8) to better match backend strengths; 5) Added density+length hard constraint for qwen; 6) Stronger",
+      "changes": [
+        "Stricter doubao exclusion for M1/M2 (threshold -3000→-2500)",
+        "Added hard constraint for high-density complex tasks (density>0.9 & length>2000 → qwen)",
+        "Increased operator-specific weights for clearer specialization",
+        "Reduced fail_count exclusion threshold (2→1)",
+        "Stronger failure penalty in prior score calculation (1.5→2.0)",
+        "Added density signal to tie-breaking for better qwen selection",
+        "Increased tie-breaking threshold (2.0→3.0) for more robust decisions"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "3fb81b542fac49be8df1d99d4d65e857ac92941cabd71a02c68e71e7c02324cf",
+      "new_policy_sha256": "9f9084d5adba9367045370d85f5f8eef843a4d8d438ee564ab84a7a23494519a"
+    },
+    {
+      "time": 1772608173.829266,
+      "ok": true,
+      "policy_version_after": 7,
+      "rationale": "This improves objective by: 1) Adding explore_score threshold to hard constraints prevents catastrophic failures in M1/M2 tasks where doubao scored -5000, 2) Increasing weights for operator-specific boosts and failure penalties based on observed patterns, 3) Adding n_chars threshold to tie-breaking for cost optimization, 4) Using explore_score and fix_score thresholds (>0.3) instead of binary to filter weak signals, 5) Strengthening prior_stats weighting to better leverage historical performance",
+      "changes": [
+        "Added hard constraint: explore_score > 0.5 AND operator ∈ {E1,E2} AND n_chars < 3000 → doubao only",
+        "Increased operator-specific boosts (E1/E2: +6→+8, M1/M2: +8→+10)",
+        "Added thresholds to fix_score and explore_score weights (>0.3 instead of >0)",
+        "Increased failure penalty in w_prior from 2.0 to 3.0 multiplier",
+        "Added tie-breaking rule: n_chars < 2000 → choose doubao",
+        "Increased tie-breaking threshold from 3.0 to 4.0 points",
+        "Increased w_risk penalty from -10 to -15 for any prior failures"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "9f9084d5adba9367045370d85f5f8eef843a4d8d438ee564ab84a7a23494519a",
+      "new_policy_sha256": "3f661f932d9cda147965d617d2a73806f7c1a2b7168fb8bbc4c16f00f49fd16d"
+    },
+    {
+      "time": 1772608225.9555576,
+      "ok": true,
+      "policy_version_after": 8,
+      "rationale": "The current policy shows doubao performing well on E1/E2 tasks but causing catastrophic failures (-5000) on M1/M2 tasks. Key improvements: 1) Strengthen operator-specific weights (E1/E2→doubao +10, M1/M2→deepseek +12) to better align with observed performance patterns. 2) Add new hard constraint for long complex code (n_chars>3500 AND density>0.8→qwen) to prevent doubao failures on dense code. 3) Increase failure penalty in w_prior (4.0 multiplier) and w_risk (-20) to better avoid backends with ",
+      "changes": [
+        "Increased operator-specific weights: E1/E2→doubao +10 (from +8), M1/M2→deepseek +12 (from +10)",
+        "Added new hard constraint: n_chars>3500 AND code_density>0.8 → qwen only",
+        "Increased failure penalty in w_prior: multiplier from 3.0 to 4.0 and scaling from *10 to *12",
+        "Increased w_risk penalty from -15 to -20 for backends with prior failures",
+        "Added density threshold: code_density>0.95 → +15 qwen",
+        "Refined tie-breaking: prefer backends with fail_count=0 AND mean_score>-500",
+        "Increased length thresholds: n_chars>3500→+15 qwen (from +10), n_chars<1500→+10 doubao (from +8)",
+        "Added explore_score thresholds: >0.6→+18 doubao, >0.3→+12 doubao",
+        "Added fix_score thresholds: >0.6→+20 deepseek, >0.3→+15 deepseek"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "3f661f932d9cda147965d617d2a73806f7c1a2b7168fb8bbc4c16f00f49fd16d",
+      "new_policy_sha256": "50bd3b99ba8f315743e9f8930b17f70f855607a09611dd228c107f4b30086c39"
+    },
+    {
+      "time": 1772608293.6496937,
+      "ok": true,
+      "policy_version_after": 9,
+      "rationale": "This revision improves robustness by: 1) Adding a new hard constraint for M1/M2 with high fix_score to prevent catastrophic failures (seen in step 28 where deepseek scored -5000 despite being chosen for M2), 2) Increasing operator-specific weights to better differentiate between E1/E2 (exploratory) and M1/M2 (patching) tasks, 3) Strengthening the failure penalty in w_prior to prioritize backends with clean track records, 4) Adding a stricter tie-breaking condition (mean_score > -1000 instead of ",
+      "changes": [
+        "Added new hard constraint: If operator ∈ {M1,M2} AND fix_score > 0.4 → deepseek only",
+        "Increased operator-specific weights: E1/E2: +10→+15 doubao, M1/M2: +12→+18 deepseek",
+        "Increased failure penalty in w_prior from 4.0 to 5.0 multiplier and overall scaling from 12 to 15",
+        "Increased w_risk penalty from -20 to -25 for any prior failure",
+        "Increased w_cost bonus for doubao from +8 to +10",
+        "Stricter tie-breaking: require mean_score > -1000 (was -500) for fail_count=0 backends",
+        "Increased signal weights across the board (w_error, w_len, w_density, w_fix, w_explore) for clearer differentiation"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "50bd3b99ba8f315743e9f8930b17f70f855607a09611dd228c107f4b30086c39",
+      "new_policy_sha256": "788708365c5734a96a3b3eddfa0676c81b89dbe8c04196a5e21e425f208a2198"
+    },
+    {
+      "time": 1772608356.1576724,
+      "ok": true,
+      "policy_version_after": 10,
+      "rationale": "This revision improves robustness by: 1) Strengthening operator-specific weights to better differentiate E1/E2 (doubao) vs M1/M2 (deepseek) tasks, 2) Adding granular length and density thresholds to better handle mid-range cases (2500-3500 chars, 0.7-0.8 density), 3) Increasing failure penalties in w_prior to further reduce catastrophic failures, 4) Adding a new hard constraint for high-density long code (n_chars>3000 AND density>0.85) based on observed qwen success in dense code, 5) Enhancing t",
+      "changes": [
+        "Increased operator-specific weights (E1/E2: +15→+20, M1/M2: +18→+25) to better match observed patterns",
+        "Added granular length thresholds: +15 qwen for 2500-3500 chars to handle mid-range cases",
+        "Added density threshold: +10 qwen for 0.7-0.8 density to capture moderate complexity",
+        "Increased failure penalty multiplier in w_prior from 5.0 to 7.0 to further reduce catastrophic failures",
+        "Added new hard constraint: n_chars>3000 AND density>0.85 → qwen only (based on step 32 success)",
+        "Enhanced tie-breaking with 'n_chars>3000 → qwen' rule to prevent doubao on longer tasks",
+        "Increased all signal weights slightly for stronger differentiation between backends"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "788708365c5734a96a3b3eddfa0676c81b89dbe8c04196a5e21e425f208a2198",
+      "new_policy_sha256": "7fcc028f100ebc09398b089d3b1de4d47ad5e44fd9648e6e1bdfe166ad3eab87"
+    },
+    {
+      "time": 1772608414.5463307,
+      "ok": true,
+      "policy_version_after": 11,
+      "rationale": "This revision improves robustness by: 1) Strengthening operator-specific weights (E1/E2→doubao +25, M1/M2→deepseek +30) based on observed patterns where doubao performs well on exploratory tasks but deepseek dominates on modification tasks. 2) Adding a new hard constraint for M1/M2 with moderate length/complexity to route to qwen, addressing cases where doubao fails catastrophically (-5000 scores). 3) Increasing failure penalties in w_prior (8.0 multiplier) and w_risk (-35) to better avoid backe",
+      "changes": [
+        "Increased operator-specific weights (E1/E2: +20→+25, M1/M2: +25→+30) to better align with observed performance patterns",
+        "Added new hard constraint: 'If operator ∈ {M1,M2} AND n_chars > 2500 AND code_density > 0.7 → qwen only' to prevent doubao catastrophic failures on moderate-complexity modification tasks",
+        "Increased failure penalty in w_prior from 7.0 to 8.0 multiplier and w_risk from -30 to -35",
+        "Boosted qwen's density weights (+20→+25 for >0.8, +25→+30 for >0.95) to better handle high-density code prevalent in dataset",
+        "Increased cost advantage for doubao from +12 to +15 to maintain its use for simpler tasks",
+        "Enhanced deepseek's error weight from +30 to +35 to strengthen debugging focus"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "7fcc028f100ebc09398b089d3b1de4d47ad5e44fd9648e6e1bdfe166ad3eab87",
+      "new_policy_sha256": "db7146d8d5b1347ca0893524a5f645a82a94ed000cd6ee71668ec35f45671636"
+    },
+    {
+      "time": 1772608473.5581715,
+      "ok": true,
+      "policy_version_after": 12,
+      "rationale": "The current policy shows doubao causing catastrophic failures (-5000 scores) on M1/M2 operators with small code size (n_chars < 1500, code_density < 0.5). Analysis reveals: 1) doubao performs poorly on small modification tasks despite exploration signals, 2) prior_stats fail_count penalty needs strengthening, 3) operator-specific weights should be amplified to better differentiate E vs M tasks. The revised policy adds a new hard constraint to exclude doubao from risky small modifications, increa",
+      "changes": [
+        "Added new hard constraint: exclude doubao for M1/M2 tasks with n_chars < 1500 AND code_density < 0.5",
+        "Increased operator-specific weights (E1/E2: +25→+30 doubao, M1/M2: +30→+35 deepseek)",
+        "Strengthened failure penalty in w_prior from -8.0 to -10.0 multiplier and increased scaling factor from 20 to 25",
+        "Increased w_risk penalty from -35 to -40 for any prior failure",
+        "Tightened tie-breaking threshold from mean_score > -1000 to > -500 for reliability preference",
+        "Increased cost advantage for doubao from +15 to +20 to better balance risk/reward"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "db7146d8d5b1347ca0893524a5f645a82a94ed000cd6ee71668ec35f45671636",
+      "new_policy_sha256": "0dd2661e768687381294253416587a9e03f869ab67e8729c98ae674f4423aae3"
+    },
+    {
+      "time": 1772608554.431353,
+      "ok": true,
+      "policy_version_after": 13,
+      "rationale": "The data shows catastrophic failures (-5000 scores) occur primarily with doubao on M1/M2 tasks, especially when code_density is low (<0.5) and n_chars is small (<1500). The revised policy: 1) Tightens doubao exclusion for M1/M2 from -2500 to -2000 threshold based on observed failures, 2) Increases failure penalty in w_prior calculation to better avoid risky backends, 3) Raises thresholds for explore_score and fix_score triggers to prevent over-reliance on weak signals, 4) Adds combined risk pena",
+      "changes": [
+        "Tightened doubao exclusion threshold for M1/M2 from -2500 to -2000 based on catastrophic failure patterns",
+        "Increased failure penalty in w_prior from 10.0 to 15.0 multiplier and overall scaling from 25 to 30",
+        "Raised explore_score thresholds from 0.3/0.6 to 0.4/0.7 to prevent weak signals from overriding prior_stats",
+        "Raised fix_score thresholds from 0.3/0.6 to 0.4/0.7 for similar robustness",
+        "Added combined risk penalty (-50) for backends with both failures AND mean_score < -2500",
+        "Adjusted operator-specific boosts downward (30→25, 35→30) to reduce over-weighting operator alone",
+        "Increased qwen density weights to better capture high-density tasks where it excels",
+        "Tightened tie-breaking criteria for fail_count=0 from mean_score > -500 to > -1000"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "0dd2661e768687381294253416587a9e03f869ab67e8729c98ae674f4423aae3",
+      "new_policy_sha256": "099f64a3884ee4f2a5465d054af15ccd047b7eecead14acdc75d87a34a9c2228"
+    },
+    {
+      "time": 1772608616.5637324,
+      "ok": true,
+      "policy_version_after": 14,
+      "rationale": "The current policy shows doubao frequently chosen for E1/E2 operators despite poor scores (-2626 to -3908), while qwen performs better on high-density code. Key improvements: 1) Added hard constraint to exclude doubao for complex exploratory tasks (E1/E2 with high density/length) where it underperforms, 2) Increased failure penalty in w_prior to better avoid backends with catastrophic failures, 3) Reduced doubao's operator boost from +25 to +20 to prevent over-selection, 4) Added n_chars<2500 co",
+      "changes": [
+        "Added hard constraint: exclude doubao for E1/E2 operators with n_chars>2500 AND code_density>0.8",
+        "Reduced doubao operator boost from +25 to +20 for E1/E2",
+        "Increased failure penalty multiplier in w_prior from 15.0 to 20.0",
+        "Increased w_risk penalty from -50 to -60 for mean_score<-3000",
+        "Added n_chars<2500 condition to doubao tie-break rule for exploration tasks",
+        "Reduced doubao cost advantage from +15 to +10",
+        "Tightened doubao exclusion threshold for M1/M2 from mean_score<-2000 to <-2500"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "099f64a3884ee4f2a5465d054af15ccd047b7eecead14acdc75d87a34a9c2228",
+      "new_policy_sha256": "a668c36ba2be5313133913e60269d4f13a747e2c9be4898b79c67212483d4497"
+    },
+    {
+      "time": 1772608687.4466877,
+      "ok": true,
+      "policy_version_after": 15,
+      "rationale": "The data shows catastrophic failures (-5000 scores) occur when doubao handles M1/M2 tasks with moderate complexity. Key improvements: 1) Added new hard constraint excluding doubao for M1/M2 tasks with n_chars>2000 AND code_density>0.6 to prevent failures on moderately complex modifications. 2) Increased operator-specific weights (E1/E2: +20→+25, M1/M2: +25→+30) to better align with backend strengths. 3) Strengthened prior_stats penalty (20→25 multiplier) and w_risk penalty (-60→-70) to more aggr",
+      "changes": [
+        "Added new hard constraint: 'If operator ∈ {M1,M2} AND n_chars > 2000 AND code_density > 0.6 → exclude doubao' to prevent failures on moderately complex modifications",
+        "Increased operator-specific weights: E1/E2 boost from +20 to +25 for doubao, M1/M2 boost from +25 to +30 for deepseek",
+        "Strengthened prior_stats failure penalty multiplier from 20.0 to 25.0 and overall scaling from *25 to *30",
+        "Increased w_risk penalty from -60 to -70 for backends with poor historical performance",
+        "Increased doubao cost advantage from +10 to +15 to better leverage low-cost strength",
+        "Adjusted w_error boost from +45 to +50 for deepseek when has_error=true"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "a668c36ba2be5313133913e60269d4f13a747e2c9be4898b79c67212483d4497",
+      "new_policy_sha256": "88d20c5a1a849f39ee9564cf43b1d32810d2ab59694194d6fc269d372f11f22e"
+    },
+    {
+      "time": 1772608749.918159,
+      "ok": true,
+      "policy_version_after": 16,
+      "rationale": "The current policy shows doubao frequently chosen for E1/E2 operators despite high code_density (>0.9) and moderate n_chars, leading to suboptimal scores (-2626 to -3908). Analysis reveals: 1) High code_density (>0.9) strongly correlates with better qwen performance, 2) Prior stats with fail_count=0 and mean_score > -1000 are reliable predictors, 3) n_chars thresholds need adjustment for E1/E2 operators. The revised policy increases weights for high-density qwen cases, strengthens prior stats we",
+      "changes": [
+        "Increased operator-specific weights (E1/E2: +25→+30 doubao, M1/M2: +30→+35 deepseek) to better align with backend strengths",
+        "Strengthened prior_stats weighting from 30 to 35 multiplier with increased failure penalty (25→30)",
+        "Increased w_risk penalty from -70 to -80 for backends with poor historical performance",
+        "Modified tie-breaking first rule to prioritize backends with mean_score > -1000 (was -1500) for better reliability",
+        "Added cost advantage weight increase (15→20) to favor doubao for appropriate low-risk tasks",
+        "Increased density and length weights for qwen to better capture complex restructuring needs"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "88d20c5a1a849f39ee9564cf43b1d32810d2ab59694194d6fc269d372f11f22e",
+      "new_policy_sha256": "9a6eb6cffae39cb12b7ea17997c0ed77a876f5fe28440c4e9abfee45ab211782"
+    },
+    {
+      "time": 1772608902.9161458,
+      "ok": true,
+      "policy_version_after": 17,
+      "rationale": "The current policy shows doubao frequently chosen for E1/E2 operators with high code_density (>0.9) and moderate length, resulting in poor scores (-2626 to -3908). Analysis reveals: 1) High code_density (>0.9) with n_chars > 2000 strongly correlates with qwen success, 2) M1/M2 operators with doubao show catastrophic failures (-5000) when prior stats are poor, 3) explore_score=0 but doubao still chosen for exploration tasks. This revision strengthens: 1) Hard constraints for high-density explorat",
+      "changes": [
+        "Increased operator-specific weights (40/45 vs 30/35) to better differentiate task types",
+        "Strengthened prior_stats penalty from 30.0 to 40.0 normalized_fail_count multiplier",
+        "Added explicit exclusion for E1/E2 with n_chars>2500 AND code_density>0.8 (observed failure pattern)",
+        "Increased w_risk penalty from -80 to -100 for backends with poor historical performance",
+        "Adjusted tie-breaking threshold from mean_score > -1000 to > -800 for safer choices",
+        "Increased length/density weight differentials to better match observed success patterns"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "9a6eb6cffae39cb12b7ea17997c0ed77a876f5fe28440c4e9abfee45ab211782",
+      "new_policy_sha256": "2f6629e2ef872f2cf1564910a401f8a83fa6dcba0f7fac6cee4d29dda7e51698"
+    },
+    {
+      "time": 1772608969.161887,
+      "ok": true,
+      "policy_version_after": 18,
+      "rationale": "The data shows doubao frequently chosen for E1/E2 operators but with mediocre scores (-2000 to -3900), while qwen performs well on high-density/long code. Key improvements: 1) Strengthened exploration constraint with density guard (code_density < 0.8) to prevent doubao on complex code where it underperforms, 2) Increased prior_stats weight and failure penalty to better leverage historical performance, 3) Added density check to tie-breaking for exploration cases, 4) Adjusted weights to give qwen ",
+      "changes": [
+        "Added density guard (code_density < 0.8) to exploration hard constraint and tie-breaking",
+        "Increased prior_stats weight multiplier from 40 to 45 and failure penalty from 40.0 to 45.0",
+        "Increased qwen length/density weights by +5 each for better discrimination",
+        "Increased doubao cost advantage from +25 to +30",
+        "Strengthened risk penalty from -100 to -120 for backends with poor historical performance",
+        "Tightened tie-breaking condition for fail_count=0 from mean_score > -800 to > -500",
+        "Reduced operator-only bias (E1/E2: +40→+35, M1/M2: +45→+40) to allow other signals more influence"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "2f6629e2ef872f2cf1564910a401f8a83fa6dcba0f7fac6cee4d29dda7e51698",
+      "new_policy_sha256": "484e21d4a6371e4bbe9a4dc5b7a01828034990816bbbd60bad472ea5ebc4614d"
+    },
+    {
+      "time": 1772609031.4528432,
+      "ok": true,
+      "policy_version_after": 19,
+      "rationale": "The batch shows doubao consistently underperforms on high-density code (code_density=1.0) despite exploration signals, while qwen excels in these cases. Deepseek performs well on M1/M2 modifications. Key improvements: 1) Increased weights for operator-specific boosts to better differentiate E1/E2 vs M1/M2 tasks, 2) Strengthened failure penalty in w_prior to avoid backends with catastrophic failures, 3) Increased w_risk penalty to -150 for high-risk backends, 4) Added stronger tie-breaking for hi",
+      "changes": [
+        "Increased operator-specific boosts (E1/E2: +35→+40, M1/M2: +40→+45)",
+        "Strengthened w_prior failure penalty multiplier from 45.0 to 50.0",
+        "Increased w_risk penalty from -120 to -150 for catastrophic failure risk",
+        "Increased cost advantage for doubao from +30 to +35",
+        "Increased deepseek error bonus from +70 to +80",
+        "Added stronger tie-breaking for high-density long code (>0.7 density, >2500 chars)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "484e21d4a6371e4bbe9a4dc5b7a01828034990816bbbd60bad472ea5ebc4614d",
+      "new_policy_sha256": "b3a45d5a3a118e5ff22f9ceb30ecf5aeabb5cf6168dc4dd1f5e8099673b41483"
+    },
+    {
+      "time": 1772609098.0717568,
+      "ok": true,
+      "policy_version_after": 20,
+      "rationale": "The batch shows doubao consistently underperforms on high-density code (code_density > 0.8) despite operator E1/E2 signals, with scores around -2600 to -3900. Qwen performs better on high-density tasks (scores -2075 to -2197). The policy needs stronger weighting against doubao for high-density exploratory tasks and stronger weighting for qwen on long, dense code. Increased operator-specific boosts and failure penalties will better differentiate backends, while maintaining doubao's advantage on l",
+      "changes": [
+        "Increased operator-specific boosts (E1/E2: +40→+50 doubao, M1/M2: +45→+55 deepseek) to better align with backend strengths",
+        "Increased length and density weights for qwen (+5-10 points) to better capture its advantage on long, complex code",
+        "Increased exploration and fix score weights (+5-10 points) to make these signals more decisive",
+        "Strengthened prior_stats failure penalty (50→60 multiplier, 50→55 scaling) to better avoid risky backends",
+        "Increased risk penalty (-150→-180) for backends with poor historical performance on specific operators",
+        "Increased cost advantage for doubao (+35→+40) to maintain its edge on appropriate low-risk tasks"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "b3a45d5a3a118e5ff22f9ceb30ecf5aeabb5cf6168dc4dd1f5e8099673b41483",
+      "new_policy_sha256": "6c7babcbd2cb7c53ca1fd20690c6ca5b076e373255bf5015097433551ae9e36f"
+    },
+    {
+      "time": 1772609185.7270694,
+      "ok": true,
+      "policy_version_after": 21,
+      "rationale": "The batch shows doubao consistently underperforms on high-density code (code_density > 0.8) and longer tasks (n_chars > 2500), even for E1/E2 operators where it should excel. Qwen performs well on high-density tasks regardless of operator. Deepseek shows strong performance on M1/M2 but catastrophic failures on M2. The revised policy increases weights for density and length signals, strengthens failure penalties, and adds explicit doubao exclusions for high-density E1/E2 tasks to prevent poor per",
+      "changes": [
+        "Increased operator-specific boosts (E1/E2: +50→+60 doubao, M1/M2: +55→+65 deepseek) to better differentiate operator preferences",
+        "Increased length and density weight thresholds (e.g., w_len: +80→+90 qwen for n_chars>3500, w_density: +75→+85 qwen for density>0.8)",
+        "Strengthened prior_stats penalty from 55 to 60 multiplier and fail_count penalty from 60.0 to 70.0",
+        "Increased w_risk penalty from -180 to -200 for backends with prior failures",
+        "Added explicit doubao exclusion for E1/E2 with n_chars>2500 AND code_density>0.8 (observed pattern of poor performance)",
+        "Increased cost advantage for doubao from +40 to +45 to better balance risk/reward",
+        "Enhanced fix_score and explore_score weights to make these signals more decisive"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "6c7babcbd2cb7c53ca1fd20690c6ca5b076e373255bf5015097433551ae9e36f",
+      "new_policy_sha256": "30046396d7fc1a122022c29d788a8819dce89d3e0170987c7aec29ec35707bd9"
+    },
+    {
+      "time": 1772609373.4390566,
+      "ok": true,
+      "policy_version_after": 22,
+      "rationale": "The data shows catastrophic failures (-5000 scores) occur when: 1) qwen is forced on high-density E2 tasks (step 47), 2) deepseek is used for M2 with poor prior stats (step 28). Key improvements: 1) Increased operator-specific weights (E1/E2→doubao +80, M1/M2→deepseek +85) to better align with backend strengths, 2) Strengthened prior_stats penalty (85.0*normalized_fail_count) to avoid backends with failure history, 3) Increased tie-breaking threshold to 8.0 points for more robust decisions, 4) B",
+      "changes": [
+        "Increased operator-specific weights by 25-33% for stronger alignment",
+        "Strengthened prior_stats failure penalty from 70.0 to 85.0 multiplier",
+        "Increased all signal weights by 15-25% for better differentiation",
+        "Raised tie-breaking threshold from 5.0 to 8.0 points",
+        "Boosted cost advantage for doubao from +45 to +55",
+        "Increased risk penalty from -200 to -250 for backends with poor prior performance"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "30046396d7fc1a122022c29d788a8819dce89d3e0170987c7aec29ec35707bd9",
+      "new_policy_sha256": "335ade8481d0340b291e45fa782baed7c09635c0d7a35f85d8e248b5e27d70e4"
+    },
+    {
+      "time": 1772609443.4123106,
+      "ok": true,
+      "policy_version_after": 23,
+      "rationale": "The current policy shows catastrophic failures (-5000 scores) when qwen is forced for high-density E2 tasks (step 47) and when deepseek is chosen for M2 tasks (step 28). Analysis reveals: 1) code_density > 0.9 + n_chars > 2000 hard constraint is too aggressive for E2 tasks, 2) operator-only boosts are too strong, overriding better signal combinations, 3) prior_stats failure penalty needs strengthening. The revised policy reduces operator bias, strengthens failure penalties, and adds more nuanced",
+      "changes": [
+        "Reduced operator-specific boosts (E1/E2: 80→60, M1/M2: 85→70) to prevent overriding other signals",
+        "Increased prior_stats failure penalty multiplier (70→80) and normalized_fail_count coefficient (85→100)",
+        "Increased w_risk penalty (-250→-300) for backends with prior failures",
+        "Reduced density-based weights (qwen: 100→90, doubao: 80→60) to prevent over-weighting density alone",
+        "Reduced length-based doubao boost (85→65) for short tasks",
+        "Increased tie-breaking threshold (8→10) and relaxed fail_count condition (-500→-1000)",
+        "Added explicit note to cite 3+ signals in reason field"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "335ade8481d0340b291e45fa782baed7c09635c0d7a35f85d8e248b5e27d70e4",
+      "new_policy_sha256": "83f932d32c3b7b403eb2bd7fc304892d2fa76e65a2134e4c79793fe77337e976"
+    },
+    {
+      "time": 1772609513.8050494,
+      "ok": true,
+      "policy_version_after": 24,
+      "rationale": "The current policy shows catastrophic failures (-5000 scores) in steps 28, 47, and 49 despite using multiple signals. Analysis reveals: 1) Operator-only routing fails when prior stats are poor (deepseek -5000 for M2), 2) Code density >0.9 with n_chars>2000 consistently triggers qwen-only but still yields -5000 (step 47), 3) Small modification tasks (M1/M2 with low n_chars) sometimes fail with deepseek. The revised policy increases weight magnitudes to create clearer differentiation, strengthens ",
+      "changes": [
+        "Increased operator-specific boosts (80/90 vs 60/70) for stronger signal differentiation",
+        "Increased w_error weight to 150 for deeper debugging focus",
+        "Strengthened w_prior failure penalty coefficient from 100 to 150",
+        "Increased w_risk penalty from -300 to -400 for high-risk backends",
+        "Increased cost advantage for doubao to +55",
+        "Widened tie-breaking threshold from 10.0 to 15.0 points",
+        "Tightened tie-breaking condition for fail_count=0 from mean_score > -1000 to > -800",
+        "Increased all signal weights proportionally to reduce ambiguous scoring"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "83f932d32c3b7b403eb2bd7fc304892d2fa76e65a2134e4c79793fe77337e976",
+      "new_policy_sha256": "a16fc707a63754668fe1c69c353c6076abd791b9bd647d855e247a24b361e586"
+    },
+    {
+      "time": 1772609583.0616908,
+      "ok": true,
+      "policy_version_after": 25,
+      "rationale": "The current policy shows catastrophic failures (-5000 scores) despite exclusions, particularly for M1/M2 operators with small code. Analysis reveals: 1) Operator-only boosts are too strong (80-90 points), overriding other signals; 2) Failure penalty in w_prior is insufficient; 3) Tie-breaking threshold (15 points) is too wide. The revised policy reduces operator bias, strengthens failure penalties, tightens tie-breaking, and increases weight differentiation for key signals (n_chars, code_density",
+      "changes": [
+        "Reduced operator-specific boosts from 80-90 to 60-70 to prevent overriding other signals",
+        "Increased failure penalty in w_prior from 150 to 200 normalized_fail_count multiplier",
+        "Increased w_risk penalty from -400 to -450 for high-risk backends",
+        "Tightened tie-breaking threshold from 15.0 to 10.0 points",
+        "Strengthened tie-breaking first rule from mean_score > -800 to > -500",
+        "Increased weight differentiation for n_chars and code_density signals",
+        "Increased explore_score weights to better capture exploration opportunities",
+        "Increased cost advantage for doubao from +55 to +60"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "a16fc707a63754668fe1c69c353c6076abd791b9bd647d855e247a24b361e586",
+      "new_policy_sha256": "89c7c472f05f9a57f78e01dc7470f7f6c22c8dc5dfa5a2f90e8422fd1a505dc1"
+    },
+    {
+      "time": 1772609671.40864,
+      "ok": true,
+      "policy_version_after": 26,
+      "rationale": "Analysis of recent batch shows: 1) code_density > 0.9 with n_chars > 2000 consistently yields good qwen results, 2) M1/M2 operators with small n_chars (<1500) and low density (<0.5) should avoid doubao (step 49 catastrophic failure), 3) prior_stats failure penalty needs strengthening as catastrophic failures still occur. The revised policy increases operator-specific weights to better differentiate backends, strengthens failure penalties in w_prior and w_risk, and widens tie-breaking threshold t",
+      "changes": [
+        "Increased operator-specific weights (E1/E2: +60→+80, M1/M2: +70→+90) to better leverage operator signal",
+        "Strengthened failure penalty in w_prior (200→250 multiplier) and w_risk (-450→-500)",
+        "Increased all signal weights proportionally to give more differentiation between backends",
+        "Widened tie-breaking threshold from 10.0 to 15.0 points to reduce borderline decisions",
+        "Increased cost advantage for doubao from +60 to +70 to better utilize low-cost option for simpler tasks"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "89c7c472f05f9a57f78e01dc7470f7f6c22c8dc5dfa5a2f90e8422fd1a505dc1",
+      "new_policy_sha256": "c810d4a54e180fd8e973c67d9aacc9d7d94978fcd1e9c19765f282157b0feb3b"
+    },
+    {
+      "time": 1772609741.637578,
+      "ok": true,
+      "policy_version_after": 27,
+      "rationale": "The current policy shows catastrophic failures (-5000 scores) despite hard constraints. Analysis reveals: 1) Operator-only boosts are too strong (E1/E2 cases where doubao fails on high-density code), 2) Prior stats penalty insufficient for catastrophic prevention, 3) Code density >0.9 with n_chars>2000 is a reliable qwen signal (no failures in batch), 4) Deepseek consistently underperforms on M2 tasks regardless of operator boost. Revised policy strengthens failure penalties, reduces operator bi",
+      "changes": [
+        "Reduced operator-specific boosts (E1/E2: 80→60, M1/M2: 90→80) to prevent over-reliance on single signal",
+        "Increased failure penalty in w_prior (250→300) and w_risk (-500→-600) to better prevent catastrophic choices",
+        "Increased weights for reliable signals: w_error (150→200), w_len/density boosts increased by 10-20 points",
+        "Increased tie-breaking threshold (15→20) and relaxed fail_count condition (-500→-1000) for more robust decisions",
+        "Strengthened exploration signal weights (120/145→140/170) to better utilize explore_score when present",
+        "Increased cost advantage for doubao (70→80) to better leverage its low-cost strength for simpler tasks"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "c810d4a54e180fd8e973c67d9aacc9d7d94978fcd1e9c19765f282157b0feb3b",
+      "new_policy_sha256": "0d26d501bbca899d44072fd5415d06cef8bf2945cef6e03ab2103119d7b06d32"
+    },
+    {
+      "time": 1772609811.8128521,
+      "ok": true,
+      "policy_version_after": 28,
+      "rationale": "The batch analysis reveals critical patterns: 1) High code_density (>0.9) with moderate length (2000-3000 chars) often leads to catastrophic failures with qwen (steps 47, 53), suggesting qwen's restructuring strength becomes a weakness on dense but not extremely long code. 2) Operator-specific prior stats are crucial - deepseek consistently outperforms on M1/M2, while qwen struggles on high-density E1/E2 tasks. 3) The current weights don't sufficiently penalize backends with prior failures. The ",
+      "changes": [
+        "Increased operator-specific weights (E1/E2: +60→+80 doubao, M1/M2: +80→+100 deepseek) to better leverage proven operator-backend correlations",
+        "Strengthened failure penalty in w_prior (300→400 multiplier) and w_risk (-600→-800) to more aggressively avoid backends with poor track records",
+        "Increased cost advantage for doubao (+80→+100) to better utilize its low-cost strength for appropriate tasks",
+        "Adjusted tie-breaking threshold (20→25 points) and improved safety check (mean_score > -1000→-800) to reduce marginal decisions",
+        "Increased signal weights across the board (w_error +250, w_len +200, w_density +200, w_fix +220, w_explore +200) to make scoring more decisive"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "0d26d501bbca899d44072fd5415d06cef8bf2945cef6e03ab2103119d7b06d32",
+      "new_policy_sha256": "9306fbb32954e3f84742a4c858a219e3c9b09dbf7083dfb5db2fcbd5e57eba7d"
+    },
+    {
+      "time": 1772609982.101968,
+      "ok": true,
+      "policy_version_after": 29,
+      "rationale": "The batch shows qwen-only hard constraints for high-density code (code_density > 0.9) are causing catastrophic failures (steps 47, 53). However, qwen performs well on truly long contexts (n_chars > 3500). The policy needs: 1) Stronger operator weights to respect backend strengths, 2) More conservative qwen-only thresholds for density, 3) Enhanced failure penalties in prior scoring, 4) Better tie-breaking that prioritizes safe backends. The revised policy increases operator-specific boosts, raise",
+      "changes": [
+        "Increased operator-specific weights (E1/E2: +80→+100 doubao, M1/M2: +100→+120 deepseek) to better align with backend strengths",
+        "Increased failure penalty in w_prior from 400→500 to more strongly penalize backends with historical failures",
+        "Increased w_risk penalty from -800→-1000 for catastrophic failure history",
+        "Increased tie-breaking threshold from 25→30 points to reduce over-sensitivity",
+        "Tightened tie-breaking rule #1 from mean_score > -800→> -500 to prioritize truly safe backends",
+        "Increased cost advantage for doubao from +100→+120 to better balance exploration vs. risk",
+        "Increased deepseek error bonus from +250→+300 to strengthen debugging focus"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "9306fbb32954e3f84742a4c858a219e3c9b09dbf7083dfb5db2fcbd5e57eba7d",
+      "new_policy_sha256": "e77e33fc2c5f17e31e0dbee9d0cb670ebeb39ee629a5fca750125f04d90110bd"
+    },
+    {
+      "time": 1772610050.5461051,
+      "ok": true,
+      "policy_version_after": 30,
+      "rationale": "This revision addresses observed issues: 1) Qwen-only hard constraints for high-density code (steps 47, 53) caused catastrophic failures (-5000 scores), suggesting these constraints are too aggressive. 2) Deepseek consistently performs well for M1/M2 operators but needs stronger weighting. 3) Doubao's cost advantage should be amplified for simpler tasks. 4) The failure penalty in w_prior needs strengthening to better avoid risky backends. 5) Tie-breaking threshold increased to 40 points to reduc",
+      "changes": [
+        "Reduced operator-specific boosts (E1/E2: 100→80, M1/M2: 120→100) to give more weight to other signals",
+        "Increased length and density weights for qwen and doubao to better reflect their strengths",
+        "Strengthened failure penalty in w_prior from 500 to 600 to better avoid risky backends",
+        "Increased cost advantage for doubao from 120 to 150 to favor it for simpler tasks",
+        "Increased tie-breaking threshold from 30 to 40 points to reduce arbitrary decisions",
+        "Increased w_risk penalty from -1000 to -1200 for backends with poor prior performance"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "e77e33fc2c5f17e31e0dbee9d0cb670ebeb39ee629a5fca750125f04d90110bd",
+      "new_policy_sha256": "120a98112a9b148af5197c082947c98b9a05064fc0e54f7f9c9815f2fe1bae07"
+    }
+  ],
+  "update_every": 25,
+  "batch_size": 25,
+  "max_updates": 30,
+  "reward_mode": "score",
+  "reward_shift": 6000.0,
+  "prior_stats": {
+    "E1": {
+      "deepseek": {
+        "count": 11,
+        "sum_score": -31734.399999999998,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 37,
+        "sum_score": -107535.40000000001,
+        "fail_count": 2
+      },
+      "doubao": {
+        "count": 9,
+        "sum_score": -23126.0,
+        "fail_count": 0
+      }
+    },
+    "E2": {
+      "deepseek": {
+        "count": 6,
+        "sum_score": -6275.400000000001,
+        "fail_count": 3
+      },
+      "qwen": {
+        "count": 31,
+        "sum_score": -88742.40000000004,
+        "fail_count": 0
+      },
+      "doubao": {
+        "count": 15,
+        "sum_score": -34196.2,
+        "fail_count": 0
+      }
+    },
+    "M1": {
+      "deepseek": {
+        "count": 47,
+        "sum_score": -132269.40000000005,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 1,
+        "sum_score": -3006.2,
+        "fail_count": 0
+      },
+      "doubao": {
+        "count": 2,
+        "sum_score": -7626.4,
+        "fail_count": 0
+      }
+    },
+    "M2": {
+      "deepseek": {
+        "count": 5,
+        "sum_score": -22091.8,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 42,
+        "sum_score": -129269.80000000003,
+        "fail_count": 1
+      },
+      "doubao": {
+        "count": 2,
+        "sum_score": -7095.4,
+        "fail_count": 0
+      }
+    },
+    "UNKNOWN": {
+      "deepseek": {
+        "count": 5,
+        "sum_score": -13370.8,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 2,
+        "sum_score": -10000.0,
+        "fail_count": 0
+      },
+      "doubao": {
+        "count": 46,
+        "sum_score": -104947.40000000007,
+        "fail_count": 0
+      }
+    }
+  },
+  "verify_update": false
+}

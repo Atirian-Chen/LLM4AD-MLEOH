@@ -1,0 +1,608 @@
+{
+  "profile_mode": "anonymous",
+  "policy_version": 30,
+  "policy_text": "[Routing Policy v30: Signal-Weighted with Catastrophic Risk Prevention]\nGoal: choose the backend that maximizes expected OBP score (higher is better), considering correctness, reliability, and cost.\n\nSignals (from input):\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\n- has_error (bool), n_chars, n_lines, code_density\n- fix_score, explore_score\n- markers (count of code blocks)\n- prior_stats: per-operator mean score and fail counts for each backend (frozen in test)\n\nDecision procedure:\n1) Hard constraints (override signals):\n   - If has_error=true → assign +100 to A (debugging focus), -100 to C (unstable).\n   - If n_chars > 4000 → assign +100 to B (extreme length), -100 to C (catastrophic failure).\n   - If n_chars > 3500 → assign +95 to B (long-context strength), -100 to C (catastrophic failure prevention).\n   - If markers > 30 → assign +90 to B (global restructuring), -90 to C (catastrophic failure prevention).\n   - If operator is M1/M2 AND (n_chars > 600 OR markers > 3) → assign +85 to A, -85 to C (risk mitigation).\n   - If operator is E1/E2 AND n_chars > 2500 → assign +75 to B, -75 to C (long exploratory risk).\n   - If explore_score > 0 AND (n_chars > 250 OR markers > 1 OR code_density > 0.2) → assign -80 to C (strict validation).\n   - If n_chars > 3000 AND markers > 20 → assign +90 to B, -85 to C (combined complexity risk).\n   - If code_density > 0.9 → assign +70 to A (dense code), -70 to C (unstable).\n   - If n_chars > 4000 → assign +100 to B, -100 to C (extreme length risk).\n\n2) Score each backend using weighted scorecard:\n   Score = w_op + w_error + w_len + w_density + w_fix + w_explore + w_markers + w_prior + w_cost\n   \n   Weights (editable):\n   - Operator weights: E1/E2: C(+15), A(-40), B(+60); M1/M2: A(+80), C(-75), B(-15); UNKNOWN: use prior_stats primarily (weight ×100)\n   - Error signal: has_error=true → A(+100), C(-100)\n   - Length signal: n_chars > 4000 → B(+100), C(-100); n_chars > 3500 → B(+95), C(-100); n_chars > 2500 → B(+85), C(-85); n_chars > 1500 → B(+70), C(-70); n_chars < 500 → A(+55)\n   - Density signal: code_density < 0.3 → B(+55) (more narrative); code_density > 0.7 → A(+60) (dense code); code_density > 0.9 → A(+70), C(-70)\n   - Fix signal: fix_score > 0 → A(+70)\n   - Explore signal: explore_score > 0 → C(+45) [STRICT VALIDATION: must have explore_score>0 AND n_chars<250 AND markers<2 AND code_density<0.2]\n   - Markers signal: markers > 30 → B(+90), C(-90); markers > 25 → B(+80), C(-80); markers > 20 → B(+70), C(-70); markers < 5 → A(+50)\n   - Prior stats: (mean_score * 100) - (fail_count * 90) for operator (decupled weight for UNKNOWN)\n   - Cost: C(+30), A(0), B(0) baseline\n\n3) Risk-aware selection with catastrophic failure prevention:\n   - If top score > second score by ≥70 → choose top with high confidence.\n   - If scores within 69 points:\n        a) If any backend has prior fail_count > 0 for operator → avoid it (penalty -80)\n        b) If n_chars > 300 OR markers > 1 OR code_density > 0.2 → avoid C unless score advantage > 80\n        c) If operator is M1/M2 → prefer A over C (penalty -75 to C)\n        d) If operator is E1/E2 AND n_chars > 1500 → prefer B over C (penalty -70 to C)\n        e) If n_chars > 2000 AND markers > 15 → prefer B over A (penalty -60 to A)\n        f) Choose more reliable (A > B > C)\n        g) Choose cheaper (C > A > B) only if reliability difference ≤1 AND n_chars < 200 AND markers < 1 AND code_density < 0.15\n   - If C is chosen and (n_chars > 150 OR markers > 1 OR code_density > 0.15) → set confidence low.\n   - If A is chosen for M1/M2 with n_chars < 2000 → set confidence high.\n   - If B is chosen for E1/E2 with n_chars > 1500 AND markers > 10 → set confidence high.\n   - If B is chosen with n_chars > 2500 AND markers > 20 → set confidence very high.\n   - NEVER choose C if n_chars > 3500 OR markers > 30 (catastrophic failure prevention).\n\n4) Output JSON with backend + confidence + reason citing 3 specific signals (must include operator, length/density/markers, and fix/explore score).",
+  "updates": 30,
+  "history": [
+    {
+      "time": 1772694845.0480268,
+      "ok": true,
+      "policy_version_after": 1,
+      "rationale": "Current policy over-relies on operator type and under-utilizes risk signals, leading to catastrophic failures with C on complex/long tasks (steps 4, 16, 18). The revised policy: 1) Adds hard constraints for long context (n_chars>3000) and high complexity (markers>20) to avoid C's instability, 2) Incorporates markers count as complexity proxy to favor B for multi-block restructuring, 3) Uses length thresholds to route long tasks to B, 4) Adds risk-aware tiebreaking that considers prior fail count",
+      "changes": [
+        "Added hard constraints for n_chars>3000 and markers>20 to avoid C instability",
+        "Incorporated markers signal as complexity proxy with weights",
+        "Added length thresholds (n_chars>2000 favors B, <500 favors A)",
+        "Enhanced tiebreaking with prior fail count avoidance",
+        "Added low-confidence flag for C on borderline complex tasks",
+        "Refined operator-specific weights based on observed patterns"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "34add6f4ab0e318f9a5d5de469999a57e64c19512b7708997c19833b2aa244c9",
+      "new_policy_sha256": "85d572c69346a496c14eb561cfd23f75d44fc8f75fef1b770662d54d6a49defa"
+    },
+    {
+      "time": 1772694892.15356,
+      "ok": true,
+      "policy_version_after": 2,
+      "rationale": "The current policy over-selects C for exploratory tasks despite high-risk signals (long length, many markers), leading to catastrophic failures (-5000 scores). The revised policy: 1) Strengthens penalties for C on high-risk signals (length >3000, markers >20), 2) Increases weight for prior stats to better handle UNKNOWN operators, 3) Adjusts operator weights to favor A for M1/M2 tasks (which involve modification not pure exploration), 4) Adds stricter risk-avoidance rules to prevent C selection ",
+      "changes": [
+        "Increased penalties for C on high-risk signals (length >3000: -2, markers >20: -2)",
+        "Strengthened prior stats weight (×6 instead of ×5) to better handle UNKNOWN operators",
+        "Changed M1/M2 operator weights to favor A(+2) over C(+1) for modification tasks",
+        "Added density signal usage (low density favors B, high density favors A)",
+        "Added stricter risk-avoidance: avoid C if n_chars>2500 OR markers>15 unless score advantage >4",
+        "Increased explore_score weight to +3 for C to maintain appropriate selection for true exploration",
+        "Added n_chars<500 bonus for A to handle small debugging/editing tasks"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "85d572c69346a496c14eb561cfd23f75d44fc8f75fef1b770662d54d6a49defa",
+      "new_policy_sha256": "ad8789dee7583a58d0389700166db727cf0430c9c5bac387b826e662705141b2"
+    },
+    {
+      "time": 1772694935.9393873,
+      "ok": true,
+      "policy_version_after": 3,
+      "rationale": "This improves objective by: 1) Strengthening penalties for C on long/marker-heavy tasks (where it's unstable), 2) Increasing weight for prior stats (especially UNKNOWN), 3) Adding density-based tie-breaking to route dense code to A, 4) Tightening risk thresholds to avoid catastrophic failures while maintaining interpretability.",
+      "changes": [
+        "Increased penalties for C on long/high-marker tasks (-2→-3)",
+        "Doubled prior stats weight for UNKNOWN operator",
+        "Added density >0.7 tie-break favoring A over C",
+        "Lowered risk thresholds (n_chars>2000→avoid C, markers>10→avoid C)",
+        "Increased score differential requirement for confident selection (3→4)",
+        "Added requirement to cite 3 specific signals in reason"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "ad8789dee7583a58d0389700166db727cf0430c9c5bac387b826e662705141b2",
+      "new_policy_sha256": "b70bd7d3b6ed623f3150108728198cffa099a60ac2d269e30d38393c5a2bd977"
+    },
+    {
+      "time": 1772694998.6545274,
+      "ok": true,
+      "policy_version_after": 4,
+      "rationale": "Current policy over-selects C for exploratory tasks without proper risk validation, leading to catastrophic failures (M1/M2 steps with -5000 scores). The revised policy: 1) Strengthens operator-specific preferences (M1/M2 → A, E1/E2 → B with moderate C), 2) Adds validation to explore_score signal requiring length/marker constraints, 3) Increases penalties for C in high-risk scenarios (long text, many markers, dense code), 4) Uses stronger prior stats weighting for UNKNOWN cases, 5) Adds explicit",
+      "changes": [
+        "Increased operator weights: M1/M2 now +4 for A (was +3), E1/E2 now +2 for B (was +1) with reduced C bonus",
+        "Added explore_score validation: requires explore_score>0 AND n_chars<2000 AND markers<15 to activate C bonus",
+        "Increased risk penalties: C penalties increased by 1-2 points across hard constraints and signals",
+        "Strengthened prior stats weighting for UNKNOWN (×3 instead of ×2)",
+        "Added explicit M1/M2 preference in tie-breaking with -2 penalty to C",
+        "Increased score differential threshold to 5 points for confident selection"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "b70bd7d3b6ed623f3150108728198cffa099a60ac2d269e30d38393c5a2bd977",
+      "new_policy_sha256": "4acae987ce7014535d64846042d40e362851f0cc1e10c818af7a80ddf5b1da2e"
+    },
+    {
+      "time": 1772695068.8716068,
+      "ok": true,
+      "policy_version_after": 5,
+      "rationale": "The current policy over-selects C for high-risk scenarios (long code, many markers, M1/M2 operators), leading to catastrophic failures (-5000 scores). The revised policy: 1) Strengthens penalties for C in risky conditions (long length, high markers, M1/M2 operators), 2) Increases weights for A on M1/M2 tasks where it performs well, 3) Tightens explore_score validation to prevent misuse, 4) Adds explicit catastrophic failure prevention rules, 5) Uses stronger prior_stats weighting for UNKNOWN ope",
+      "changes": [
+        "Increased penalties for C in risky conditions (long length, high markers, M1/M2)",
+        "Strengthened A preference for M1/M2 operators (+6 vs -2 for C)",
+        "Tightened explore_score validation with stricter thresholds",
+        "Added explicit catastrophic failure prevention rule for M1/M2 with length/markers",
+        "Increased prior_stats weight for UNKNOWN operator",
+        "Lowered risk thresholds for avoiding C (n_chars>1800, markers>8, density>0.65)",
+        "Added operator-specific risk rules (E1/E2 with length prefer B over C)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "4acae987ce7014535d64846042d40e362851f0cc1e10c818af7a80ddf5b1da2e",
+      "new_policy_sha256": "8de69eafd1035a2fea42cb2ac3ac4f10363b37547aaa2ab9dbcdf0e464ab1102"
+    },
+    {
+      "time": 1772695128.7173696,
+      "ok": true,
+      "policy_version_after": 6,
+      "rationale": "The current policy over-selects C for high-risk scenarios (long length, many markers, high density) despite C's instability. Analysis shows catastrophic failures occur when C is chosen for M1/M2 operators with moderate complexity. The revised policy: 1) Strengthens penalties for C in risky conditions (n_chars>1600, markers>8, density>0.6), 2) Increases weight differentials to prevent marginal C selections, 3) Tightens explore_score validation to require stricter conditions, 4) Boosts prior stats",
+      "changes": [
+        "Increased penalty thresholds for C in risky conditions (n_chars>1600, markers>8, density>0.6)",
+        "Strengthened operator weights differentials (A+8 for M1/M2, B+4 for E1/E2)",
+        "Tightened explore_score validation requirements (n_chars<1600, markers<10, density<0.65)",
+        "Increased prior stats weight for UNKNOWN operator (×6 instead of ×4)",
+        "Raised score differential threshold for confident selection from 6 to 8",
+        "Added stronger length-based preference for B over C for E1/E2 (n_chars>1800)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "8de69eafd1035a2fea42cb2ac3ac4f10363b37547aaa2ab9dbcdf0e464ab1102",
+      "new_policy_sha256": "d80ffc3c8c96f65ff2d6c37e251c8fa256605fdfa783c508edc9ef3e68ff3915"
+    },
+    {
+      "time": 1772695211.1136723,
+      "ok": true,
+      "policy_version_after": 7,
+      "rationale": "The current policy over-selects C for high-risk scenarios (long code, many markers, M1/M2 operators) despite C's instability. The revised policy: 1) Strengthens penalties for C in risky conditions (higher thresholds, stricter validation), 2) Increases B's advantage for long exploratory tasks (E1/E2 with length/markers), 3) Boosts A's weight for M1/M2 operations, 4) Tightens risk thresholds (C avoidance at >1400 chars vs >1600), 5) Increases score differential requirement for confident selection ",
+      "changes": [
+        "Increased B weights for E1/E2 operators from +4 to +6",
+        "Increased A weights for M1/M2 from +8 to +10",
+        "Tightened C avoidance threshold from n_chars>1600 to >1400",
+        "Added hard constraint for E1/E2 with n_chars>2500 favoring B",
+        "Increased score differential for confident selection from ≥8 to ≥10",
+        "Stricter explore_score validation (n_chars<1400 vs <1600)",
+        "Increased prior stats weight for better UNKNOWN handling"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "d80ffc3c8c96f65ff2d6c37e251c8fa256605fdfa783c508edc9ef3e68ff3915",
+      "new_policy_sha256": "841fa6a68a4e4d4da3fd4afb101b8966e4f0fe59c628a8aa87a2883a44a7abda"
+    },
+    {
+      "time": 1772695271.502876,
+      "ok": true,
+      "policy_version_after": 8,
+      "rationale": "Current policy over-selects C for risky scenarios (long code, many markers, M1/M2 operators) despite C's instability. The revised policy: 1) Strengthens penalties for C in risky conditions (n_chars>1200, markers>6, M1/M2), 2) Increases weight differentials to prevent marginal C wins, 3) Tightens explore_score validation to prevent misuse, 4) Uses stricter thresholds based on observed failure patterns (M1/M2 failures at n_chars~1100). This should reduce catastrophic failures while maintaining C's",
+      "changes": [
+        "Increased penalties for C in risky conditions (M1/M2, long code, many markers)",
+        "Lowered risk thresholds (M1/M2 risk mitigation now triggers at n_chars>1200 instead of 1500)",
+        "Tightened explore_score validation (n_chars<1200, markers<6, density<0.55)",
+        "Increased weight differentials between backends (operator weights +3 to +12)",
+        "Strengthened tie-breaking rules (avoid C unless advantage >15 in risky conditions)",
+        "Adjusted prior stats weighting for better UNKNOWN operator handling"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "841fa6a68a4e4d4da3fd4afb101b8966e4f0fe59c628a8aa87a2883a44a7abda",
+      "new_policy_sha256": "9cd00b78912a43dcd713f826573fb15a96fbf5e6569d7453cb14d55a31a50aa7"
+    },
+    {
+      "time": 1772695334.5570688,
+      "ok": true,
+      "policy_version_after": 9,
+      "rationale": "The current policy over-selects C for high-risk scenarios (long length, many markers, high density) despite C's instability. Analysis shows catastrophic failures (-5000 scores) occur with C on M1/M2 tasks even at moderate lengths (1084 chars). The revised policy: 1) Strengthens risk penalties for C in high-signal scenarios (length, markers, density), 2) Lowers thresholds for risk mitigation (1000 chars instead of 1200), 3) Increases weight differentials to prevent C from winning close ties in ri",
+      "changes": [
+        "Increased penalty weights for C in high-risk scenarios (length > 1000, markers > 5, density > 0.5)",
+        "Lowered risk thresholds: M1/M2 risk mitigation now triggers at 1000 chars (was 1200)",
+        "Strengthened operator weights: A gets +15 for M1/M2 (was +12), B gets +10 for E1/E2 (was +8)",
+        "Added stricter explore_score validation: C only gets explore bonus if n_chars<1000 AND markers<5 AND density<0.5",
+        "Increased score differential requirement for confident selection to 15 points (was 12)",
+        "Added explicit penalty for C when operator is M1/M2 in tie-breaking (-15)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "9cd00b78912a43dcd713f826573fb15a96fbf5e6569d7453cb14d55a31a50aa7",
+      "new_policy_sha256": "c2d9c7b2aa5c374881e2f07f4f992d351e99989bb5c66287022035b7244b8242"
+    },
+    {
+      "time": 1772695454.792779,
+      "ok": true,
+      "policy_version_after": 10,
+      "rationale": "The current policy over-selects C for risky scenarios (long length, high markers, M1/M2 operators) despite C's instability. Analysis shows catastrophic failures (-5000 scores) occur with C on M1/M2 tasks with moderate length/markers. The revised policy: 1) Strengthens risk mitigation thresholds (lowered from 1000 to 800 chars, 6 to 4 markers) to prevent C selection in borderline cases, 2) Increases penalty weights for C in risky conditions, 3) Boosts B's advantage for E1/E2 long tasks to capture",
+      "changes": [
+        "Lowered risk thresholds for C avoidance (800 chars, 4 markers, 0.4 density)",
+        "Increased penalty weights for C in risky scenarios (+5-10 across signals)",
+        "Strengthened B's advantage for E1/E2 long tasks (B+15 vs C+5)",
+        "Tightened explore_score validation for C (stricter conditions)",
+        "Increased reliability preference in tie-breaking (fail_count>0 penalty)",
+        "Adjusted confidence thresholds based on signal combinations"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "c2d9c7b2aa5c374881e2f07f4f992d351e99989bb5c66287022035b7244b8242",
+      "new_policy_sha256": "27fcb36b1aa436153642a85810dcad0d780e0b8464a881ebd101c089b5f64347"
+    },
+    {
+      "time": 1772695513.9046175,
+      "ok": true,
+      "policy_version_after": 11,
+      "rationale": "The data shows C was frequently chosen for high-risk scenarios (long length, many markers, high density) despite its instability, while recent policy versions (v1-v9) show improved performance when A/B were selected for M/E operators with appropriate signals. This revision strengthens risk mitigation by: 1) Increasing penalty weights for C in high-risk conditions (length > 2000, markers > 15, density > 0.7), 2) Boosting B's advantage for E operators with long context needs, 3) Tightening C's exp",
+      "changes": [
+        "Increased penalty weights for C in high-risk scenarios (length, markers, density) by 25-30%",
+        "Boosted B's advantage for E operators from +15 to +20 to better handle long exploratory tasks",
+        "Increased A's advantage for M operators from +20 to +25 for stronger risk mitigation",
+        "Tightened C's explore_score validation thresholds and increased penalty to -25",
+        "Increased score differential threshold from 20 to 25 for confident selection",
+        "Added code_density < 0.35 condition to cheap selection tie-break",
+        "Increased prior stats weight from 30 to 35 for better operator-specific learning"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "27fcb36b1aa436153642a85810dcad0d780e0b8464a881ebd101c089b5f64347",
+      "new_policy_sha256": "0e3841bfb5deea9f2a4a4cc65194ec0b6e292d4dcfce877d4b0c42727e8ba1ca"
+    },
+    {
+      "time": 1772695586.4533706,
+      "ok": true,
+      "policy_version_after": 12,
+      "rationale": "The data shows C is being chosen for long/complex tasks (n_chars>2000, markers>15, code_density>0.7) despite its instability, leading to catastrophic failures (-5000 scores). The revised policy strengthens risk prevention: 1) Increases penalties for C in risky conditions (long length, many markers, high density), 2) Tightens explore_score validation thresholds (n_chars<600 vs 800), 3) Boosts B's weights for E1/E2 operators with long context needs, 4) Strengthens A's weights for M1/M2 tasks with ",
+      "changes": [
+        "Increased penalty magnitudes for C in risky conditions (n_chars>3000: -35 vs -25)",
+        "Tightened explore_score validation thresholds (n_chars<600, markers<3, density<0.35)",
+        "Boosted B's operator weights for E1/E2 from +20 to +25",
+        "Increased A's operator weights for M1/M2 from +25 to +35",
+        "Strengthened risk-aware tiebreak thresholds (≥30 advantage vs ≥25)",
+        "Added stricter C avoidance in tiebreaks (n_chars>600 vs 800)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "0e3841bfb5deea9f2a4a4cc65194ec0b6e292d4dcfce877d4b0c42727e8ba1ca",
+      "new_policy_sha256": "79a383f9f1d91b90f33fd2e6a4366dd70c540733eacd0d41ed21ee3116ac235c"
+    },
+    {
+      "time": 1772695714.239463,
+      "ok": true,
+      "policy_version_after": 13,
+      "rationale": "The data shows C was chosen inappropriately for long/complex tasks (n_chars>2000, markers>15) despite catastrophic failures (-5000 scores). Current policy allows C too often for E1/E2/M1/M2 with high length/markers. The revised policy: 1) Increases penalties for C in risky conditions (higher thresholds, stronger penalties), 2) Strengthens B's advantage for long/structured exploratory tasks (E1/E2 with n_chars>1500, markers>20), 3) Tightens C's explore_score validation (requires n_chars<500, mark",
+      "changes": [
+        "Increased all penalty/bonus magnitudes by 10-15 points for stronger signal differentiation",
+        "Tightened C's explore_score validation: n_chars<500 (was 600), markers<3 (same), density<0.3 (was 0.35)",
+        "Increased score differential threshold from 30 to 40 for confident selection",
+        "Strengthened B's operator weights for E1/E2 from +25 to +35",
+        "Increased C avoidance threshold in tie-break from 40 to 50 point advantage",
+        "Reduced cheap selection criteria: n_chars<400 (was 500), density<0.25 (was 0.3)",
+        "Lowered C confidence threshold: n_chars>300 triggers low confidence (was 400)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "79a383f9f1d91b90f33fd2e6a4366dd70c540733eacd0d41ed21ee3116ac235c",
+      "new_policy_sha256": "5c8241e50e2a8f19cf9ea12d31a6a237a770e3636e5ac90d03941b66e4e72d2b"
+    },
+    {
+      "time": 1772695769.8084562,
+      "ok": true,
+      "policy_version_after": 14,
+      "rationale": "The current policy still allows C to be chosen for long/complex tasks (n_chars>3000, markers>20) despite catastrophic failures in the batch (steps 16, 18 with -5000 scores). The revised policy strengthens penalties for C in risky conditions, increases weight differentials to prevent marginal C selections, and adds stricter validation for explore_score usage. This reduces catastrophic failures while maintaining appropriate C usage for truly small exploratory tasks.",
+      "changes": [
+        "Increased penalty magnitudes by 10-15% across all C-risk conditions (n_chars>3000, markers>20, M1/M2 tasks)",
+        "Strengthened operator weights differentials (E1/E2: B+40 vs C+10; M1/M2: A+50 vs C-45)",
+        "Added stricter validation for explore_score: requires n_chars<500 AND markers<3 AND code_density<0.3",
+        "Increased score advantage threshold for C selection from 50 to 55 points",
+        "Enhanced prior stats weighting (55×mean_score - 50×fail_count) to better reflect reliability"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "5c8241e50e2a8f19cf9ea12d31a6a237a770e3636e5ac90d03941b66e4e72d2b",
+      "new_policy_sha256": "ab029bacca5b5f80ff5c8d2598a3b2eaad4e473f392d56b2f81a77c5daa33246"
+    },
+    {
+      "time": 1772695845.6707451,
+      "ok": true,
+      "policy_version_after": 15,
+      "rationale": "The current policy is over-selecting C for M1/M2 tasks with moderate complexity (n_chars 1000-2000, markers 8-15), leading to catastrophic failures (-5000 scores). Analysis shows: 1) C fails catastrophically on M1/M2 with moderate complexity, 2) B performs well on E1/E2 with high n_chars (>2500) and markers (>20), 3) A is reliable for M1/M2 but under-selected. This revision strengthens penalties for C in risky scenarios, increases weights for B on high-complexity E tasks, and adds combined signa",
+      "changes": [
+        "Increased penalties for C in M1/M2 scenarios from -55 to -65",
+        "Added combined threshold rule: n_chars>2500 AND markers>15 → +75 B, -70 C",
+        "Strengthened C avoidance criteria: n_chars>400 (was 500), markers>2 (was 3)",
+        "Increased operator weights for M1/M2: A from +50 to +60, C from -45 to -55",
+        "Added density>0.9 penalty for C (-50) to handle extreme code density",
+        "Increased score advantage threshold for C selection from 55 to 60",
+        "Added confidence boost for B on very high complexity (n_chars>2500 AND markers>20)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "ab029bacca5b5f80ff5c8d2598a3b2eaad4e473f392d56b2f81a77c5daa33246",
+      "new_policy_sha256": "823eaf31545cad35eea566aa82d12fa2ac47f4563074aed00e15251deb2956c8"
+    },
+    {
+      "time": 1772695910.1572654,
+      "ok": true,
+      "policy_version_after": 16,
+      "rationale": "The data shows C is being chosen for M1/M2 tasks with moderate complexity (n_chars 1000-2000, markers 8-15) despite A's strengths, leading to poor scores (-2091 to -5000). For E1/E2 tasks with high complexity (n_chars > 3000, markers > 25), B performs well. The revised policy strengthens penalties for C on M1/M2 tasks, increases weight differentials between backends, adds code_density > 0.9 as a hard constraint favoring A, and raises thresholds for C selection to prevent catastrophic failures wh",
+      "changes": [
+        "Increased operator weight differentials: M1/M2 now A(+70), C(-65), B(-10) to strongly favor A",
+        "Added code_density > 0.9 as hard constraint favoring A (-60 to C)",
+        "Increased all penalty magnitudes by 5-10 points for stronger signal separation",
+        "Raised score advantage threshold from 50 to 60 for confident selection",
+        "Increased C avoidance threshold from 60 to 70 for moderate complexity tasks",
+        "Reduced C's cost advantage from +30 to +25 to de-emphasize cost for risky scenarios",
+        "Increased prior stats weight from 60 to 70 for better historical performance consideration"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "823eaf31545cad35eea566aa82d12fa2ac47f4563074aed00e15251deb2956c8",
+      "new_policy_sha256": "c7af6fb26bf143d817122633c063bd6e86dd753e9bcbee6a5e69e3830ebf7f12"
+    },
+    {
+      "time": 1772696037.640802,
+      "ok": true,
+      "policy_version_after": 17,
+      "rationale": "The current policy allows C to be chosen too frequently for M1/M2 operators with moderate complexity (n_chars 1000-2000, markers 8-15), despite C's instability. The data shows C consistently chosen for M1/M2 tasks with scores around -2091 to -5000, while A performs better for similar tasks. Key improvements: 1) Stronger penalties for C in M1/M2 scenarios (increased from -65 to -75), 2) Lowered thresholds for risk mitigation (n_chars > 600 instead of >800, markers > 3 instead of >4), 3) Stricter ",
+      "changes": [
+        "Increased operator weight differentials (M1/M2: A+80 vs C-75 vs B-15)",
+        "Lowered risk mitigation thresholds for M1/M2 (n_chars>600, markers>3)",
+        "Stricter explore validation for C (n_chars<350, markers<2, density<0.25)",
+        "Increased score differential requirement for confident selection to ≥70",
+        "Added penalty for C when n_chars>300 (down from >400)",
+        "Increased hard constraint penalties for error/length/marker signals",
+        "Adjusted tie-break thresholds for better reliability vs cost tradeoffs"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "c7af6fb26bf143d817122633c063bd6e86dd753e9bcbee6a5e69e3830ebf7f12",
+      "new_policy_sha256": "1709e5e1b277c2577d81a9b42eaf5c458a4678e0b22ac4ac7918ab80ae8b5740"
+    },
+    {
+      "time": 1772696101.6705797,
+      "ok": true,
+      "policy_version_after": 18,
+      "rationale": "The current policy shows C being chosen for M1/M2 tasks with moderate length (1116-1703 chars) and markers (8-12), which contradicts C's weaknesses (unstable) and A's strengths (local edits). The catastrophic failure at step 39 (score -4994) occurred with B on E2 with extreme length (3615 chars) and density=1.0, suggesting B may struggle with ultra-dense code despite long-context strength. The revised policy strengthens risk mitigation by: 1) Adding density>0.9 penalty to C and bonus to A, 2) Ti",
+      "changes": [
+        "Added density>0.9 penalty to C (-70) and bonus to A (+70) to handle ultra-dense code",
+        "Tightened explore_score validation for C: now requires n_chars<350 AND markers<2 AND density<0.25",
+        "Added rule: n_chars>2000 AND markers>12 → prefer B over A (penalty -60 to A)",
+        "Adjusted operator weights: E1/E2: increased B from +60 to +70, decreased C from +15 to +10",
+        "Added explicit penalty for C when markers>1 in risk-aware selection (from original 'markers>1' condition)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "1709e5e1b277c2577d81a9b42eaf5c458a4678e0b22ac4ac7918ab80ae8b5740",
+      "new_policy_sha256": "cea036b50fefd45d1c4999684850f4d95a4d236df18cc94272a36dc52839fd28"
+    },
+    {
+      "time": 1772696167.7919805,
+      "ok": true,
+      "policy_version_after": 19,
+      "rationale": "The current policy is routing many E1/E2 tasks with high n_chars (>3000) and high markers (>25) to C, which is risky given C's instability with long/complex tasks. The catastrophic failure at step 39 (score -4994) occurred with E2, n_chars=3615, markers=32, code_density=1.0 - exactly where C should be penalized. The revised policy strengthens C avoidance for long/complex tasks while maintaining its use for truly exploratory, small tasks. Key improvements: 1) Added hard constraint for n_chars>250",
+      "changes": [
+        "Added hard constraint: 'If n_chars > 2500 AND markers > 15 → assign +90 to B, -85 to C (combined complexity risk)'",
+        "Strengthened risk-aware rule (b): changed threshold from 'n_chars > 300 OR markers > 1 OR code_density > 0.2 → avoid C unless score advantage > 80' (was >70)",
+        "Added density penalty: 'If code_density > 0.9 → assign +70 to A, -70 to C' in hard constraints",
+        "Increased C's explore_score validation strictness: added 'AND code_density<0.25' to explore signal validation"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "cea036b50fefd45d1c4999684850f4d95a4d236df18cc94272a36dc52839fd28",
+      "new_policy_sha256": "d1f5a6bb41d0533655de200a07d1b197de751c690f9d1cc88929341a2b07af7e"
+    },
+    {
+      "time": 1772696238.5367901,
+      "ok": true,
+      "policy_version_after": 20,
+      "rationale": "The current policy is routing many E1/E2 tasks with high n_chars (>3000) and high markers (>20) to C, which is unstable for large, complex tasks. The data shows catastrophic failures (step 39: score -4994) when C handles large exploratory tasks. B consistently performs well for E1/E2 with high n_chars and markers. The revised policy strengthens constraints against using C for large/complex tasks, increases B's advantage for E1/E2 with length/markers, and adds explicit penalties for C when code_d",
+      "changes": [
+        "Added explicit penalty for C when code_density=1.0 (pure code) in hard constraints",
+        "Increased B's operator weight for E1/E2 from +60 to +70 to better match observed success patterns",
+        "Added explicit constraint: 'If code_density=1.0 AND n_chars>1000 → assign -90 to C' to prevent unstable C on large pure-code tasks",
+        "Strengthened risk-aware rule (b): increased C avoidance threshold from n_chars>300 to n_chars>200 for complex tasks",
+        "Added explicit tie-break: 'If operator is E1/E2 AND code_density>0.8 → prefer B over A (penalty -50 to A)' to handle dense exploratory code"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "d1f5a6bb41d0533655de200a07d1b197de751c690f9d1cc88929341a2b07af7e",
+      "new_policy_sha256": "bf29dfcad454626c4d78b390368391f830f96d56215a27dd9679f86ae5084d1d"
+    },
+    {
+      "time": 1772696395.0536675,
+      "ok": true,
+      "policy_version_after": 21,
+      "rationale": "The current policy is correctly routing M1/M2 to A and E1/E2 to B for most cases, but early steps show catastrophic failures when C was chosen for long, complex tasks (steps 21-26). The revised policy strengthens risk prevention by: 1) Adding explicit hard constraints for extreme length+markers combinations, 2) Increasing penalties for C in high-complexity scenarios, 3) Adding confidence adjustments based on signal combinations, and 4) Tightening explore_score validation for C. This should reduc",
+      "changes": [
+        "Added hard constraint: 'If n_chars > 2500 AND markers > 15 → assign +90 to B, -85 to C' to prevent C selection in high-complexity scenarios",
+        "Modified risk-aware selection rule (b): increased required score advantage for C from >70 to >80 when n_chars>300 OR markers>1 OR density>0.2",
+        "Added confidence rule: 'If B is chosen with n_chars > 2000 AND markers > 15 → set confidence very high' to reinforce correct B selection",
+        "Strengthened explore_score validation for C: added code_density<0.25 requirement to existing n_chars<350 AND markers<2 constraints"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "bf29dfcad454626c4d78b390368391f830f96d56215a27dd9679f86ae5084d1d",
+      "new_policy_sha256": "baff88d5f239d731454c2b2d8e8038acb80dd23351b7ec86eebd889b927b4540"
+    },
+    {
+      "time": 1772696468.7901607,
+      "ok": true,
+      "policy_version_after": 22,
+      "rationale": "The current policy is allowing catastrophic failures with C on large, complex tasks (steps 22, 23, 39 show C chosen for E2 with n_chars>3500 and markers>30, resulting in very low scores). Analysis shows: 1) C consistently fails on large exploratory tasks (E1/E2 with n_chars>3500), 2) B performs well on long-context exploratory tasks (steps 29-31, 36-38), 3) A is reliable for M1/M2 tasks. The revised policy adds catastrophic failure prevention by banning C on extremely large/complex tasks (n_char",
+      "changes": [
+        "Added hard constraint: n_chars > 3500 → assign -100 to C",
+        "Added hard constraint: markers > 25 → assign -90 to C",
+        "Added risk-aware rule: If n_chars > 3500 OR markers > 25 → never choose C",
+        "Increased penalty for C on markers > 30 from -80 to -95",
+        "Increased bonus for B on n_chars > 3500 from +90 to +95",
+        "Added explicit catastrophic failure prevention in both hard constraints and risk-aware selection"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "baff88d5f239d731454c2b2d8e8038acb80dd23351b7ec86eebd889b927b4540",
+      "new_policy_sha256": "dd1865de92df6959ab20bacdf3d1406598d5ec2362a90c90e31b309d06a92ba0"
+    },
+    {
+      "time": 1772696648.046052,
+      "ok": true,
+      "policy_version_after": 23,
+      "rationale": "The current policy shows C being chosen for M1 tasks with moderate length (1378-1703 chars) and markers (11-12), which contradicts C's weaknesses in stability for structured modifications. The policy needs stronger prevention against C for M1/M2 operators when markers > 3 or n_chars > 600. Additionally, E2 tasks with extreme length (3573 chars) and high markers (33) should trigger catastrophic failure prevention for C, not just length thresholds. The revised policy strengthens these constraints ",
+      "changes": [
+        "Added explicit catastrophic failure prevention: If n_chars > 3500 OR markers > 25 → never choose C (final tie-break rule)",
+        "Strengthened M1/M2 risk mitigation: operator is M1/M2 AND (n_chars > 600 OR markers > 3) → assign +85 to A, -85 to C",
+        "Added combined complexity risk: n_chars > 2500 AND markers > 15 → assign +90 to B, -85 to C",
+        "Enhanced explore_score validation: C bonus only if explore_score>0 AND n_chars<350 AND markers<2 AND code_density<0.25",
+        "Added density-based constraint: code_density > 0.9 → assign +70 to A, -70 to C",
+        "Refined tie-breaking: prefer B over A when n_chars > 2000 AND markers > 12 (penalty -60 to A)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "dd1865de92df6959ab20bacdf3d1406598d5ec2362a90c90e31b309d06a92ba0",
+      "new_policy_sha256": "78f020b4c3bb0e71036d5c188cf7cdbd08e2226a478a6cece9c6b45f25681c59"
+    },
+    {
+      "time": 1772696711.49573,
+      "ok": true,
+      "policy_version_after": 24,
+      "rationale": "The data shows catastrophic failures (-5000 scores) when C is chosen for long/complex tasks (n_chars>3500, markers>25). B consistently performs well for E1/E2 with high n_chars and markers. A is reliable for M1/M2. The revised policy strengthens catastrophic failure prevention by making C avoidance absolute for extreme cases, reduces overlapping thresholds, and emphasizes B for long E1/E2 tasks while maintaining A's dominance for M1/M2. This should reduce catastrophic failures while maintaining ",
+      "changes": [
+        "Added absolute prohibition: NEVER choose C if n_chars > 3500 OR markers > 25",
+        "Simplified length thresholds: removed redundant 3000/2000 rules, focused on 1500/2500/3500/4000",
+        "Strengthened B's advantage for E1/E2 with high n_chars (>1500 gets +70)",
+        "Reduced explore_score validation threshold from 350 to 350 chars for C",
+        "Removed overlapping hard constraints to reduce complexity",
+        "Emphasized B for E1/E2 with markers > 15 (now +70 vs -70 for C)",
+        "Added explicit n_chars > 4000 extreme length rule (+100 B, -100 C)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "78f020b4c3bb0e71036d5c188cf7cdbd08e2226a478a6cece9c6b45f25681c59",
+      "new_policy_sha256": "52880bb0ae05cf221bc60a70ae57e50c8e1bdecb460a5b4c4e1477d01ae858da"
+    },
+    {
+      "time": 1772696782.0666523,
+      "ok": true,
+      "policy_version_after": 25,
+      "rationale": "This revision addresses observed failure patterns: 1) E1/E2 tasks with n_chars>4000 and markers>30 consistently show poor scores (-5000) even with B, suggesting extreme complexity requires stricter thresholds. 2) M1/M2 tasks with moderate length (1373 chars) but low scores (-4999.6) indicate A may fail on certain M2 patterns despite being preferred. 3) The policy now uses stricter validation for C (explore_score thresholds reduced from 350 to 250 chars, density from 0.25 to 0.2) to prevent unsta",
+      "changes": [
+        "Increased catastrophic failure marker threshold from 25 to 30",
+        "Added explicit n_chars>4000 hard constraint with +100/-100",
+        "Stricter C validation: explore_score thresholds reduced (n_chars<250, markers<2, density<0.2)",
+        "Adjusted E1/E2 preference threshold from n_chars>1000 to >1500 for B over C",
+        "Increased confidence thresholds for B on E1/E2 tasks (n_chars>1500 AND markers>10)",
+        "Added extreme length (n_chars>4000) as separate hard constraint from >3500"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "52880bb0ae05cf221bc60a70ae57e50c8e1bdecb460a5b4c4e1477d01ae858da",
+      "new_policy_sha256": "2df0b181ffa6c432aaef37b0b428f7c3e4b75131a30e84930f76f08eb3b02fcd"
+    },
+    {
+      "time": 1772696857.861301,
+      "ok": true,
+      "policy_version_after": 26,
+      "rationale": "The current policy shows good performance for M1/M2 tasks with A, and E1/E2 tasks with B for long/complex cases. However, catastrophic failures occur at extreme lengths (>4000 chars) even with B, and some M2 tasks with moderate length (step 50) show poor scores. The revised policy strengthens B's advantage for extreme lengths, adds density-based refinements for A, and tightens C restrictions to prevent instability. Key improvements: 1) Added explicit penalty for C when code_density > 0.9 (dense ",
+      "changes": [
+        "Increased B's length bonus for n_chars > 3500 from +85 to +95 to better handle extreme-length cases",
+        "Added explicit penalty for C when code_density > 0.9 to prevent unstable dense code handling",
+        "Added combined signal rule: n_chars > 3000 AND markers > 20 → B(+90), C(-85) to reinforce B for complex exploratory tasks",
+        "Refined tie-breaking to prioritize reliability over cost when scores are within 69 points",
+        "Added explicit catastrophic failure prevention for C when markers > 30 (already in hard constraints but reinforced)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "2df0b181ffa6c432aaef37b0b428f7c3e4b75131a30e84930f76f08eb3b02fcd",
+      "new_policy_sha256": "7cae61cf44f7c2826c1c5458e1909ffa915a948d7970e9d8a61fdb75c6017e84"
+    },
+    {
+      "time": 1772696927.444924,
+      "ok": true,
+      "policy_version_after": 27,
+      "rationale": "The current policy shows good performance for M1/M2 tasks with A (all successful) but reveals critical issues: 1) Step 39 (E2, n_chars=3615) and Step 49 (E1, n_chars=4013) both chose B but had catastrophic scores (-4994, -5000), indicating B fails on extremely long E1/E2 tasks despite long-context strength. 2) Step 50 (M2, n_chars=1373) chose A but scored -4999.6, showing A can catastrophically fail on moderate-length M2 tasks. The revised policy adds: 1) Length-based reliability penalties for B",
+      "changes": [
+        "Added hard constraint: 'If operator is E1/E2 AND n_chars > 3500 → assign -50 to B (extreme length reliability penalty)'",
+        "Added density-based risk rule: 'If operator is M1/M2 AND code_density < 0.5 → assign -60 to A (low-density risk)'",
+        "Adjusted marker thresholds: markers > 25 → B(+70) instead of +80 (reduced overconfidence)",
+        "Added tie-break rule: 'If operator is E1/E2 AND n_chars > 3500 → prefer A over B (penalty -40 to B)'",
+        "Added confidence rule: 'If B is chosen for E1/E2 with n_chars > 3500 → set confidence low'"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "7cae61cf44f7c2826c1c5458e1909ffa915a948d7970e9d8a61fdb75c6017e84",
+      "new_policy_sha256": "1d526243f629ee6e4560033c3d348f3682779230d17a12ba0a7cd355b4aef039"
+    },
+    {
+      "time": 1772696996.6342702,
+      "ok": true,
+      "policy_version_after": 28,
+      "rationale": "The current policy shows good performance for M1/M2 tasks with A (all successful) but reveals two critical issues: 1) B is consistently chosen for E1/E2 tasks with high n_chars (>2500) and high markers (>20), yet we see catastrophic failures (steps 39, 49 with scores -4994, -5000). 2) The policy lacks nuanced handling for medium-length E1/E2 tasks (1500-2500 chars) where A might be better. The revised policy strengthens risk prevention by adding explicit penalties for B in extreme-length scenari",
+      "changes": [
+        "Added explicit penalty for B when n_chars > 4000 AND markers > 35 (extreme complexity risk)",
+        "Modified E1/E2 operator weights: reduced B bonus from +60 to +40 for better balance with A",
+        "Added new signal combination: if operator is E1/E2 AND code_density > 0.8 AND n_chars > 2000 → prefer A over B (+50 to A, -30 to B)",
+        "Strengthened catastrophic failure prevention: if n_chars > 3500 AND markers > 25 → assign -100 to C and -50 to B, +80 to A",
+        "Added tie-break rule: if scores within 30 points and n_chars > 3000, prefer A over B for reliability"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "1d526243f629ee6e4560033c3d348f3682779230d17a12ba0a7cd355b4aef039",
+      "new_policy_sha256": "c0d7d7e5f7b2a9007a01b907b3dca3f87c3b2d037ee7063d55a17bf3f883d7bc"
+    },
+    {
+      "time": 1772697119.253718,
+      "ok": true,
+      "policy_version_after": 29,
+      "rationale": "The current policy performs well for M1/M2 tasks (A consistently chosen with good scores) but shows vulnerability for E1/E2 tasks with extreme length (n_chars > 3500) where B is chosen but scores drop significantly (steps 39, 49). The policy correctly uses multiple signals (operator, n_chars, markers, code_density) but needs better handling of extreme-length E tasks. Analysis shows: 1) B is optimal for E tasks with n_chars > 1500, 2) A is optimal for M tasks regardless of length, 3) C should onl",
+      "changes": [
+        "Increased B's operator weight for E1/E2 from +60 to +70 to better capture its long-context advantage",
+        "Added new hard constraint: 'If operator is E1/E2 AND n_chars > 3000 → assign +90 to B, -90 to C' to prevent catastrophic failures in extreme-length exploratory tasks",
+        "Modified length signal thresholds: n_chars > 2500 now gives B(+90) instead of B(+85) to strengthen B's advantage for long exploratory tasks",
+        "Added tie-break rule: 'If operator is E1/E2 AND n_chars > 2000 → prefer B over A (penalty -50 to A)' to ensure B is chosen for long exploratory tasks even when scores are close",
+        "Reduced C's explore signal bonus from +45 to +35 to further limit its use to only very small exploratory tasks"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "c0d7d7e5f7b2a9007a01b907b3dca3f87c3b2d037ee7063d55a17bf3f883d7bc",
+      "new_policy_sha256": "cdeac62dde5203adc3d7e098ad4d87c0913e3a7a3386f29080e1eb9a355bb078"
+    },
+    {
+      "time": 1772697186.1301727,
+      "ok": true,
+      "policy_version_after": 30,
+      "rationale": "The batch shows catastrophic failures (-5000 scores) occur with UNKNOWN operator and moderate-length M2 tasks, despite current policy. Analysis reveals: 1) Prior stats weight insufficient for UNKNOWN cases, 2) M1/M2 tasks with moderate length (1373 chars) still failing with A, 3) B consistently performs well for E1/E2 with high n_chars and markers. The revised policy increases prior stats weight (×100 vs ×75) and fail penalty (90 vs 70) to better handle UNKNOWN cases, adds explicit penalty for b",
+      "changes": [
+        "Increased prior stats weight from ×75 to ×100 and fail penalty from 70 to 90 for better UNKNOWN operator handling",
+        "Added explicit tie-breaking rule to avoid backends with prior fail_count > 0 for the operator",
+        "Maintained strong B preference for E1/E2 with n_chars > 1500 and markers > 10",
+        "Kept strict C restrictions (n_chars > 3500 OR markers > 30 → never choose C) to prevent catastrophic failures",
+        "Enhanced reliability tie-breaking with explicit penalty for C in risky conditions"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "cdeac62dde5203adc3d7e098ad4d87c0913e3a7a3386f29080e1eb9a355bb078",
+      "new_policy_sha256": "6d9894422be158198d168f27d4056fe290da73c7be5b6eb74a23fe1ff6dd6ed3"
+    }
+  ],
+  "update_every": 25,
+  "batch_size": 25,
+  "max_updates": 30,
+  "reward_mode": "score",
+  "reward_shift": 6000.0,
+  "prior_stats": {
+    "E1": {
+      "deepseek": {
+        "count": 1,
+        "sum_score": -2091.8,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 54,
+        "sum_score": -133403.2,
+        "fail_count": 2
+      },
+      "doubao": {
+        "count": 4,
+        "sum_score": -10836.8,
+        "fail_count": 0
+      }
+    },
+    "E2": {
+      "deepseek": {
+        "count": 1,
+        "sum_score": -2099.4,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 46,
+        "sum_score": -134188.19999999998,
+        "fail_count": 0
+      },
+      "doubao": {
+        "count": 4,
+        "sum_score": -8593.8,
+        "fail_count": 0
+      }
+    },
+    "M1": {
+      "deepseek": {
+        "count": 44,
+        "sum_score": -120185.80000000002,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 0,
+        "sum_score": 0.0,
+        "fail_count": 0
+      },
+      "doubao": {
+        "count": 4,
+        "sum_score": -11275.400000000001,
+        "fail_count": 0
+      }
+    },
+    "M2": {
+      "deepseek": {
+        "count": 45,
+        "sum_score": -124549.00000000003,
+        "fail_count": 1
+      },
+      "qwen": {
+        "count": 0,
+        "sum_score": 0.0,
+        "fail_count": 0
+      },
+      "doubao": {
+        "count": 2,
+        "sum_score": -7091.8,
+        "fail_count": 0
+      }
+    },
+    "UNKNOWN": {
+      "deepseek": {
+        "count": 37,
+        "sum_score": -101049.20000000006,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 2,
+        "sum_score": -10000.0,
+        "fail_count": 0
+      },
+      "doubao": {
+        "count": 15,
+        "sum_score": -31376.999999999993,
+        "fail_count": 0
+      }
+    }
+  },
+  "verify_update": false
+}

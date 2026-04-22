@@ -1,0 +1,18 @@
+{
+  "time_start": "2026-03-05T00:57:32",
+  "seed": 4,
+  "router_trace_path": "E:\\_university\\大四上\\FP\\LLM4AD\\LLM4AD\\MLEOH_3llm\\all_results\\20260304_195129\\statistic_llmrouter\\eoh_obp_llmrouter_train_3\\seed_4\\router_trace.csv",
+  "reward_mode": "score",
+  "fail_penalty": 1.0,
+  "eoh": {
+    "pop_size": 10,
+    "max_generations": 6,
+    "max_sample_nums": 300,
+    "selection_num": 3,
+    "use_e2_operator": true,
+    "use_m1_operator": true,
+    "use_m2_operator": true,
+    "num_samplers": 2,
+    "num_evaluators": 2
+  }
+}

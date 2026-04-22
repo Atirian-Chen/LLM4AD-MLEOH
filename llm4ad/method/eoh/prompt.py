@@ -25,7 +25,8 @@ class EoHPrompt:
         temp_func = copy.deepcopy(template_function)
         temp_func.body = ''
         # create prompt content
-        prompt_content = f'''{task_prompt}
+        prompt_content = f'''[I1]
+{task_prompt}
 1. First, describe your new algorithm and main steps in one sentence. The description must be inside within boxed {{}}. 
 2. Next, implement the following Python function:
 {str(temp_func)}
@@ -45,7 +46,8 @@ Do not give additional explanations.'''
             indi.docstring = ''
             indivs_prompt += f'No. {i + 1} algorithm and the corresponding code are:\n{indi.algorithm}\n{str(indi)}'
         # create prmpt content
-        prompt_content = f'''{task_prompt}
+        prompt_content = f'''[E1]
+{task_prompt}
 I have {len(indivs)} existing algorithms with their codes as follows:
 {indivs_prompt}
 Please help me create a new algorithm that has a totally different form from the given ones. 
@@ -69,7 +71,8 @@ Do not give additional explanations.'''
             indi.docstring = ''
             indivs_prompt += f'No. {i + 1} algorithm and the corresponding code are:\n{indi.algorithm}\n{str(indi)}'
         # create prmpt content
-        prompt_content = f'''{task_prompt}
+        prompt_content = f'''[E2]
+{task_prompt}
 I have {len(indivs)} existing algorithms with their codes as follows:
 {indivs_prompt}
 Please help me create a new algorithm that has a totally different form from the given ones but can be motivated from them.
@@ -88,7 +91,8 @@ Do not give additional explanations.'''
         temp_func.body = ''
 
         # create prmpt content
-        prompt_content = f'''{task_prompt}
+        prompt_content = f'''[M1]
+{task_prompt}
 I have one algorithm with its code as follows. Algorithm description:
 {indi.algorithm}
 Code:
@@ -107,7 +111,8 @@ Do not give additional explanations.'''
         temp_func = copy.deepcopy(template_function)
         temp_func.body = ''
         # create prmpt content
-        prompt_content = f'''{task_prompt}
+        prompt_content = f'''[M2]
+{task_prompt}
 I have one algorithm with its code as follows. Algorithm description:
 {indi.algorithm}
 Code:

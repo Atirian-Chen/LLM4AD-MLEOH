@@ -1,0 +1,168 @@
+下面是 `run_eoh_obp_repro.py` 这份脚本的**输出格式规范说明**（我会在后续沟通里默认你所有方法都尽量对齐这个格式）。说明基于你上传的脚本内容。
+
+---
+
+## 1) 输出目录结构（run-level + seed-level）
+
+脚本每次运行会生成一个 **run_id** 目录：
+
+* `run_id = f"{exp_name}_{YYYYMMDD_HHMMSS}"`
+* `run_dir = os.path.join(out_dir, run_id)`
+
+所以最终路径形如：
+
+```
+{out_dir}/
+  {exp_name}_20260113_153012/
+    run_meta.json
+    summary.csv
+    seed_0/
+      config.json
+      result.json
+      best_program.txt
+      best_program.sha256
+      error.txt            (仅在失败时出现)
+      logs/                (EoHProfiler 输出)
+    seed_1/
+      ...
+```
+
+（其中 `exp_name/out_dir/seeds` 都可从命令行参数传入。）
+
+---
+
+## 2) run-level 文件
+
+### 2.1 `run_meta.json`
+
+位置：`{run_dir}/run_meta.json`
+
+内容字段：
+
+* `run_id`: 本次运行的唯一标识（exp_name + 时间戳）
+* `time_start`: run 开始时间（ISO 格式，秒级）
+* `python`: Python 版本字符串（`sys.version`）
+* `platform`: 机器信息（system/release/machine/processor）
+* `args`: 本次运行使用的参数（除去 api_key 本身）
+
+运行结束后会把 `time_end` 也补上，再覆盖保存一次。
+
+> 作用：你写 report 的“实验环境 + 参数设置”可以直接引用这个文件，保证复现性。
+
+---
+
+### 2.2 `summary.csv`
+
+位置：`{run_dir}/summary.csv`
+
+每一行对应一个 seed 的最终摘要（由 `write_summary_csv` 写出），固定列为：
+
+* `seed`：随机种子
+* `ok`：是否成功跑完（True/False）
+* `best_score`：最终 best 分数（float 或 None）
+* `best_program_sha256`：`best_program.txt` 的 sha256（用于校验/比对）
+* `best_program_path`：`best_program.txt` 的绝对路径（便于定位）
+* `time_start`：该 seed 运行开始时间
+* `time_end`：该 seed 运行结束时间
+* `error`：如果失败则是 traceback 字符串，否则为空/None
+
+这些列名是你后续所有 router baseline 最好统一对齐的最小集合。
+
+---
+
+## 3) seed-level 文件（每个 `seed_k/` 子目录）
+
+每个 seed 会创建：
+
+### 3.1 `config.json`
+
+位置：`{run_dir}/seed_{seed}/config.json`
+
+内容字段：
+
+* `seed`
+* `time_start`
+* `host/model/timeout`（你用哪个后端 API）
+* `eoh`: EoH 超参数字典：
+
+  * `pop_size`
+  * `max_generations`
+  * `max_sample_nums`
+  * `selection_num`
+  * `use_e2_operator/use_m1_operator/use_m2_operator`
+  * `num_samplers/num_evaluators`
+  * `debug_mode`
+
+作用：把“每个 seed 的具体设置”单独存档，便于你做不同 router 时对比和追溯。
+
+---
+
+### 3.2 `result.json`
+
+位置：`{run_dir}/seed_{seed}/result.json`
+
+固定字段：
+
+* `seed`
+* `ok`
+* `best_score`
+* `best_program_sha256`
+* `best_program_path`
+* `error`
+* `time_start`
+* `time_end`
+
+其中：
+
+* `ok=True` 时，`best_program_*` 会被填充
+* 出错时，`ok=False` 且 `error` 包含 traceback（同时会写 `error.txt`）
+
+> 作用：这是每个 seed 的“最终真相文件”；汇总表 `summary.csv` 只是把它的关键字段提取出来。
+
+---
+
+### 3.3 `best_program.txt`
+
+位置：`{run_dir}/seed_{seed}/best_program.txt`
+
+内容：EoH 返回的 `best_program`（如果不是 str 会 `str(best_program)`），即最终最优启发式代码文本。
+
+### 3.4 `best_program.sha256`
+
+位置：`{run_dir}/seed_{seed}/best_program.sha256`
+
+内容：`best_program.txt` 内容的 sha256（用于验证是否同一份代码/避免误拷贝）。
+
+---
+
+### 3.5 `error.txt`（仅失败时存在）
+
+位置：`{run_dir}/seed_{seed}/error.txt`
+
+内容：完整 traceback。
+
+---
+
+### 3.6 `logs/`（Profiler 输出目录）
+
+位置：`{run_dir}/seed_{seed}/logs/`
+
+由 `EoHProfiler(log_dir=log_dir, log_style="simple")` 写出，具体包含 EoH 每代/每次采样的内部日志（你的 llm4ad 版本不同，文件名/内容可能略有差异，但目录位置固定）。
+
+---
+
+## 4) 我们后续统一输出时的“默认约定”
+
+后面你做 Random / Rule / Bandit / TextGrad 等 router，我会默认你沿用这套结构，并在 `result.json` 和 `summary.csv` **追加**字段（不破坏现有字段），例如：
+
+* `router_type`: "random" / "rule" / "bandit" / "textgrad" …
+* `modelA_calls`, `modelB_calls`: 调用次数统计
+* `fail_count`: 本 seed 内生成不可运行代码次数
+* `token_in/token_out`（如果你能拿到）
+* `router_seed`、`p_model_a` 等 router 专属参数
+
+但无论怎么加，**上面那 8 列 summary.csv + result.json 的核心字段不变**，这样你后面汇总表/画图脚本不用反复改。
+
+---
+
+你确认这个输出格式以后，下一步我们做 router 的脚本我就会严格按这个结构写：`run_meta.json + summary.csv + seed_k/{config,result,best_program,sha256,logs}`，并只“向上兼容”地加字段。

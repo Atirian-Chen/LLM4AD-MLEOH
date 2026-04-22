@@ -1,0 +1,31 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    valid = remaining >= 0
+    # Compute fill ratio after addition
+    fill_ratio = np.where(bins > 0, item / bins, 0)
+    # Expected marginal gain: reduction in unused space proportionally scaled
+    remaining_ratio = np.where(bins > 0, remaining / bins, 1.0)
+    # Marginal gain: higher if remaining space was large before and now reduced
+    marginal_gain = (1 - remaining_ratio) * (1 + fill_ratio)
+    # Penalty for overfilling (only applies when invalid, but we avoid it via mask)
+    overflow_penalty = np.where(remaining < 0, (abs(remaining) / (bins + 1e-8)) ** 2, 0)
+    # Priority score: high gain, low overflow, plus tie-breaker by original size
+    priority_scores = np.where(
+        valid,
+        marginal_gain - overflow_penalty,
+        -np.inf
+    )
+    # Break ties by preferring larger original capacity
+    priority_scores += bins / (bins.max() + 1)
+    return priority_scores
+

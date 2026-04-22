@@ -1,0 +1,18 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    can_fit = remaining >= 0
+    priorities = np.full_like(bins, -np.inf)
+    valid_ratio = np.where(can_fit, bins / (remaining + 1e-10), 1.0)
+    priorities[can_fit] = item * np.log(valid_ratio[can_fit])
+    return priorities
+

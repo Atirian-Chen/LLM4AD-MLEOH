@@ -1,0 +1,26 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    valid = remaining >= 0
+    priority_scores = np.full_like(bins, -np.inf)
+    # Avoid division by zero and handle invalid bins
+    ratio = np.where(bins > 0, item / bins, 0)
+    # Use log scale to penalize extreme ratios; prefer moderate ratios
+    # Logarithmic penalty peaks around ratio ~ 0.5, decreases for very small or large ratios
+    score = -np.log(np.clip(ratio, 1e-10, 1))  # Avoid log(0), scale down small ratios
+    # Add penalty for near-full bins (high ratio) and wasted space (low ratio)
+    # Reward moderate ratios via negative log, scaled by bin capacity for tie-breaking
+    score += -np.log(np.clip(1 - ratio, 1e-10, 1))
+    # Combine: prefer bins with balanced use, larger bins get slight edge
+    priority_scores[valid] = score[valid] + bins[valid] * 1e-10
+    return priority_scores
+

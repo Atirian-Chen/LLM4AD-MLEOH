@@ -1,0 +1,21 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    feasible = bins >= item
+    remaining = bins[feasible] - item
+    # Avoid log(0) by setting very small positive value if remaining is zero
+    adjusted_remaining = np.where(remaining == 0, 1e-10, remaining)
+    # Use log of (remaining / item) to penalize large leftover space
+    scores = -np.log(adjusted_remaining / item)
+    result = np.full_like(bins, -np.inf)
+    result[feasible] = scores
+    return result
+

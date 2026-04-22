@@ -1,0 +1,16 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    exact_bonus = 50
+    max_count = np.floor(bins / item)
+    exact_fill = (max_count * item) == bins
+    return np.where(bins >= item, (max_count + exact_bonus * exact_fill) / bins, -np.inf)
+

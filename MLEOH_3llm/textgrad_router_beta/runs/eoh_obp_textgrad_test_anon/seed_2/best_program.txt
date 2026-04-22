@@ -1,0 +1,32 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    priority_scores = np.zeros_like(bins)
+    
+    # Large penalty for overflow
+    overflow_mask = remaining < 0
+    priority_scores[overflow_mask] = -100.0 + remaining[overflow_mask]
+    
+    # Perfect fit bonus
+    perfect_mask = np.abs(remaining) < 1e-9
+    priority_scores[perfect_mask] = 50.0
+    
+    # Good fit range (remaining capacity less than 10% of item size)
+    good_fit_mask = (~overflow_mask) & (~perfect_mask) & (remaining < 0.1 * item)
+    priority_scores[good_fit_mask] = 20.0 - remaining[good_fit_mask]
+    
+    # Acceptable fit (remaining capacity >= 10% of item size)
+    acceptable_mask = (~overflow_mask) & (~perfect_mask) & (~good_fit_mask)
+    priority_scores[acceptable_mask] = 10.0 - 0.5 * remaining[acceptable_mask]
+    
+    return priority_scores
+

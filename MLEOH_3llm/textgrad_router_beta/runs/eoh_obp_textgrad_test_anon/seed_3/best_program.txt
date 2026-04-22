@@ -1,0 +1,25 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    # Sigmoidal penalty for wasted space: larger waste → lower priority
+    # Use logistic function scaled by remaining space, bounded to [0, 1]
+    # For negative remaining (overflow), apply strong penalty
+    sigmoid_penalty = 1 / (1 + np.exp(2 * (remaining - 0.5 * item)))
+    # Boost near-perfect fits using log(1 + epsilon) for very small positive remainders
+    epsilon = 1e-6
+    perfect_fit_boost = np.where(remaining == 0, 1.0, 0.0)
+    # Combine: sigmoid penalty modulates base score, add boost for perfect fit
+    priority_scores = sigmoid_penalty + perfect_fit_boost * 0.5
+    # Scale so max is ~1.5, but cap at 1.0 for overflow cases
+    priority_scores = np.clip(priority_scores, 0, 1.0)
+    return priority_scores
+

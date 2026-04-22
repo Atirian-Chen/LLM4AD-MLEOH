@@ -1,0 +1,140 @@
+[2026-03-05 06:39:53] profile.py(246) : ====================================================================
+[2026-03-05 06:39:53] profile.py(247) : LLM Parameters
+[2026-03-05 06:39:53] profile.py(248) : --------------------------------------------------------------------
+[2026-03-05 06:39:53] profile.py(249) :   - LLM: TextGradRouterLLM
+[2026-03-05 06:39:53] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x0000017BDEE19A80>
+[2026-03-05 06:39:53] profile.py(252) :   - critic_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x0000017BDEE18D30>
+[2026-03-05 06:39:53] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x0000017BDEE1A650>
+[2026-03-05 06:39:53] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x0000017BDEE19630>
+[2026-03-05 06:39:53] profile.py(252) :   - doubao_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x0000017BDEE18D00>
+[2026-03-05 06:39:53] profile.py(252) :   - profile_mode: named
+[2026-03-05 06:39:53] profile.py(252) :   - profiles: [ModelProfile(name='deepseek', strengths=['debugging', 'patching', 'local edits'], weaknesses=['less exploratory'], cost_hint='medium', reliability_hint='high'), ModelProfile(name='qwen', strengths=['global restructuring', 'long-context'], weaknesses=['may over-edit'], cost_hint='medium', reliability_hint='medium'), ModelProfile(name='doubao', strengths=['fast exploration', 'low cost', 'generate variants'], weaknesses=['can be unstable'], cost_hint='low', reliability_hint='medium')]
+[2026-03-05 06:39:53] profile.py(252) :   - label_to_backend: {}
+[2026-03-05 06:39:53] profile.py(252) :   - policy_text: [Routing Policy v7: Signal-Weighted with Catastrophic Failure Prevention]
+Goal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).
+
+Signals (from input):
+- operator ¡Ê {E1,E2,M1,M2,UNKNOWN}
+- has_error (bool), n_chars, n_lines, code_density
+- fix_score, explore_score
+- markers (count of code markers)
+- prior_stats: per-operator mean score and fail counts for each backend (frozen in test)
+
+Decision procedure:
+1) Hard constraints (override all scoring):
+   - if has_error=true ¡ú deepseek (debugging strength)
+   - if n_chars > 2000 AND code_density > 0.8 ¡ú qwen (long-context restructuring)
+   - if operator=UNKNOWN AND prior_stats unavailable ¡ú deepseek (default to reliability)
+   - if prior_stats show backend has catastrophic failure rate > 30% for operator ¡ú exclude from consideration
+   - if n_chars > 1800 AND explore_score > 0.3 ¡ú exclude doubao (unstable on long exploratory)
+   - if code_density < 0.3 AND operator ¡Ê {M1,M2} ¡ú exclude qwen (over-edits sparse code)
+   - if n_chars > 2000 AND markers > 20 ¡ú exclude doubao (catastrophic failures observed)
+   - if operator ¡Ê {E1,E2} AND n_chars > 2000 ¡ú exclude doubao (high failure rate on long exploratory)
+   - if n_chars > 2000 AND operator ¡Ê {E1,E2} AND markers > 15 ¡ú qwen (complex exploratory long code)
+   - if n_chars > 1500 AND code_density > 0.9 ¡ú exclude doubao (dense long code instability)
+   - NEW: if operator ¡Ê {E1,E2} AND n_chars > 2000 AND markers > 20 ¡ú qwen (mandatory for high-marker exploratory)
+   - NEW: if operator ¡Ê {M1,M2} AND n_chars > 1600 AND code_density > 0.7 ¡ú qwen (long restructuring needed)
+   - NEW: if n_chars > 2000 AND explore_score < 0.2 ¡ú exclude doubao (low exploration doesn't justify risk)
+
+2) Score each backend using weighted scorecard:
+   Base weights:
+   - w_op: +5 if backend matches operator's best prior mean score (highest), else 0
+   - w_error: +2 if has_error=false, -10 if has_error=true (except deepseek)
+   - w_len: +6 if n_chars < 1200 (favor doubao), +7 if n_chars > 1800 (favor qwen), 0 otherwise
+   - w_density: +5 if code_density > 0.7 (favor qwen), -5 if code_density < 0.3 (favor deepseek)
+   - w_fix: +5 if fix_score > 0.4 (favor deepseek)
+   - w_explore: +8 if explore_score > 0.5 (favor doubao), -4 if explore_score < 0.2 AND operator ¡Ê {E1,E2} (penalize doubao)
+   - w_prior: +6 if backend has lowest fail count for operator, -5 if highest fail count
+   - w_cost: +2 for doubao (low), 0 for others
+   - w_reliability: +5 for deepseek (high reliability), +1 for others
+   - w_catastrophic: -10 if backend has any catastrophic failure (score < -4000) for operator in prior_stats
+   - w_markers: +5 if markers > 20 AND operator ¡Ê {E1,E2} ¡ú favor qwen (complex exploratory)
+   - w_density_len: +5 if code_density > 0.9 AND n_chars > 1500 ¡ú favor qwen (dense long code)
+   - w_long_exploratory: -8 if n_chars > 2000 AND operator ¡Ê {E1,E2} ¡ú penalize doubao (observed failures)
+   - w_marker_density: +4 if markers > 15 AND code_density > 0.8 ¡ú favor qwen (complex dense code)
+   - w_medium_length: +4 if 1200 ¡Ü n_chars ¡Ü 1800 AND operator ¡Ê {M1,M2} ¡ú favor deepseek (optimal range)
+   - w_marker_operator: +6 if markers > 20 AND operator ¡Ê {E1,E2} ¡ú strongly favor qwen
+   - w_long_modification: +5 if n_chars > 1600 AND operator ¡Ê {M1,M2} ¡ú favor qwen (restructuring needed)
+   - w_short_exploratory: +6 if n_chars < 1200 AND operator ¡Ê {E1,E2} ¡ú favor doubao (safe exploration)
+   - NEW w_marker_risk: -8 if markers > 20 AND operator ¡Ê {E1,E2} ¡ú penalize doubao (catastrophic correlation)
+   - NEW w_length_operator: +4 if n_chars > 2000 AND operator ¡Ê {M1,M2} ¡ú favor qwen (long modifications)
+   - NEW w_density_explore: +5 if code_density > 0.8 AND explore_score < 0.3 ¡ú favor qwen over doubao
+
+3) Choose backend with highest total score.
+4) Tie-breaking (scores within 3 points):
+   - If operator is E1/E2 AND n_chars < 1200 AND explore_score > 0.3, prefer doubao
+   - If operator is M1/M2 OR code_density < 0.5, prefer deepseek
+   - If n_chars > 1600 AND code_density > 0.6, prefer qwen
+   - If prior_stats show catastrophic failures for any backend, avoid that backend
+   - If markers > 15 AND operator ¡Ê {E1,E2}, prefer qwen over doubao
+   - If n_chars > 2000, prefer qwen over doubao (catastrophic failure prevention)
+   - If 1200 ¡Ü n_chars ¡Ü 1800 AND operator ¡Ê {M1,M2}, prefer deepseek over others
+   - If markers > 20 AND operator ¡Ê {E1,E2}, prefer qwen over all others
+   - If explore_score < 0.2 AND operator ¡Ê {E1,E2}, prefer qwen over doubao
+   - If n_chars > 2000 AND markers > 15, prefer qwen over all others
+   - Otherwise choose cheaper (doubao > deepseek > qwen)
+
+5) Confidence levels:
+   - High: score difference > 8
+   - Medium: difference 4-8
+   - Low: difference < 4 (use tie-breaking)
+
+6) Fallback: If all scores equal or UNKNOWN operator with no prior data, default to deepseek.
+
+Output JSON with backend + confidence + reason citing 3+ signals.
+[2026-03-05 06:39:53] profile.py(252) :   - policy_version: 7
+[2026-03-05 06:39:53] profile.py(252) :   - tracer: <textgrad_router2.TGTracer object at 0x0000017BA43067D0>
+[2026-03-05 06:39:53] profile.py(252) :   - verbose: False
+[2026-03-05 06:39:53] profile.py(252) :   - freeze: True
+[2026-03-05 06:39:53] profile.py(252) :   - reward_mode: score
+[2026-03-05 06:39:53] profile.py(252) :   - update_every: 999999
+[2026-03-05 06:39:53] profile.py(252) :   - batch_size: 0
+[2026-03-05 06:39:53] profile.py(252) :   - max_updates: 0
+[2026-03-05 06:39:53] profile.py(252) :   - reward_shift: 6000.0
+[2026-03-05 06:39:53] profile.py(252) :   - verify_update: False
+[2026-03-05 06:39:53] profile.py(252) :   - _step: 122
+[2026-03-05 06:39:53] profile.py(252) :   - _updates: 0
+[2026-03-05 06:39:53] profile.py(252) :   - _history: []
+[2026-03-05 06:39:53] profile.py(252) :   - _buffer: []
+[2026-03-05 06:39:53] profile.py(252) :   - _lock: <unlocked _thread.lock object at 0x0000017BDD56C740>
+[2026-03-05 06:39:53] profile.py(252) :   - prior_stats: <textgrad_router2.PriorStats object at 0x0000017BF3A534F0>
+[2026-03-05 06:39:53] profile.py(252) :   - _tl: <_thread._local object at 0x0000017BDED93CE0>
+[2026-03-05 06:39:53] profile.py(252) :   - debug_mode: False
+[2026-03-05 06:39:53] profile.py(253) : ====================================================================
+[2026-03-05 06:39:53] profile.py(254) : Problem Parameters
+[2026-03-05 06:39:53] profile.py(255) : --------------------------------------------------------------------
+[2026-03-05 06:39:53] profile.py(256) :   - Problem: OBPEvaluation
+[2026-03-05 06:39:53] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2026-03-05 06:39:53] profile.py(259) :   - use_numba_accelerate: False
+[2026-03-05 06:39:53] profile.py(259) :   - use_protected_div: False
+[2026-03-05 06:39:53] profile.py(259) :   - protected_div_delta: 1e-05
+[2026-03-05 06:39:53] profile.py(259) :   - random_seed: None
+[2026-03-05 06:39:53] profile.py(259) :   - timeout_seconds: 30
+[2026-03-05 06:39:53] profile.py(259) :   - exec_code: True
+[2026-03-05 06:39:53] profile.py(259) :   - safe_evaluate: True
+[2026-03-05 06:39:53] profile.py(259) :   - daemon_eval_process: False
+[2026-03-05 06:39:53] profile.py(259) :   - fork_proc: auto
+[2026-03-05 06:39:53] profile.py(259) :   - n_instances: 5
+[2026-03-05 06:39:53] profile.py(259) :   - n_items: 5000
+[2026-03-05 06:39:53] profile.py(259) :   - capacity: 100
+[2026-03-05 06:39:53] profile.py(261) : ====================================================================
+[2026-03-05 06:39:53] profile.py(262) : Method Parameters
+[2026-03-05 06:39:53] profile.py(263) : --------------------------------------------------------------------
+[2026-03-05 06:39:53] profile.py(264) :   - Method: TextGradEvalEoH
+[2026-03-05 06:39:53] profile.py(268) :   - _max_generations: 6
+[2026-03-05 06:39:53] profile.py(268) :   - _max_sample_nums: 1000
+[2026-03-05 06:39:53] profile.py(268) :   - _pop_size: 10
+[2026-03-05 06:39:53] profile.py(268) :   - _selection_num: 3
+[2026-03-05 06:39:53] profile.py(268) :   - _use_e2_operator: True
+[2026-03-05 06:39:53] profile.py(268) :   - _use_m1_operator: True
+[2026-03-05 06:39:53] profile.py(268) :   - _use_m2_operator: True
+[2026-03-05 06:39:53] profile.py(268) :   - _num_samplers: 4
+[2026-03-05 06:39:53] profile.py(268) :   - _num_evaluators: 4
+[2026-03-05 06:39:53] profile.py(268) :   - _resume_mode: False
+[2026-03-05 06:39:53] profile.py(268) :   - _debug_mode: False
+[2026-03-05 06:39:53] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2026-03-05 06:39:53] profile.py(268) :   - _function_to_evolve_name: priority
+[2026-03-05 06:39:53] profile.py(268) :   - _tot_sample_nums: 0
+[2026-03-05 06:39:53] profile.py(268) :   - _initial_sample_nums_max: 20
+[2026-03-05 06:39:53] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x0000017BDEFE4250>
+[2026-03-05 06:39:53] profile.py(270) : =====================================================================

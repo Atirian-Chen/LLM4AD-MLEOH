@@ -1,0 +1,60 @@
+[2026-03-10 01:00:04] profile.py(246) : ====================================================================
+[2026-03-10 01:00:04] profile.py(247) : LLM Parameters
+[2026-03-10 01:00:04] profile.py(248) : --------------------------------------------------------------------
+[2026-03-10 01:00:04] profile.py(249) :   - LLM: LLMRouterLLM
+[2026-03-10 01:00:04] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001C66541BDF0>
+[2026-03-10 01:00:04] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001C67A0F3520>
+[2026-03-10 01:00:04] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001C63513A4D0>
+[2026-03-10 01:00:04] profile.py(252) :   - doubao_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000001C665448460>
+[2026-03-10 01:00:04] profile.py(252) :   - stats: <llm_router.RouterStats object at 0x000001C66541BE20>
+[2026-03-10 01:00:04] profile.py(252) :   - freeze_stats: True
+[2026-03-10 01:00:04] profile.py(252) :   - tracer: <llm_router.LLMRouterTracer object at 0x000001C6654485E0>
+[2026-03-10 01:00:04] profile.py(252) :   - max_prompt_chars: 6000
+[2026-03-10 01:00:04] profile.py(252) :   - max_router_retries: 1
+[2026-03-10 01:00:04] profile.py(252) :   - verbose: False
+[2026-03-10 01:00:04] profile.py(252) :   - _tl: <_thread._local object at 0x000001C66433EB60>
+[2026-03-10 01:00:04] profile.py(252) :   - _step: 114
+[2026-03-10 01:00:04] profile.py(252) :   - backend_cards: - deepseek: strong debugging & code fixes; good for local edits.
+- qwen: strong restructuring & long-context; good for large rewrites.
+- doubao: low-cost fast exploration; good for generating variants.
+
+[2026-03-10 01:00:04] profile.py(252) :   - debug_mode: False
+[2026-03-10 01:00:04] profile.py(253) : ====================================================================
+[2026-03-10 01:00:04] profile.py(254) : Problem Parameters
+[2026-03-10 01:00:04] profile.py(255) : --------------------------------------------------------------------
+[2026-03-10 01:00:04] profile.py(256) :   - Problem: OBPEvaluation
+[2026-03-10 01:00:04] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2026-03-10 01:00:04] profile.py(259) :   - use_numba_accelerate: False
+[2026-03-10 01:00:04] profile.py(259) :   - use_protected_div: False
+[2026-03-10 01:00:04] profile.py(259) :   - protected_div_delta: 1e-05
+[2026-03-10 01:00:04] profile.py(259) :   - random_seed: None
+[2026-03-10 01:00:04] profile.py(259) :   - timeout_seconds: 30
+[2026-03-10 01:00:04] profile.py(259) :   - exec_code: True
+[2026-03-10 01:00:04] profile.py(259) :   - safe_evaluate: True
+[2026-03-10 01:00:04] profile.py(259) :   - daemon_eval_process: False
+[2026-03-10 01:00:04] profile.py(259) :   - fork_proc: auto
+[2026-03-10 01:00:04] profile.py(259) :   - n_instances: 5
+[2026-03-10 01:00:04] profile.py(259) :   - n_items: 5000
+[2026-03-10 01:00:04] profile.py(259) :   - capacity: 100
+[2026-03-10 01:00:04] profile.py(259) :   - instance_seed: 2025
+[2026-03-10 01:00:04] profile.py(261) : ====================================================================
+[2026-03-10 01:00:04] profile.py(262) : Method Parameters
+[2026-03-10 01:00:04] profile.py(263) : --------------------------------------------------------------------
+[2026-03-10 01:00:04] profile.py(264) :   - Method: RouterTestEoH
+[2026-03-10 01:00:04] profile.py(268) :   - _max_generations: 6
+[2026-03-10 01:00:04] profile.py(268) :   - _max_sample_nums: 1000
+[2026-03-10 01:00:04] profile.py(268) :   - _pop_size: 10
+[2026-03-10 01:00:04] profile.py(268) :   - _selection_num: 3
+[2026-03-10 01:00:04] profile.py(268) :   - _use_e2_operator: True
+[2026-03-10 01:00:04] profile.py(268) :   - _use_m1_operator: True
+[2026-03-10 01:00:04] profile.py(268) :   - _use_m2_operator: True
+[2026-03-10 01:00:04] profile.py(268) :   - _num_samplers: 4
+[2026-03-10 01:00:04] profile.py(268) :   - _num_evaluators: 4
+[2026-03-10 01:00:04] profile.py(268) :   - _resume_mode: False
+[2026-03-10 01:00:04] profile.py(268) :   - _debug_mode: False
+[2026-03-10 01:00:04] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2026-03-10 01:00:04] profile.py(268) :   - _function_to_evolve_name: priority
+[2026-03-10 01:00:04] profile.py(268) :   - _tot_sample_nums: 0
+[2026-03-10 01:00:04] profile.py(268) :   - _initial_sample_nums_max: 20
+[2026-03-10 01:00:04] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000001C6655F0970>
+[2026-03-10 01:00:04] profile.py(270) : =====================================================================

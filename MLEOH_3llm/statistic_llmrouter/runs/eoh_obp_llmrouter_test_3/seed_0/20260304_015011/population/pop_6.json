@@ -1,0 +1,52 @@
+[
+    {
+        "algorithm": "{The algorithm computes priority for each bin as the negative of the remaining capacity after placing the item into the bin if the bin can fit the item, otherwise assigns a very low priority (negative infinity), ensuring bins with smaller leftover space after insertion have higher priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    import numpy as np\n    valid_mask = bins >= item\n    return np.where(valid_mask, -(bins - item), -np.inf)\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{Our new algorithm assigns priority as the negative of the absolute difference between the ratio of the item size to each bin's remaining capacity and a target fill ratio of 0.8 if the bin can fit the item, otherwise assigns a priority of negative infinity, prioritizing bins where adding the item will result in the bin being filled to approximately 80% of its total capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    import numpy as np\n    valid_mask = bins >= item\n    fill_ratio = item / bins\n    return np.where(valid_mask, -np.abs(fill_ratio - 0.8), -np.inf)\n\n",
+        "score": -2145.8
+    },
+    {
+        "algorithm": "{The new algorithm computes priority for each bin as the negative of the absolute difference between the remaining capacity after placing the item and a target fraction (parameter t) of the bin's original capacity if the bin can fit the item, otherwise assigns a very low priority of negative infinity, allowing the target fill level to be adjusted via parameter t.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    import numpy as np\n    t = 0.7\n    valid_mask = bins >= item\n    return np.where(valid_mask, -np.abs(t * bins - item), -np.inf)\n\n",
+        "score": -2180.8
+    },
+    {
+        "algorithm": "{The new algorithm computes priority for each bin as the negative of the absolute difference between the leftover space after placing the item into the bin and half the item's size if the bin can fit the item, otherwise assigns a very low priority of negative infinity, prioritizing bins that leave approximately half the item's size of empty space after insertion.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    import numpy as np\n    valid_mask = bins >= item\n    leftover = bins - item\n    target_leftover = 0.5 * item\n    return np.where(valid_mask, -np.abs(leftover - target_leftover), -np.inf)\n\n",
+        "score": -2197.4
+    },
+    {
+        "algorithm": "{Our new algorithm assigns priority as the negative of the absolute difference between the ratio of the item size to each bin's original capacity and a target fill ratio of 0.6 if the bin can fit the item, otherwise assigns a priority of negative infinity, prioritizing bins where adding the item will result in the bin being filled to approximately 60% of its total capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    import numpy as np\n    valid_mask = bins >= item\n    fill_ratio = item / bins\n    return np.where(valid_mask, -np.abs(fill_ratio - 0.6), -np.inf)\n\n",
+        "score": -2382.4
+    },
+    {
+        "algorithm": "{The new algorithm computes priority for each bin as the negative of the absolute difference between the remaining capacity after placing the item and half the bin's original capacity if the bin can fit the item, otherwise assigns a very low priority of negative infinity, prioritizing bins that will be approximately half-filled after adding the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    import numpy as np\n    valid_mask = bins >= item\n    return np.where(valid_mask, -np.abs(0.5 * bins - item), -np.inf)\n\n",
+        "score": -2626.4
+    },
+    {
+        "algorithm": "{Our new algorithm assigns priority as the negative of the absolute difference between the bin's remaining capacity after placing the item and twice the item's size if the bin can fit the item, otherwise assigns negative infinity, prioritizing bins that have exactly enough remaining space to fit another identical item after adding the current one.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    import numpy as np\n    valid_mask = bins >= item\n    return np.where(valid_mask, -np.abs(bins - 3 * item), -np.inf)\n\n",
+        "score": -3908.8
+    },
+    {
+        "algorithm": "{The new algorithm computes priority for each bin as the negative of the absolute difference between the remaining capacity after placing the item and a target fraction (e.g., 0.3) of the bin's original capacity if the bin can fit the item, otherwise assigns a very low priority of negative infinity, prioritizing bins that will be filled to a specific target level after adding the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    import numpy as np\n    target_fraction = 0.3\n    valid_mask = bins >= item\n    return np.where(valid_mask, -np.abs(target_fraction * bins - item), -np.inf)\n\n",
+        "score": -4171.4
+    },
+    {
+        "algorithm": "{My new algorithm computes priority for each bin as the negative of the absolute difference between the ratio of the item size to the bin's remaining capacity after placement and a target ratio of 0.4, plus a small bonus proportional to the bin's original capacity, only for bins that can fit the item, otherwise assigning negative infinity priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    import numpy as np\n    target_ratio = 0.4\n    bonus_factor = 0.003\n    valid_mask = bins >= item\n    remaining = bins - item\n    remaining_safe = np.where(valid_mask, np.maximum(remaining, 1e-9), remaining)\n    ratio_score = -np.abs((item / remaining_safe) - target_ratio)\n    capacity_bonus = bonus_factor * bins\n    score = ratio_score + capacity_bonus\n    return np.where(valid_mask, score, -np.inf)\n\n",
+        "score": -4394.2
+    },
+    {
+        "algorithm": "{My new algorithm assigns priority to bins where the ratio of the item\u2019s size to the bin\u2019s remaining capacity after placing the item is as close as possible to a target ratio of 0.3, by computing the negative absolute difference between this ratio and the target for valid bins and negative infinity otherwise.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    import numpy as np\n    valid_mask = bins >= item\n    leftover = bins - item\n    ratio = item / leftover\n    target = 0.3\n    return np.where(valid_mask, -np.abs(ratio - target), -np.inf)\n\n",
+        "score": -4558.8
+    }
+]

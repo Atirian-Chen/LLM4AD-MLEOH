@@ -1,0 +1,35 @@
+{
+  "time_start": "2026-03-06T05:22:33",
+  "seed": 1,
+  "router_trace_path": "E:\\_university\\大四上\\FP\\LLM4AD\\LLM4AD\\MLEOH_3llm\\textgrad_router_delta\\runs\\eoh_obp_textgrad_train_v3_anon_risk2\\seed_1\\router_trace.csv",
+  "profile_mode": "anonymous",
+  "textgrad_v3": {
+    "update_every": 25,
+    "batch_size": 25,
+    "max_updates": 30,
+    "verify_update": false,
+    "reward_alpha": 0.3,
+    "reward_beta": 6.0,
+    "reward_gamma": 0.5,
+    "fail_reward": -3.0,
+    "catastrophic_threshold": -4800.0,
+    "catastrophic_penalty": 1.0,
+    "reward_shift": 0.0,
+    "explore_epsilon": 0.25,
+    "explore_ucb_c": 1.5,
+    "explore_fail_weight": 150.0,
+    "min_policy_chars": 200,
+    "max_policy_chars": 2600
+  },
+  "eoh": {
+    "pop_size": 10,
+    "max_generations": 6,
+    "max_sample_nums": 300,
+    "selection_num": 3,
+    "use_e2_operator": true,
+    "use_m1_operator": true,
+    "use_m2_operator": true,
+    "num_samplers": 2,
+    "num_evaluators": 2
+  }
+}

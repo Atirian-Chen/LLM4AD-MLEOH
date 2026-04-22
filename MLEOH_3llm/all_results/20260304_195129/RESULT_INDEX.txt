@@ -1,0 +1,80 @@
+RUN_ID: 20260304_195129
+ROOT: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129
+
+== replication / run ==
+ok: True
+log: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\logs\replication.log
+cmd: C:\Users\Atirian\.conda\envs\llm4ad\python.exe E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\replication\run_eoh_obp_repro.py --seeds 0 1 2 3 4 --timeout 60 --pop_size 10 --max_generations 6 --max_sample_nums 10000 --selection_num 3 --num_samplers 4 --num_evaluators 4 --out_dir E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\replication --exp_name eoh_obp_repro_3backends
+out_dir: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\replication\eoh_obp_repro_3backends_20260304_195132
+summary: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\replication\eoh_obp_repro_3backends_20260304_195132\summary_all.csv
+note: replication writes per-backend summaries + summary_all.csv
+== random / run ==
+ok: True
+log: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\logs\random.log
+cmd: C:\Users\Atirian\.conda\envs\llm4ad\python.exe E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\random\run_eoh_obp_random_router.py --seeds 0 1 2 3 4 --timeout 60 --pop_size 10 --max_generations 6 --max_sample_nums 300 --selection_num 3 --num_samplers 4 --num_evaluators 4 --p_deepseek 0.3333333333333333 --p_qwen 0.3333333333333333 --out_dir E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\random --exp_name eoh_obp_random_router_3
+out_dir: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\random\eoh_obp_random_router_3_20260304_214811
+summary: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\random\eoh_obp_random_router_3_20260304_214811\summary.csv
+== static_rule / run ==
+ok: True
+log: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\logs\static_rule.log
+cmd: C:\Users\Atirian\.conda\envs\llm4ad\python.exe E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\static_rule\run_eoh_obp_rule_router.py --seeds 0 1 2 3 4 --timeout 60 --pop_size 10 --max_generations 6 --max_sample_nums 300 --selection_num 3 --num_samplers 4 --num_evaluators 4 --long_prompt_chars 12000 --long_prompt_lines 260 --dense_code_markers 18 --default_backend doubao --out_dir E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\static_rule --exp_name eoh_obp_rule_router_3
+out_dir: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\static_rule\eoh_obp_rule_router_3_20260304_222902
+summary: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\static_rule\eoh_obp_rule_router_3_20260304_222902\summary.csv
+== bandit_learned / train ==
+ok: True
+log: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\logs\bandit_learned_train.log
+cmd: C:\Users\Atirian\.conda\envs\llm4ad\python.exe E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\bandit_learned\train_eoh_obp_bandit_router.py --seeds 0 1 2 3 4 --timeout 60 --pop_size 10 --max_generations 6 --max_sample_nums 300 --selection_num 3 --num_samplers 2 --num_evaluators 2 --reward_mode score --alpha 1.0 --l2 1.0 --eps 0.05 --fail_penalty 1.0 --out_dir E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\bandit_learned --exp_name eoh_obp_bandit_train_3
+out_dir: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\bandit_learned\eoh_obp_bandit_train_3
+summary: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\bandit_learned\eoh_obp_bandit_train_3\summary.csv
+state: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\bandit_learned\eoh_obp_bandit_train_3\bandit_state.json
+== bandit_learned / test ==
+ok: True
+log: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\logs\bandit_learned_test.log
+cmd: C:\Users\Atirian\.conda\envs\llm4ad\python.exe E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\bandit_learned\test_eoh_obp_bandit_router.py --seeds 0 1 2 3 4 --timeout 60 --pop_size 10 --max_generations 6 --max_sample_nums 1000 --selection_num 3 --num_samplers 4 --num_evaluators 4 --bandit_state E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\bandit_learned\eoh_obp_bandit_train_3\bandit_state.json --out_dir E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\bandit_learned --exp_name eoh_obp_bandit_test_3
+out_dir: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\bandit_learned\eoh_obp_bandit_test_3
+summary: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\bandit_learned\eoh_obp_bandit_test_3\summary.csv
+state: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\bandit_learned\eoh_obp_bandit_train_3\bandit_state.json
+== statistic_llmrouter / train ==
+ok: True
+log: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\logs\statistic_llmrouter_train.log
+cmd: C:\Users\Atirian\.conda\envs\llm4ad\python.exe E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\statistic_llmrouter\train_eoh_obp_llm_router.py --seeds 0 1 2 3 4 --timeout 60 --pop_size 10 --max_generations 6 --max_sample_nums 300 --selection_num 3 --num_samplers 2 --num_evaluators 2 --reward_mode score --fail_penalty 1.0 --out_dir E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\statistic_llmrouter --exp_name eoh_obp_llmrouter_train_3
+out_dir: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\statistic_llmrouter\eoh_obp_llmrouter_train_3
+summary: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\statistic_llmrouter\eoh_obp_llmrouter_train_3\summary.csv
+state: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\statistic_llmrouter\eoh_obp_llmrouter_train_3\router_stats.json
+== statistic_llmrouter / test ==
+ok: True
+log: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\logs\statistic_llmrouter_test.log
+cmd: C:\Users\Atirian\.conda\envs\llm4ad\python.exe E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\statistic_llmrouter\test_eoh_obp_llm_router.py --seeds 0 1 2 3 4 --timeout 60 --pop_size 10 --max_generations 6 --max_sample_nums 1000 --selection_num 3 --num_samplers 4 --num_evaluators 4 --router_stats E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\statistic_llmrouter\eoh_obp_llmrouter_train_3\router_stats.json --out_dir E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\statistic_llmrouter --exp_name eoh_obp_llmrouter_test_3
+out_dir: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\statistic_llmrouter\eoh_obp_llmrouter_test_3
+summary: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\statistic_llmrouter\eoh_obp_llmrouter_test_3\summary.csv
+state: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\statistic_llmrouter\eoh_obp_llmrouter_train_3\router_stats.json
+== textgrad_router / train ==
+ok: True
+log: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\logs\textgrad_router_train.log
+cmd: C:\Users\Atirian\.conda\envs\llm4ad\python.exe E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\textgrad_router\train_eoh_obp_textgrad_router.py --seeds 0 1 2 3 4 --timeout 60 --pop_size 10 --max_generations 6 --max_sample_nums 300 --selection_num 3 --num_samplers 2 --num_evaluators 2 --reward_mode score --update_every 25 --batch_size 25 --max_updates 30 --reward_shift 6000.0 --out_dir E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router --exp_name eoh_obp_textgrad_train_3
+out_dir: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router\eoh_obp_textgrad_train_3
+summary: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router\eoh_obp_textgrad_train_3\summary.csv
+state: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router\eoh_obp_textgrad_train_3\textgrad_router_state.json
+== textgrad_router / test ==
+ok: True
+log: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\logs\textgrad_router_test.log
+cmd: C:\Users\Atirian\.conda\envs\llm4ad\python.exe E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\textgrad_router\test_eoh_obp_textgrad_router.py --seeds 0 1 2 3 4 --timeout 60 --pop_size 10 --max_generations 6 --max_sample_nums 1000 --selection_num 3 --num_samplers 4 --num_evaluators 4 --router_state E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router\eoh_obp_textgrad_train_3\textgrad_router_state.json --out_dir E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router --exp_name eoh_obp_textgrad_test_3
+out_dir: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router\eoh_obp_textgrad_test_3
+summary: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router\eoh_obp_textgrad_test_3\summary.csv
+state: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router\eoh_obp_textgrad_train_3\textgrad_router_state.json
+== textgrad_router_beta / train ==
+ok: True
+log: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\logs\textgrad_router_beta_train.log
+cmd: C:\Users\Atirian\.conda\envs\llm4ad\python.exe E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\textgrad_router_beta\train_eoh_obp_textgrad_router2.py --seeds 0 1 2 3 4 --timeout 60 --pop_size 10 --max_generations 6 --max_sample_nums 300 --selection_num 3 --num_samplers 2 --num_evaluators 2 --reward_mode score --update_every 25 --batch_size 25 --max_updates 30 --reward_shift 6000.0 --router_temperature 0.0 --critic_temperature 0.2 --profile_mode named --out_dir E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router_beta --exp_name eoh_obp_textgrad_train_named
+out_dir: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router_beta\eoh_obp_textgrad_train_named
+summary: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router_beta\eoh_obp_textgrad_train_named\summary.csv
+state: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router_beta\eoh_obp_textgrad_train_named\textgrad_router_state.json
+== textgrad_router_beta / test ==
+ok: True
+log: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\logs\textgrad_router_beta_test.log
+cmd: C:\Users\Atirian\.conda\envs\llm4ad\python.exe E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\textgrad_router_beta\test_eoh_obp_textgrad_router2.py --seeds 0 1 2 3 4 --timeout 60 --pop_size 10 --max_generations 6 --max_sample_nums 1000 --selection_num 3 --num_samplers 4 --num_evaluators 4 --router_temperature 0.0 --critic_temperature 0.2 --router_state E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router_beta\eoh_obp_textgrad_train_named\textgrad_router_state.json --out_dir E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router_beta --exp_name eoh_obp_textgrad_test_named
+out_dir: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router_beta\eoh_obp_textgrad_test_named
+summary: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router_beta\eoh_obp_textgrad_test_named\summary.csv
+state: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\textgrad_router_beta\eoh_obp_textgrad_train_named\textgrad_router_state.json
+
+[MERGED] summary_all_methods.csv: E:\_university\大四上\FP\LLM4AD\LLM4AD\MLEOH_3llm\all_results\20260304_195129\summary_all_methods.csv

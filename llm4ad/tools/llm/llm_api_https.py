@@ -29,14 +29,14 @@ from ...base import LLM
 
 class HttpsApi(LLM):
     def __init__(self, host, key, model, timeout=60, **kwargs):
-        """Https API
-        Args:
-            host   : host name. please note that the host name does not include 'https://'
-            key    : API key.
-            model  : LLM model name.
-            timeout: API timeout.
-        """
-        super().__init__(**kwargs)
+        # 只把 LLM 需要的参数传给父类
+        llm_kwargs = {}
+        for k in ("do_auto_trim", "debug_mode"):
+            if k in kwargs:
+                llm_kwargs[k] = kwargs.pop(k)
+        super().__init__(**llm_kwargs)
+
+        # 剩下的 kwargs（temperature/top_p/max_tokens 等）留给 HTTP payload 用
         self._host = host
         self._key = key
         self._model = model
@@ -63,7 +63,21 @@ class HttpsApi(LLM):
                     'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
                     'Content-Type': 'application/json'
                 }
-                conn.request('POST', '/v1/chat/completions', payload, headers)
+                conn = http.client.HTTPSConnection(self._host, timeout=self._timeout)
+
+                # 默认走 OpenAI / DeepSeek 这种 /v1/chat/completions
+                path = '/v1/chat/completions'
+
+                # 如果是阿里云 DashScope，就用兼容模式路径
+                if 'dashscope.aliyuncs.com' in self._host:
+                    path = '/compatible-mode/v1/chat/completions'
+
+                if 'ark.cn-beijing.volces.com' in self._host:
+                    path = '/api/v3/chat/completions'
+
+                conn.request('POST', path, payload, headers)
+                #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
                 res = conn.getresponse()
                 data = res.read().decode('utf-8')
                 data = json.loads(data)

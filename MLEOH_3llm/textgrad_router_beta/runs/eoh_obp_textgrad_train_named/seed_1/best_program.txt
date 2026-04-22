@@ -1,0 +1,37 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining_space = bins - item
+    valid_bins = remaining_space >= 0
+    priorities = np.full_like(bins, -np.inf)
+
+    # For valid bins, compute geometric mean-like score based on item and inverse remaining space
+    # Use log to penalize bins that are much larger than the item
+    # Geometric mean: sqrt(item * (1 / (1 + remaining_space))) but scaled via log
+    # We use: exp( log(item) + log(1 / (1 + remaining_space)) ) / (1 + log(bins / item))
+    # But simpler: priority = sqrt(item / (1 + remaining_space)) * 1 / (1 + log(bins / item + 1e-10))
+
+    # Avoid division by zero and log(0)
+    log_bin_ratio = np.where(bins > 0, np.log(bins / item + 1e-10), 0.0)
+    
+    # Compute base term: item / (1 + remaining_space), then take square root
+    base_term = np.where(valid_bins, item / (1 + remaining_space[valid_bins]), 0.0)
+    geom_score = np.sqrt(base_term)
+
+    # Normalize by log penalty for oversized bins
+    penalty = 1 + log_bin_ratio
+
+    # Combine: higher priority for tight fits and appropriate-sized bins
+    priors_valid = geom_score / penalty
+    priorities[valid_bins] = priors_valid
+
+    return priorities
+

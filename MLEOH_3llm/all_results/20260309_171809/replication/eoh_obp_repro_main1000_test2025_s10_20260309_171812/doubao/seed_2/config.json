@@ -1,0 +1,20 @@
+{
+  "backend": "doubao",
+  "seed": 2,
+  "time_start": "2026-03-09T18:26:08",
+  "host": "ark.cn-beijing.volces.com",
+  "model": "doubao-seed-2-0-mini-260215",
+  "timeout": 60,
+  "eoh": {
+    "pop_size": 10,
+    "max_generations": 6,
+    "max_sample_nums": 1000,
+    "selection_num": 3,
+    "use_e2_operator": true,
+    "use_m1_operator": true,
+    "use_m2_operator": true,
+    "num_samplers": 4,
+    "num_evaluators": 4,
+    "debug_mode": false
+  }
+}

@@ -1,0 +1,52 @@
+[
+    {
+        "algorithm": "{Compute the priority for each bin as the negative of the remaining space left in the bin after adding the given item if the bin has enough remaining capacity, otherwise assign a very low negative priority such that bins leaving the least remaining space after placement have the highest priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    return np.where(bins >= item, -(bins - item), -np.inf)\n\n",
+        "score": -2095.2
+    },
+    {
+        "algorithm": "{\nFirst, compute the remaining capacity after adding the item to each bin; then assign higher priority to bins where the remaining capacity is smaller but non\u2011negative, and zero priority if the item does not fit.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Priority is higher when remaining capacity is smaller (but >= 0)\n    # We invert by taking (bins - remaining) = item, but that's constant.\n    # Instead, assign priority as max_capacity - remaining for feasible bins.\n    feasible = remaining >= 0\n    priority_scores = np.where(feasible, bins - remaining, 0)\n    return priority_scores\n\n",
+        "score": -2101.8
+    },
+    {
+        "algorithm": "{Assign priority to feasible bins based on a weighted combination of the remaining capacity after adding the item and the absolute deviation from a target remaining capacity, with the target being a configurable fraction of the bin's total capacity, and the lowest priority to bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    feasible = bins >= item\n    remaining = bins - item\n    target_fraction = 0.3\n    target_remaining = target_fraction * bins\n    weight_abs_diff = 0.7\n    weight_remaining = 0.3\n    priority_scores = np.where(\n        feasible,\n        - (weight_abs_diff * np.abs(remaining - target_remaining) + weight_remaining * remaining),\n        -np.inf\n    )\n    return priority_scores\n\n",
+        "score": -2157.8
+    },
+    {
+        "algorithm": "{For feasible bins, assign priority based on the absolute difference between the remaining capacity after adding the item and one-quarter of each bin's total capacity, with higher priority assigned to bins with smaller such differences, and non-feasible bins receive a priority of negative infinity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    feasible = bins >= item\n    remaining_capacity = bins - item\n    target_remaining = 0.25 * bins\n    priority_scores = np.where(feasible, -np.abs(remaining_capacity - target_remaining), -np.inf)\n    return priority_scores\n\n",
+        "score": -2159.2
+    },
+    {
+        "algorithm": "{For feasible bins, assign priority based on the absolute difference between the remaining capacity after adding the item and (20% of the bin's total capacity plus 30% of the item's size), with higher priority assigned to bins with smaller such differences, and non-feasible bins receive a priority of negative infinity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    feasible = bins >= item\n    remaining_cap = bins - item\n    target_score = 0.2 * bins + 0.3 * item\n    return np.where(feasible, -np.abs(remaining_cap - target_score), -np.inf)\n\n",
+        "score": -2244.2
+    },
+    {
+        "algorithm": "{For each bin, if the item fits, calculate the reciprocal of one plus the squared difference between the remaining capacity after adding the item and two-fifths of the bin\u2019s total capacity, then assign higher priority to bins with larger such values, and assign the lowest possible priority to bins where the item cannot fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    import numpy as np\n    feasible = bins >= item\n    remaining_cap = bins - item\n    target_remaining = 0.4 * bins\n    scores = np.where(feasible, 1.0 / (1.0 + np.square(remaining_cap - target_remaining)), -np.inf)\n    return scores\n\n",
+        "score": -2268.6
+    },
+    {
+        "algorithm": "{Assign priority to feasible bins based on a weighted combination of the squared deviation from 50% of each bin's total capacity as the target remaining capacity after adding the item and the remaining capacity itself, with the lowest priority assigned to bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    feasible = bins >= item\n    remaining_after = bins - item\n    target_remaining = 0.5 * bins\n    weight_deviation = 0.6\n    weight_remaining = 0.4\n    priority_scores = np.where(\n        feasible,\n        - (weight_deviation * (remaining_after - target_remaining)**2 + weight_remaining * remaining_after),\n        -np.inf\n    )\n    return priority_scores\n\n",
+        "score": -2579.0
+    },
+    {
+        "algorithm": "{Assign priority to feasible bins based on the absolute difference between the remaining capacity after adding the item and half the bin's total capacity, with higher priority assigned to bins with smaller such differences, and the lowest priority to bins that cannot fit the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    feasible = bins >= item\n    remaining = bins - item\n    target_remaining = 0.5 * bins\n    priority_scores = np.where(feasible, -np.abs(remaining - target_remaining), -np.inf)\n    return priority_scores\n\n",
+        "score": -2626.6
+    },
+    {
+        "algorithm": "{New algorithm: For each bin, if the item fits, compute the absolute difference between the resulting remaining capacity after adding the item and two-fifths of the bin's total capacity, assign higher priority to bins with smaller such difference, and break ties by preferring bins with smaller current capacity; assign the lowest possible priority to bins where the item cannot fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    valid = remaining >= 0\n    target_remaining = bins * 0.4\n    priority_scores = np.where(\n        valid,\n        np.abs(remaining - target_remaining) + 1e-12 * bins,\n        np.inf\n    )\n    return priority_scores\n\n",
+        "score": -3419.0
+    },
+    {
+        "algorithm": "{New algorithm: For each bin, if the item fits, compute the absolute difference between the resulting remaining capacity and one-third of the bin's total capacity, assign higher priority to bins with smaller such difference, and break ties by preferring bins with larger current capacity; assign the lowest possible priority to bins where the item cannot fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    valid = remaining >= 0\n    target_remaining = bins / 3\n    priority_scores = np.where(\n        valid,\n        np.abs(remaining - target_remaining) - 1e-12 * bins,\n        np.inf\n    )\n    return priority_scores\n\n",
+        "score": -3734.6
+    }
+]

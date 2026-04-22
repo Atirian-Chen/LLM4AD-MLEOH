@@ -40,6 +40,10 @@ from ...base import (
 )
 from ...tools.profiler import ProfilerBase
 
+import re
+_OP_TAG_RE = re.compile(r"^\s*\[([A-Za-z]+[0-9]*)\]")
+
+
 
 class EoH:
     def __init__(self,
@@ -138,6 +142,8 @@ class EoH:
         # pass parameters to profiler
         if profiler is not None:
             self._profiler.record_parameters(llm, evaluation, self)  # ZL: necessary
+            
+        self.best_score = -1000000000
 
     def _adjust_pop_size(self):
         # adjust population size
@@ -173,10 +179,27 @@ class EoH:
         3. Add the function to the population and register it to the profiler.
         """
         sample_start = time.time()
+
+        op_tag = None
+        try:
+            prompt_str = str(prompt)
+            m = _OP_TAG_RE.match(prompt_str)   # 需要你在文件顶部定义 _OP_TAG_RE
+            if m:
+                op_tag = m.group(1).upper()
+        except Exception:
+            op_tag = None
+        
+
         thought, func = self._sampler.get_thought_and_function(prompt)
         sample_time = time.time() - sample_start
         if thought is None or func is None:
             return
+        
+        if op_tag is not None:
+            print(op_tag)
+            setattr(func, "operator_tag", op_tag)
+
+
         # convert to Program instance
         program = TextFunctionProgramConverter.function_to_program(func, self._template_program)
         if program is None:
@@ -188,6 +211,9 @@ class EoH:
         ).result()
         # register to profiler
         func.score = score
+        
+        self.best_score = max(self.best_score,score)
+
         func.evaluate_time = eval_time
         func.algorithm = thought
         func.sample_time = sample_time

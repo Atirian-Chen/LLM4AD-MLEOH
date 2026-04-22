@@ -1,0 +1,22 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    # Sigmoid-like transformation: positive remaining gives high score, negative gives near-zero
+    # Scale to make the transition sharper around remaining=0
+    scaled = remaining * 10.0
+    priority_scores = 1.0 / (1.0 + np.exp(-scaled))
+    # Adjust to give highest priority to smallest non-negative remaining
+    # Invert so that smaller positive remaining yields higher priority
+    fits = remaining >= 0
+    priority_scores = np.where(fits, 1.0 - priority_scores, -np.inf)
+    return priority_scores
+

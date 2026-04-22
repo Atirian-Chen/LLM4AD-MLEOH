@@ -52,6 +52,7 @@ class OBPEvaluation(Evaluation):
                  n_instances=5,
                  n_items=5000,
                  capacity=100,
+                 instance_seed=2024,
                  **kwargs):
         """
         Args:
@@ -73,8 +74,8 @@ class OBPEvaluation(Evaluation):
         self.n_instances = n_instances
         self.n_items = n_items
         self.capacity = capacity
-
-        self._datasets = generate_weibull_dataset(self.n_instances, self.n_items, self.capacity)
+        self.instance_seed = instance_seed
+        self._datasets = generate_weibull_dataset(self.n_instances, self.n_items, self.capacity,self.instance_seed)
 
     def evaluate_program(self, program_str: str, callable_func: callable) -> Any | None:
         return self.evaluate(callable_func)

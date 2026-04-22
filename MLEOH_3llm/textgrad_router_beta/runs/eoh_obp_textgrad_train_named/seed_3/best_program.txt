@@ -1,0 +1,27 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    mask = remaining >= 0
+    priorities = np.full_like(bins, -np.inf, dtype=np.float64)
+    valid_remaining = remaining[mask]
+    valid_remaining = np.where(valid_remaining < 1e-8, 1e-8, valid_remaining)
+    ratios = item / valid_remaining
+    # Apply sigmoidal transformation to prioritize moderate ratios
+    scaled_ratios = 2.0 / (1.0 + np.exp(-5.0 * (ratios - 1.0)))
+    # Penalize bins that are too small or too large relative to item
+    size_ratio = bins[mask] / item
+    size_penalty = 1.0 - 1.0 / (1.0 + np.exp(3.0 * (size_ratio - 2.0)))
+    # Combine ratio and size penalty with weighting
+    combined_score = scaled_ratios * (1.0 - size_penalty)
+    priorities[mask] = combined_score
+    return priorities
+

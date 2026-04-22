@@ -1,0 +1,375 @@
+{
+  "profile_mode": "anonymous",
+  "policy_version": 3,
+  "policy_text": "[Routing Policy v3: Hard constraints + Scorecard + Tie-break]\nGoal:\n- Maximize the FINAL best OBP score found within budget (best-of-run).\n- Avoid catastrophic failures (very low scores / frequent failures).\n- Keep routing interpretable.\n\nSignals (from input):\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\n- has_error (bool), n_chars, n_lines, code_density, markers\n- fix_score, explore_score\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\n\nDecision procedure:\n1) Hard constraints:\n   - If has_error=true -> prefer backend A (debugging strength).\n   - If code_density > 0.8 AND n_chars > 2000 -> prefer backend B (long-context strength).\n   - If prior_stats.fail_count > 3 AND prior_stats.mean_score < -3000 for this operator -> exclude backend (catastrophic).\n   - If markers > 15 AND explore_score > 0 -> boost backend C (exploration strength).\n   - If n_chars > 2500 AND code_density > 0.9 -> strongly prefer backend B (global restructuring).\n   - If operator=E1 AND markers > 20 AND n_chars > 1800 AND code_density > 0.7 -> boost backend C (high-upside exploration).\n   - If operator=M1 OR operator=M2 AND prior_stats.fail_count > 2 AND prior_stats.mean_score < -4000 -> exclude backend C (catastrophic for modification tasks).\n2) Scorecard:\n   For each backend compute:\n   Score = Wop + Wlen + Wdensity + Wfix + Wexplore + Wprior + Wrisk + Wcost\n   - Wprior: prefer higher mean_score and lower fail_count in prior_stats for this operator.\n   - Wrisk: penalize backends with fail_count > 1 for this operator (moderate penalty).\n   - Wexplore: if explore_score > 0 OR markers > 10 -> boost backend C (exploration strength).\n   - Wcost: small boost for backend C (low cost) when confidence < 0.7.\n   - Wcatastrophe: if prior_stats.mean_score < -4000 AND prior_stats.fail_count > 2 for this operator -> exclude backend.\n   - Wimprove: if operator=E1/E2 AND markers > 20 AND n_chars > 1800 AND code_density > 0.7 -> boost backend C (high-upside exploration).\n   - Wstability: if operator=M1/M2 AND n_chars < 1500 AND markers < 15 -> boost backend A (reliable local edits).\n3) Tie-break (when top-2 scores within 0.2):\n   - Prefer backend with lower fail_count, then higher mean_score, then cheaper backend.\n4) Output JSON: {backend, confidence, reason}.\n\nOutput JSON (STRICT):\n{\"backend\": \"A\"|\"B\"|\"C\", \"confidence\": 0.0-1.0, \"reason\": \"cite 2-3 signals and a profile trait\"}.",
+  "updates": 30,
+  "history": [
+    {
+      "time": 1772744538.9268873,
+      "ok": true,
+      "policy_version_after": 1,
+      "rationale": "This update improves best-of-run by: 1) Adding explicit catastrophic exclusion rule (fail_count>3 AND mean_score<-3000) to prevent repeated failures while allowing exploration, 2) Strengthening exploration routing with explicit markers>10 condition based on observed correlation between high markers and successful C usage, 3) Making long-context rule more precise (code_density>0.8 AND n_chars>2000) to better match B's strengths, 4) Adding cost consideration for low-confidence decisions to leverage C's budget efficiency for exploration.",
+      "changes": [
+        "Added explicit catastrophic exclusion: fail_count>3 AND mean_score<-3000 excludes backend",
+        "Enhanced exploration routing: markers>10 now boosts backend C",
+        "Precise long-context rule: code_density>0.8 AND n_chars>2000",
+        "Added cost tie-break for low-confidence decisions",
+        "Clarified backend labels (A,B,C instead of names)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "aab31fafb3d0377fb1aa57a857a264254a6bf5175c45ada6e30f2a528e6da548",
+      "new_policy_sha256": "75cb6eac574c6504444c3c69a5e07dfa8e89b0c440798ec41b112a40fd8823a5"
+    },
+    {
+      "time": 1772744566.6062026,
+      "ok": true,
+      "policy_version_after": 2,
+      "rationale": "This update improves best-of-run by: 1) Adding explicit high-upside rules for backend C when markers>15 AND explore_score>0 (correlates with improvement events), 2) Strengthening backend B preference for very dense/long contexts (n_chars>2500 AND code_density>0.9) to prevent catastrophic -5000 scores, 3) Adding Wcatastrophe exclusion for backends with mean_score<-4000 AND fail_count>2 to prevent repeated failures while allowing moderate-risk exploration, 4) Adding Wimprove rule to selectively boost backend C for E1/E2 operators with high markers and length where it has shown success (-2091.8 s",
+      "changes": [
+        "Added hard constraint: markers>15 AND explore_score>0 boosts backend C for high-exploration tasks",
+        "Added hard constraint: n_chars>2500 AND code_density>0.9 strongly prefers backend B for extreme long-context cases",
+        "Added Wcatastrophe scorecard component to exclude backends with mean_score<-4000 AND fail_count>2",
+        "Added Wimprove scorecard component to boost backend C for E1/E2 operators with markers>20 AND n_chars>1800",
+        "Clarified catastrophic exclusion uses mean_score<-4000 threshold (more conservative than -3000)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "75cb6eac574c6504444c3c69a5e07dfa8e89b0c440798ec41b112a40fd8823a5",
+      "new_policy_sha256": "c10d19c591a4cd90f3a99877850687503cfd27508f1559f8fa557fcb9d08ca47"
+    },
+    {
+      "time": 1772744598.1821404,
+      "ok": true,
+      "policy_version_after": 3,
+      "rationale": "This policy improves best-of-run by: 1) Targeting backend C for high-upside E1/E2 tasks (markers>20, n_chars>1800, density>0.7) where it achieved -2091.8 scores, 2) Preventing catastrophic failures by excluding C for M1/M2 when prior stats show fail_count>2 AND mean_score<-4000 (observed -5000 failures), 3) Adding stability rule for M1/M2 small tasks to use reliable backend A, 4) Maintaining exploration budget for risky-but-high-upside backend C only in favorable conditions.",
+      "changes": [
+        "Added explicit high-upside rule: operator=E1 AND markers>20 AND n_chars>1800 AND code_density>0.7 -> boost backend C",
+        "Added catastrophic prevention rule: operator=M1/M2 AND prior_stats.fail_count>2 AND prior_stats.mean_score<-4000 -> exclude backend C",
+        "Added stability rule: operator=M1/M2 AND n_chars<1500 AND markers<15 -> boost backend A",
+        "Refined Wimprove condition to require code_density>0.7 for E1/E2 exploration",
+        "Clarified catastrophic exclusion uses AND condition (fail_count>2 AND mean_score<-4000)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "c10d19c591a4cd90f3a99877850687503cfd27508f1559f8fa557fcb9d08ca47",
+      "new_policy_sha256": "473cbb49232aec79a89e66d0808514f9677b54303ff1f23510c13e5f375f51aa"
+    },
+    {
+      "time": 1772744675.5348365,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772744732.0249474,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772744770.7914438,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772744813.0595825,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772744869.9852824,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772744916.6575608,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772744950.7831323,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745005.4855273,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745044.576016,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745087.5672233,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745122.2582283,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745184.1700666,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745220.718254,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745259.2756443,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745311.6562157,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745349.8901355,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745404.9279795,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745441.0859492,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745478.6720674,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745547.531118,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745580.225165,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745617.9545143,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745676.0984147,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745711.9730618,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745753.8656201,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745805.6273742,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    },
+    {
+      "time": 1772745839.1054282,
+      "ok": false,
+      "policy_version_before": 3,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v4: Hard constraints + Scorecard + Tie-break]\\nGoal:\\n- Maximize the FINAL best OBP score found within budget (best-of-run).\\n- Avoid catastrophic failures (very low scores / frequent failures).\\n- Keep routing interpretable.\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density, markers\\n- fix_score, explore_score\\n- prior_stats (per-operator mean score and fail count per backend; higher mean is better, lower fail is better)\\n\\nDecision procedure:\\n1) Hard constraints:\\n   - If has_error=true"
+    }
+  ],
+  "update_every": 25,
+  "batch_size": 25,
+  "max_updates": 30,
+  "verify_update": false,
+  "reward_alpha": 0.3,
+  "reward_beta": 6.0,
+  "reward_gamma": 0.5,
+  "fail_reward": -3.0,
+  "catastrophic_threshold": -4800.0,
+  "catastrophic_penalty": 1.0,
+  "reward_shift": 0.0,
+  "explore_epsilon": 0.25,
+  "explore_ucb_c": 1.5,
+  "explore_fail_weight": 150.0,
+  "min_policy_chars": 200,
+  "max_policy_chars": 2600,
+  "prior_stats": {
+    "E1": {
+      "deepseek": {
+        "count": 2,
+        "sum_score": -7099.4,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 30,
+        "sum_score": -70720.4,
+        "fail_count": 4
+      },
+      "doubao": {
+        "count": 25,
+        "sum_score": -59655.60000000002,
+        "fail_count": 0
+      }
+    },
+    "E2": {
+      "deepseek": {
+        "count": 0,
+        "sum_score": 0.0,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 39,
+        "sum_score": -104639.40000000001,
+        "fail_count": 0
+      },
+      "doubao": {
+        "count": 11,
+        "sum_score": -26457.999999999996,
+        "fail_count": 0
+      }
+    },
+    "M1": {
+      "deepseek": {
+        "count": 33,
+        "sum_score": -92445.6,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 7,
+        "sum_score": -20818.8,
+        "fail_count": 0
+      },
+      "doubao": {
+        "count": 10,
+        "sum_score": -29783.6,
+        "fail_count": 0
+      }
+    },
+    "M2": {
+      "deepseek": {
+        "count": 29,
+        "sum_score": -74840.20000000001,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 2,
+        "sum_score": -7113.6,
+        "fail_count": 0
+      },
+      "doubao": {
+        "count": 17,
+        "sum_score": -54208.60000000001,
+        "fail_count": 0
+      }
+    },
+    "UNKNOWN": {
+      "deepseek": {
+        "count": 8,
+        "sum_score": -16739.0,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 2,
+        "sum_score": -7091.8,
+        "fail_count": 0
+      },
+      "doubao": {
+        "count": 46,
+        "sum_score": -94131.00000000007,
+        "fail_count": 1
+      }
+    }
+  },
+  "score_stats": {
+    "E1": {
+      "n": 53,
+      "mean": -2593.8754716981134,
+      "m2": 39363359.29811319
+    },
+    "E2": {
+      "n": 50,
+      "mean": -2621.948,
+      "m2": 48718006.78479999
+    },
+    "M1": {
+      "n": 50,
+      "mean": -2860.96,
+      "m2": 80505991.36
+    },
+    "M2": {
+      "n": 48,
+      "mean": -2836.7166666666667,
+      "m2": 67183549.66666667
+    },
+    "UNKNOWN": {
+      "n": 55,
+      "mean": -2144.76,
+      "m2": 8303379.311999999
+    }
+  }
+}

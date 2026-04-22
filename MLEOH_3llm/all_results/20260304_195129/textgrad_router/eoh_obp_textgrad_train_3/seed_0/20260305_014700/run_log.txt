@@ -1,0 +1,70 @@
+[2026-03-05 01:47:00] profile.py(246) : ====================================================================
+[2026-03-05 01:47:00] profile.py(247) : LLM Parameters
+[2026-03-05 01:47:00] profile.py(248) : --------------------------------------------------------------------
+[2026-03-05 01:47:00] profile.py(249) :   - LLM: TextGradRouterLLM
+[2026-03-05 01:47:00] profile.py(252) :   - router_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000002AC2C9434F0>
+[2026-03-05 01:47:00] profile.py(252) :   - critic_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000002AC2C9434C0>
+[2026-03-05 01:47:00] profile.py(252) :   - deepseek_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000002AC17CD2C50>
+[2026-03-05 01:47:00] profile.py(252) :   - qwen_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000002AC17CD1F60>
+[2026-03-05 01:47:00] profile.py(252) :   - doubao_llm: <llm4ad.tools.llm.llm_api_https.HttpsApi object at 0x000002AC17CD27A0>
+[2026-03-05 01:47:00] profile.py(252) :   - policy_text: [Routing Policy v0]
+- If prompt contains traceback/exception or explicit error: choose deepseek.
+- If operator is M1 or M2 (local mutation/edit): choose deepseek.
+- If operator is E2 (global restructure): choose qwen.
+- If operator is E1 (exploration/variant generation): choose doubao.
+- If prompt is very long / dense code: choose qwen.
+- Otherwise: choose doubao.
+
+[2026-03-05 01:47:00] profile.py(252) :   - policy_version: 0
+[2026-03-05 01:47:00] profile.py(252) :   - tracer: <textgrad_router.TGTracer object at 0x000002AC17CD2740>
+[2026-03-05 01:47:00] profile.py(252) :   - verbose: False
+[2026-03-05 01:47:00] profile.py(252) :   - freeze: False
+[2026-03-05 01:47:00] profile.py(252) :   - update_every: 25
+[2026-03-05 01:47:00] profile.py(252) :   - batch_size: 25
+[2026-03-05 01:47:00] profile.py(252) :   - max_updates: 30
+[2026-03-05 01:47:00] profile.py(252) :   - reward_shift: 6000.0
+[2026-03-05 01:47:00] profile.py(252) :   - _step: 0
+[2026-03-05 01:47:00] profile.py(252) :   - _updates: 0
+[2026-03-05 01:47:00] profile.py(252) :   - _tl: <_thread._local object at 0x000002AC17BE0900>
+[2026-03-05 01:47:00] profile.py(252) :   - _buffer: []
+[2026-03-05 01:47:00] profile.py(252) :   - _history: []
+[2026-03-05 01:47:00] profile.py(252) :   - _lock: <unlocked _thread.lock object at 0x000002AC16986C00>
+[2026-03-05 01:47:00] profile.py(252) :   - debug_mode: False
+[2026-03-05 01:47:00] profile.py(253) : ====================================================================
+[2026-03-05 01:47:00] profile.py(254) : Problem Parameters
+[2026-03-05 01:47:00] profile.py(255) : --------------------------------------------------------------------
+[2026-03-05 01:47:00] profile.py(256) :   - Problem: OBPEvaluation
+[2026-03-05 01:47:00] profile.py(259) :   - task_description: Implement a function that returns the priority with which we want to add an item to each bin.
+[2026-03-05 01:47:00] profile.py(259) :   - use_numba_accelerate: False
+[2026-03-05 01:47:00] profile.py(259) :   - use_protected_div: False
+[2026-03-05 01:47:00] profile.py(259) :   - protected_div_delta: 1e-05
+[2026-03-05 01:47:00] profile.py(259) :   - random_seed: None
+[2026-03-05 01:47:00] profile.py(259) :   - timeout_seconds: 30
+[2026-03-05 01:47:00] profile.py(259) :   - exec_code: True
+[2026-03-05 01:47:00] profile.py(259) :   - safe_evaluate: True
+[2026-03-05 01:47:00] profile.py(259) :   - daemon_eval_process: False
+[2026-03-05 01:47:00] profile.py(259) :   - fork_proc: auto
+[2026-03-05 01:47:00] profile.py(259) :   - n_instances: 5
+[2026-03-05 01:47:00] profile.py(259) :   - n_items: 5000
+[2026-03-05 01:47:00] profile.py(259) :   - capacity: 100
+[2026-03-05 01:47:00] profile.py(261) : ====================================================================
+[2026-03-05 01:47:00] profile.py(262) : Method Parameters
+[2026-03-05 01:47:00] profile.py(263) : --------------------------------------------------------------------
+[2026-03-05 01:47:00] profile.py(264) :   - Method: TextGradTrainEoH
+[2026-03-05 01:47:00] profile.py(268) :   - _max_generations: 6
+[2026-03-05 01:47:00] profile.py(268) :   - _max_sample_nums: 300
+[2026-03-05 01:47:00] profile.py(268) :   - _pop_size: 10
+[2026-03-05 01:47:00] profile.py(268) :   - _selection_num: 3
+[2026-03-05 01:47:00] profile.py(268) :   - _use_e2_operator: True
+[2026-03-05 01:47:00] profile.py(268) :   - _use_m1_operator: True
+[2026-03-05 01:47:00] profile.py(268) :   - _use_m2_operator: True
+[2026-03-05 01:47:00] profile.py(268) :   - _num_samplers: 2
+[2026-03-05 01:47:00] profile.py(268) :   - _num_evaluators: 2
+[2026-03-05 01:47:00] profile.py(268) :   - _resume_mode: False
+[2026-03-05 01:47:00] profile.py(268) :   - _debug_mode: False
+[2026-03-05 01:47:00] profile.py(268) :   - _multi_thread_or_process_eval: thread
+[2026-03-05 01:47:00] profile.py(268) :   - _function_to_evolve_name: priority
+[2026-03-05 01:47:00] profile.py(268) :   - _tot_sample_nums: 0
+[2026-03-05 01:47:00] profile.py(268) :   - _initial_sample_nums_max: 20
+[2026-03-05 01:47:00] profile.py(268) :   - _evaluation_executor: <concurrent.futures.thread.ThreadPoolExecutor object at 0x000002AC5D18B550>
+[2026-03-05 01:47:00] profile.py(270) : =====================================================================

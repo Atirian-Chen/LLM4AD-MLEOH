@@ -1,0 +1,23 @@
+{
+  "time_start": "2026-03-05T02:16:55",
+  "seed": 2,
+  "reward_mode": "score",
+  "router_trace_path": "E:\\_university\\大四上\\FP\\LLM4AD\\LLM4AD\\MLEOH_3llm\\all_results\\20260304_195129\\textgrad_router\\eoh_obp_textgrad_train_3\\seed_2\\router_trace.csv",
+  "textgrad": {
+    "update_every": 25,
+    "batch_size": 25,
+    "max_updates": 30,
+    "reward_shift": 6000.0
+  },
+  "eoh": {
+    "pop_size": 10,
+    "max_generations": 6,
+    "max_sample_nums": 300,
+    "selection_num": 3,
+    "use_e2_operator": true,
+    "use_m1_operator": true,
+    "use_m2_operator": true,
+    "num_samplers": 2,
+    "num_evaluators": 2
+  }
+}

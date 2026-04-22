@@ -1,0 +1,20 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    feasible = remaining >= 0
+    # Use log scaling: higher priority for smaller remaining capacity
+    # Add small epsilon to avoid log(0)
+    log_remaining = np.where(feasible, remaining + 1e-8, 1e-8)
+    # Invert by taking negative log to make small remaining → high priority
+    priorities = np.where(feasible, -np.log(log_remaining), 0.0)
+    return priorities
+

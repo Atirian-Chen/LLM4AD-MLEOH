@@ -1,0 +1,389 @@
+{
+  "profile_mode": "named",
+  "policy_version": 7,
+  "policy_text": "[Routing Policy v7: Signal-Weighted with Catastrophic Failure Prevention]\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\n\nSignals (from input):\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\n- has_error (bool), n_chars, n_lines, code_density\n- fix_score, explore_score\n- markers (count of code markers)\n- prior_stats: per-operator mean score and fail counts for each backend (frozen in test)\n\nDecision procedure:\n1) Hard constraints (override all scoring):\n   - if has_error=true → deepseek (debugging strength)\n   - if n_chars > 2000 AND code_density > 0.8 → qwen (long-context restructuring)\n   - if operator=UNKNOWN AND prior_stats unavailable → deepseek (default to reliability)\n   - if prior_stats show backend has catastrophic failure rate > 30% for operator → exclude from consideration\n   - if n_chars > 1800 AND explore_score > 0.3 → exclude doubao (unstable on long exploratory)\n   - if code_density < 0.3 AND operator ∈ {M1,M2} → exclude qwen (over-edits sparse code)\n   - if n_chars > 2000 AND markers > 20 → exclude doubao (catastrophic failures observed)\n   - if operator ∈ {E1,E2} AND n_chars > 2000 → exclude doubao (high failure rate on long exploratory)\n   - if n_chars > 2000 AND operator ∈ {E1,E2} AND markers > 15 → qwen (complex exploratory long code)\n   - if n_chars > 1500 AND code_density > 0.9 → exclude doubao (dense long code instability)\n   - NEW: if operator ∈ {E1,E2} AND n_chars > 2000 AND markers > 20 → qwen (mandatory for high-marker exploratory)\n   - NEW: if operator ∈ {M1,M2} AND n_chars > 1600 AND code_density > 0.7 → qwen (long restructuring needed)\n   - NEW: if n_chars > 2000 AND explore_score < 0.2 → exclude doubao (low exploration doesn't justify risk)\n\n2) Score each backend using weighted scorecard:\n   Base weights:\n   - w_op: +5 if backend matches operator's best prior mean score (highest), else 0\n   - w_error: +2 if has_error=false, -10 if has_error=true (except deepseek)\n   - w_len: +6 if n_chars < 1200 (favor doubao), +7 if n_chars > 1800 (favor qwen), 0 otherwise\n   - w_density: +5 if code_density > 0.7 (favor qwen), -5 if code_density < 0.3 (favor deepseek)\n   - w_fix: +5 if fix_score > 0.4 (favor deepseek)\n   - w_explore: +8 if explore_score > 0.5 (favor doubao), -4 if explore_score < 0.2 AND operator ∈ {E1,E2} (penalize doubao)\n   - w_prior: +6 if backend has lowest fail count for operator, -5 if highest fail count\n   - w_cost: +2 for doubao (low), 0 for others\n   - w_reliability: +5 for deepseek (high reliability), +1 for others\n   - w_catastrophic: -10 if backend has any catastrophic failure (score < -4000) for operator in prior_stats\n   - w_markers: +5 if markers > 20 AND operator ∈ {E1,E2} → favor qwen (complex exploratory)\n   - w_density_len: +5 if code_density > 0.9 AND n_chars > 1500 → favor qwen (dense long code)\n   - w_long_exploratory: -8 if n_chars > 2000 AND operator ∈ {E1,E2} → penalize doubao (observed failures)\n   - w_marker_density: +4 if markers > 15 AND code_density > 0.8 → favor qwen (complex dense code)\n   - w_medium_length: +4 if 1200 ≤ n_chars ≤ 1800 AND operator ∈ {M1,M2} → favor deepseek (optimal range)\n   - w_marker_operator: +6 if markers > 20 AND operator ∈ {E1,E2} → strongly favor qwen\n   - w_long_modification: +5 if n_chars > 1600 AND operator ∈ {M1,M2} → favor qwen (restructuring needed)\n   - w_short_exploratory: +6 if n_chars < 1200 AND operator ∈ {E1,E2} → favor doubao (safe exploration)\n   - NEW w_marker_risk: -8 if markers > 20 AND operator ∈ {E1,E2} → penalize doubao (catastrophic correlation)\n   - NEW w_length_operator: +4 if n_chars > 2000 AND operator ∈ {M1,M2} → favor qwen (long modifications)\n   - NEW w_density_explore: +5 if code_density > 0.8 AND explore_score < 0.3 → favor qwen over doubao\n\n3) Choose backend with highest total score.\n4) Tie-breaking (scores within 3 points):\n   - If operator is E1/E2 AND n_chars < 1200 AND explore_score > 0.3, prefer doubao\n   - If operator is M1/M2 OR code_density < 0.5, prefer deepseek\n   - If n_chars > 1600 AND code_density > 0.6, prefer qwen\n   - If prior_stats show catastrophic failures for any backend, avoid that backend\n   - If markers > 15 AND operator ∈ {E1,E2}, prefer qwen over doubao\n   - If n_chars > 2000, prefer qwen over doubao (catastrophic failure prevention)\n   - If 1200 ≤ n_chars ≤ 1800 AND operator ∈ {M1,M2}, prefer deepseek over others\n   - If markers > 20 AND operator ∈ {E1,E2}, prefer qwen over all others\n   - If explore_score < 0.2 AND operator ∈ {E1,E2}, prefer qwen over doubao\n   - If n_chars > 2000 AND markers > 15, prefer qwen over all others\n   - Otherwise choose cheaper (doubao > deepseek > qwen)\n\n5) Confidence levels:\n   - High: score difference > 8\n   - Medium: difference 4-8\n   - Low: difference < 4 (use tie-breaking)\n\n6) Fallback: If all scores equal or UNKNOWN operator with no prior data, default to deepseek.\n\nOutput JSON with backend + confidence + reason citing 3+ signals.",
+  "updates": 30,
+  "history": [
+    {
+      "time": 1772654069.4957402,
+      "ok": true,
+      "policy_version_after": 1,
+      "rationale": "This improves objective by: 1) Adding hard constraints for error cases and long dense code to prevent catastrophic failures, 2) Using adaptive weights based on signal thresholds rather than fixed preferences, 3) Incorporating multiple signals (n_chars, code_density, explore_score) beyond just operator, 4) Adding explicit tie-breaking rules that consider cost when confidence is low, 5) Better aligning backend strengths with signal patterns observed in the batch (e.g., qwen for long dense code, de",
+      "changes": [
+        "Added hard constraints for has_error and long dense code",
+        "Changed weights to be threshold-based rather than fixed",
+        "Added explicit tie-breaking hierarchy",
+        "Incorporated n_chars, code_density, and explore_score thresholds",
+        "Added confidence levels to guide tie-breaking",
+        "Made operator-specific preferences explicit in tie-breaking"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "34add6f4ab0e318f9a5d5de469999a57e64c19512b7708997c19833b2aa244c9",
+      "new_policy_sha256": "5b2e1022d6c9639b08b21371f26c92a7173fb0c46aa314600cf2bd56875a086f"
+    },
+    {
+      "time": 1772654095.9953895,
+      "ok": true,
+      "policy_version_after": 2,
+      "rationale": "This improves objective by: 1) Adding reliability bonus to reduce catastrophic failures (deepseek gets +2), 2) Strengthening explore_score weight (+4) to better match doubao's strengths for exploratory tasks, 3) Adding fallback to deepseek for UNKNOWN operators when prior data is missing, 4) Adjusting length thresholds (1200/1800) based on observed performance patterns, 5) Adding code_density tie-break for low-density tasks favoring deepseek's debugging, 6) Increasing score difference threshold ",
+      "changes": [
+        "Added reliability bonus (+2 deepseek, +1 others)",
+        "Increased explore_score weight to +4 for better doubao routing",
+        "Added fallback rule for UNKNOWN operators with missing prior data",
+        "Adjusted length thresholds to 1200/1800 based on performance patterns",
+        "Added code_density tie-break for low-density tasks",
+        "Increased high-confidence threshold to >4 points difference",
+        "Added explicit operator-based tie-breaking precedence"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "5b2e1022d6c9639b08b21371f26c92a7173fb0c46aa314600cf2bd56875a086f",
+      "new_policy_sha256": "60bb21219729e76f9f964ea0b4def5530b453b15909b58024757d39d96d511f5"
+    },
+    {
+      "time": 1772654150.0555513,
+      "ok": true,
+      "policy_version_after": 3,
+      "rationale": "This revision addresses the catastrophic failures observed in the batch (-5000 scores) by: 1) Adding explicit catastrophic failure prevention via prior_stats filtering and penalty weights, 2) Increasing weight differentials to create clearer separation between backends, 3) Strengthening tie-breaking with catastrophic failure awareness, and 4) Better balancing operator preferences with other signals (n_chars, code_density, explore_score). The policy now uses operator + prior failure stats + code ",
+      "changes": [
+        "Added catastrophic failure prevention: exclude backends with >30% catastrophic failure rate for operator",
+        "Added w_catastrophic penalty (-6) for backends with any catastrophic failure in prior_stats",
+        "Increased weight differentials (w_op: +3→+4, w_explore: +4→+5, w_reliability: +2→+3)",
+        "Strengthened tie-breaking with catastrophic failure avoidance",
+        "Increased confidence threshold from 4 to 5 for 'High' confidence",
+        "Added catastrophic failure awareness to all decision stages"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "60bb21219729e76f9f964ea0b4def5530b453b15909b58024757d39d96d511f5",
+      "new_policy_sha256": "1a8d7c321ea32e40ed529ee73b6b79a7e4d1263af984e9058812e50f0e9b44a8"
+    },
+    {
+      "time": 1772654187.9447265,
+      "ok": true,
+      "policy_version_after": 4,
+      "rationale": "The current policy over-selects doubao for exploratory tasks (E1/E2) even when they have long context (>1800 chars) and high code density, leading to catastrophic failures (-5000 scores). Analysis shows: 1) doubao fails catastrophically on long exploratory tasks (steps 13, 23), 2) qwen performs well on high-density long contexts (step 27), 3) deepseek is reliable for modifications but current weights don't sufficiently penalize doubao's instability. The revised policy adds hard constraints to ex",
+      "changes": [
+        "Added hard constraint: exclude doubao when n_chars > 1800 AND explore_score > 0.3",
+        "Added hard constraint: exclude qwen when code_density < 0.3 AND operator is M1/M2",
+        "Increased catastrophic failure penalty from -6 to -8",
+        "Added w_markers signal: +3 if markers > 20 AND operator ∈ {E1,E2} (favors qwen for complex exploratory)",
+        "Added w_density_len signal: +4 if code_density > 0.9 AND n_chars > 1500 (favors qwen for dense long code)",
+        "Modified tie-breaking: added condition 'If markers > 15 AND operator ∈ {E1,E2}, prefer qwen over doubao'",
+        "Increased weight differences (w_op from +4 to +5, w_len thresholds adjusted) to create clearer separation",
+        "Increased confidence threshold from >5 to >6 difference for 'High' confidence"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "1a8d7c321ea32e40ed529ee73b6b79a7e4d1263af984e9058812e50f0e9b44a8",
+      "new_policy_sha256": "738ad6cff7cb93fc17546864fdb396cf8f4396c07b92222ddb3c68419f77e89f"
+    },
+    {
+      "time": 1772654254.691767,
+      "ok": true,
+      "policy_version_after": 5,
+      "rationale": "The current policy over-selects doubao for long exploratory tasks (E1/E2 with n_chars > 2000), leading to catastrophic failures (-5000 scores). Analysis shows doubao fails consistently on long exploratory tasks, while qwen performs better. The revised policy adds hard constraints to exclude doubao from long exploratory tasks, adds weighted penalties for this pattern, and strengthens tie-breaking to favor qwen for long contexts. This reduces catastrophic failures while maintaining doubao's streng",
+      "changes": [
+        "Added hard constraint: exclude doubao when n_chars > 2000 AND markers > 20",
+        "Added hard constraint: exclude doubao when operator ∈ {E1,E2} AND n_chars > 2000",
+        "Added weight w_long_exploratory: -6 penalty for doubao on long exploratory tasks",
+        "Added weight w_marker_density: +3 for qwen on complex dense code (markers > 15 AND density > 0.8)",
+        "Added weight w_medium_length: +3 for deepseek on medium-length modification tasks",
+        "Added tie-breaking rule: prefer qwen over doubao when n_chars > 2000",
+        "Added tie-breaking rule: prefer deepseek for medium-length modification tasks (1200-1800 chars)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "738ad6cff7cb93fc17546864fdb396cf8f4396c07b92222ddb3c68419f77e89f",
+      "new_policy_sha256": "b31218448dedebc160c96bcf8fce7dbc4cc90a71d0a1be7ae5b83c955cb06680"
+    },
+    {
+      "time": 1772654304.8476825,
+      "ok": true,
+      "policy_version_after": 6,
+      "rationale": "The data shows catastrophic failures (-5000 scores) cluster when doubao handles long exploratory tasks (E1/E2 with n_chars > 2000) and modification tasks (M1/M2). Qwen performs well on long exploratory tasks when markers are high. Deepseek is reliable for medium-length modifications. The revised policy adds: 1) A new hard constraint forcing qwen for complex exploratory long code (n_chars>2000, markers>15, E1/E2), 2) Additional scoring weights that better capture the interaction between markers, ",
+      "changes": [
+        "Added hard constraint: n_chars > 2000 AND operator ∈ {E1,E2} AND markers > 15 → qwen",
+        "Added hard constraint: n_chars > 1500 AND code_density > 0.9 → exclude doubao",
+        "Added w_marker_operator: +4 if markers > 20 AND operator ∈ {E1,E2} → strongly favor qwen",
+        "Added w_long_modification: +3 if n_chars > 1600 AND operator ∈ {M1,M2} → favor qwen",
+        "Added w_short_exploratory: +4 if n_chars < 1200 AND operator ∈ {E1,E2} → favor doubao",
+        "Updated tie-breaking: If markers > 20 AND operator ∈ {E1,E2}, prefer qwen over all others",
+        "Updated tie-breaking: Changed first rule to n_chars < 1200 (was 1600) for doubao preference"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "b31218448dedebc160c96bcf8fce7dbc4cc90a71d0a1be7ae5b83c955cb06680",
+      "new_policy_sha256": "58d106b340a1f37ef65a80f63bcf79fd58a6ea39bbebac12623f2111a05437a0"
+    },
+    {
+      "time": 1772654376.9314542,
+      "ok": true,
+      "policy_version_after": 7,
+      "rationale": "The data shows catastrophic failures (-5000) correlate strongly with: 1) E1/E2 operators with n_chars > 2000 and markers > 20 when using doubao, 2) M1/M2 tasks with medium length (1200-1800 chars) where doubao fails, and 3) low explore_score (<0.2) in exploratory tasks where doubao's exploration strength isn't justified. The revised policy strengthens penalties for doubao in high-risk scenarios (markers > 20, long exploratory), adds mandatory qwen routing for high-marker exploratory tasks, incre",
+      "changes": [
+        "Added hard constraint: E1/E2 with n_chars>2000 AND markers>20 → mandatory qwen routing",
+        "Added hard constraint: M1/M2 with n_chars>1600 AND density>0.7 → qwen for restructuring",
+        "Added hard constraint: n_chars>2000 AND explore_score<0.2 → exclude doubao",
+        "Increased weight differentials (w_len: +6/+7, w_catastrophic: -10) to reduce ties",
+        "Added w_marker_risk: -8 penalty for doubao on high-marker exploratory tasks",
+        "Added w_density_explore: favors qwen when density high but exploration low",
+        "Added tie-break: explore_score<0.2 AND E1/E2 → prefer qwen over doubao",
+        "Increased confidence threshold to >8 for High confidence",
+        "Strengthened w_explore to include penalty when exploration is low for exploratory tasks"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "58d106b340a1f37ef65a80f63bcf79fd58a6ea39bbebac12623f2111a05437a0",
+      "new_policy_sha256": "dc685a0468d33b63831a38b0e54399935f7627ef0c6b145d127279fe762d47c0"
+    },
+    {
+      "time": 1772654526.075407,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772654597.2280614,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772654682.0718417,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772654754.766638,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772654884.7758348,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772654954.9529555,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772655028.3263342,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772655099.8601232,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772655170.6451578,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772655238.935308,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772655366.7670243,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772655431.1705208,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772655555.2218122,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772655620.6718466,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772655686.2392027,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772655752.8161101,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772655817.9163694,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772656038.5673716,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772656098.7392118,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772656162.0570283,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772656248.3673131,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772656413.5826535,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    },
+    {
+      "time": 1772656481.7490652,
+      "ok": false,
+      "policy_version_before": 7,
+      "error": "policy_guardrail_failed",
+      "raw": "```json\n{\n  \"new_policy\": \"[Routing Policy v8: Signal-Weighted with Catastrophic Failure Prevention]\\nGoal: choose the backend that maximizes expected OBP score while minimizing catastrophic failures (< -4000).\\n\\nSignals (from input):\\n- operator ∈ {E1,E2,M1,M2,UNKNOWN}\\n- has_error (bool), n_chars, n_lines, code_density\\n- fix_score, explore_score\\n- markers (count of code markers)\\n- prior_stat"
+    }
+  ],
+  "update_every": 25,
+  "batch_size": 25,
+  "max_updates": 30,
+  "reward_mode": "score",
+  "reward_shift": 6000.0,
+  "prior_stats": {
+    "E1": {
+      "deepseek": {
+        "count": 0,
+        "sum_score": 0.0,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 57,
+        "sum_score": -146474.8,
+        "fail_count": 0
+      },
+      "doubao": {
+        "count": 5,
+        "sum_score": -14306.800000000001,
+        "fail_count": 0
+      }
+    },
+    "E2": {
+      "deepseek": {
+        "count": 1,
+        "sum_score": -5000.0,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 50,
+        "sum_score": -140864.99999999997,
+        "fail_count": 1
+      },
+      "doubao": {
+        "count": 3,
+        "sum_score": -12091.8,
+        "fail_count": 0
+      }
+    },
+    "M1": {
+      "deepseek": {
+        "count": 36,
+        "sum_score": -82987.6,
+        "fail_count": 2
+      },
+      "qwen": {
+        "count": 10,
+        "sum_score": -24839.0,
+        "fail_count": 1
+      },
+      "doubao": {
+        "count": 2,
+        "sum_score": -7091.8,
+        "fail_count": 0
+      }
+    },
+    "M2": {
+      "deepseek": {
+        "count": 37,
+        "sum_score": -110483.00000000003,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 2,
+        "sum_score": -4439.0,
+        "fail_count": 1
+      },
+      "doubao": {
+        "count": 2,
+        "sum_score": -7091.8,
+        "fail_count": 0
+      }
+    },
+    "UNKNOWN": {
+      "deepseek": {
+        "count": 34,
+        "sum_score": -81571.00000000003,
+        "fail_count": 0
+      },
+      "qwen": {
+        "count": 2,
+        "sum_score": -10000.0,
+        "fail_count": 0
+      },
+      "doubao": {
+        "count": 19,
+        "sum_score": -39744.200000000004,
+        "fail_count": 0
+      }
+    }
+  },
+  "verify_update": false
+}

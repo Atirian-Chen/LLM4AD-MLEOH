@@ -1,0 +1,53 @@
+{
+  "run_id": "eoh_obp_rule_main1000_test2025_s10_20260309_194841",
+  "time_start": "2026-03-09T19:48:41",
+  "python": "3.10.19 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 16:41:31) [MSC v.1929 64 bit (AMD64)]",
+  "platform": {
+    "system": "Windows",
+    "release": "10",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 151 Stepping 2, GenuineIntel"
+  },
+  "args": {
+    "host_a": "api.deepseek.com",
+    "model_a": "deepseek-chat",
+    "host_b": "dashscope.aliyuncs.com",
+    "model_b": "qwen-flash",
+    "host_c": "ark.cn-beijing.volces.com",
+    "model_c": "doubao-seed-2-0-mini-260215",
+    "timeout": 60,
+    "temperature": null,
+    "top_p": null,
+    "long_prompt_chars": 12000,
+    "long_prompt_lines": 260,
+    "dense_code_markers": 18,
+    "default_backend": "doubao",
+    "router_verbose": false,
+    "pop_size": 10,
+    "max_generations": 6,
+    "max_sample_nums": 1000,
+    "selection_num": 3,
+    "use_e2_operator": true,
+    "use_m1_operator": true,
+    "use_m2_operator": true,
+    "num_samplers": 4,
+    "num_evaluators": 4,
+    "debug_mode": false,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "out_dir": "E:\\_university\\大四上\\FP\\LLM4AD\\LLM4AD\\MLEOH_3llm\\all_results\\20260309_171809\\static_rule",
+    "exp_name": "eoh_obp_rule_main1000_test2025_s10",
+    "instance_seed": 2025
+  },
+  "time_end": "2026-03-09T20:37:20"
+}

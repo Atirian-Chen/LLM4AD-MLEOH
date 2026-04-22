@@ -1,0 +1,18 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    fits = bins >= item
+    ratios = np.where(fits, item / bins, 0.0)
+    # Sigmoidal scaling around target ratio of 1.0 (full bin)
+    scaled_diff = -4 * (ratios - 1.0)
+    sigmoid_scores = 1 / (1 + np.exp(scaled_diff))
+    return np.where(fits, sigmoid_scores, -np.inf)
+

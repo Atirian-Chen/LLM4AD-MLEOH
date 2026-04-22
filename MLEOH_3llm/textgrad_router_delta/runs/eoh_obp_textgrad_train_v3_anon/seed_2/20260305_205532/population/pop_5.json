@@ -1,0 +1,52 @@
+[
+    {
+        "algorithm": "{\nNew algorithm: For each bin, compute the remaining capacity after hypothetically adding the item, then assign higher priority to bins where the resulting remaining capacity is smaller (favoring tight fits), but only if the item fits; otherwise assign the lowest priority.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_after = bins - item\n    fits = remaining_after >= 0\n    priority_scores = np.full_like(bins, -np.inf)\n    priority_scores[fits] = -remaining_after[fits]\n    return priority_scores\n\n",
+        "score": -2091.8
+    },
+    {
+        "algorithm": "{New algorithm: Assign priority based on the negative exponential of remaining capacity after adding the item, so that bins with smaller remaining capacity receive exponentially higher priority, and assign negative infinity where the item does not fit.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    priorities = np.full_like(bins, -np.inf)\n    mask = remaining >= 0\n    priorities[mask] = np.exp(-remaining[mask])\n    return priorities\n\n",
+        "score": -2095.4
+    },
+    {
+        "algorithm": "{\nNew algorithm: Assign priority based on the sigmoid of the negative remaining capacity after adding the item, scaled by a factor, so that bins with smaller remaining capacity receive a smoothly increasing high priority, while bins where the item does not fit receive negative infinity.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    priorities = np.full_like(bins, -np.inf)\n    mask = remaining >= 0\n    priorities[mask] = 1 / (1 + np.exp(remaining[mask] - 5))\n    return priorities\n\n",
+        "score": -2099.4
+    },
+    {
+        "algorithm": "{\nNew algorithm: Assign priority based on the hyperbolic tangent of the negative remaining capacity after adding the item, so that bins with smaller remaining capacity receive a smoothly saturated high priority, while bins where the item does not fit receive negative infinity.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    priorities = np.full_like(bins, -np.inf)\n    mask = remaining >= 0\n    priorities[mask] = np.tanh(-remaining[mask])\n    return priorities\n\n",
+        "score": -2102.8
+    },
+    {
+        "algorithm": "{\nNew algorithm: Assign priority based on the inverse of remaining capacity after adding the item, preferring bins where the item fits perfectly or leaves the least wasted space, with negative priority for bins where the item does not fit.\n}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    # Initialize priorities with negative values for bins where item doesn't fit\n    priorities = np.full_like(bins, -np.inf)\n    # Only consider bins where item fits (remaining >= 0)\n    mask = remaining >= 0\n    # Priority is higher when remaining capacity is smaller (inverse)\n    # Add small epsilon to avoid division by zero for perfect fit\n    priorities[mask] = 1.0 / (remaining[mask] + 1e-12)\n    return priorities\n\n",
+        "score": -2122.2
+    },
+    {
+        "algorithm": "{For each bin, if the item cannot fit assign the lowest priority; otherwise assign priority as the reciprocal of the product of remaining capacity after adding the item and the absolute difference between remaining capacity and the item size.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    priorities = np.full_like(bins, -np.inf)\n    mask = remaining >= 0\n    priorities[mask] = 1.0 / (remaining[mask] * np.abs(remaining[mask] - item) + 1e-12)\n    return priorities\n\n",
+        "score": -2123.0
+    },
+    {
+        "algorithm": "{For each bin, if the item cannot fit assign the lowest priority, otherwise compute the absolute difference between the remaining capacity after adding the item and a quarter of the bin's original capacity, and assign higher priority to bins with smaller such difference.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    fits_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf, dtype=np.float64)\n    priority_scores[fits_mask] = -np.abs(remaining[fits_mask] - 0.25 * bins[fits_mask])\n    return priority_scores\n\n",
+        "score": -2157.8
+    },
+    {
+        "algorithm": "{For each bin, if the item cannot fit assign the lowest priority, otherwise compute the ratio of the remaining capacity after adding the item to the bin's original capacity, and assign higher priority to bins with a ratio closer to a target fill level (e.g., 0.75).}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining = bins - item\n    fits_mask = remaining >= 0\n    priority_scores = np.full_like(bins, -np.inf, dtype=np.float64)\n    target_fill_ratio = 0.75\n    priority_scores[fits_mask] = -np.abs(remaining[fits_mask] / bins[fits_mask] - (1 - target_fill_ratio))\n    return priority_scores\n\n",
+        "score": -2170.4
+    },
+    {
+        "algorithm": "{New algorithm: For each bin, compute the ratio of the item size to the bin's remaining capacity after adding the item (if it fits), assigning higher priority to bins where this ratio is closer to 1 (favoring near-full bins), while penalizing bins where the item does not fit with the lowest possible priority.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_after = bins - item\n    fits = remaining_after >= 0\n    priorities = np.full_like(bins, -np.inf)\n    # Avoid division by zero by adding a small epsilon\n    valid_ratios = item / (remaining_after[fits] + 1e-12)\n    # Higher priority for ratios closer to 1 (tight fit), lower for ratios far from 1\n    priorities[fits] = 1.0 - np.abs(valid_ratios - 1.0)\n    return priorities\n\n",
+        "score": -2320.8
+    },
+    {
+        "algorithm": "{For each bin, if the item cannot fit into the bin, assign the lowest possible priority (negative infinity), otherwise calculate the remainder of the bin's remaining capacity after adding the current item when divided by the item's size, and assign higher priority to bins with larger such remainder.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_after = bins - item\n    fits_mask = remaining_after >= 0\n    priority_scores = np.full_like(bins, -np.inf, dtype=np.float64)\n    priority_scores[fits_mask] = remaining_after[fits_mask] % item\n    return priority_scores\n\n",
+        "score": -2511.0
+    }
+]

@@ -1,0 +1,23 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    utilization = (bins - remaining) / bins
+    target_utilization = 0.75
+    deviation_from_target = np.abs(utilization - target_utilization)
+    # Penalize overflow heavily
+    overflow_penalty = np.where(remaining < 0, 1e9, 0)
+    # Priority is inverse of total penalty
+    priority_scores = deviation_from_target + overflow_penalty
+    # Break ties by preferring bins with higher current capacity
+    priority_scores -= bins / (bins.max() + 1)  # subtract small value proportional to bin size
+    return priority_scores
+

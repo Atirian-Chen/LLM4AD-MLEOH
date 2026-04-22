@@ -1,0 +1,26 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    remaining = bins - item
+    priority_scores = np.zeros_like(bins, dtype=np.float64)
+    # Perfect fit: highest priority score
+    perfect = np.isclose(remaining, 0.0, atol=1e-8)
+    priority_scores[perfect] = 2.0
+    # Fitting bins: higher priority for smaller slack via exponential decay
+    fit = remaining > 1e-8
+    slack = remaining[fit]
+    priority_scores[fit] = np.exp(-slack)
+    # Overfull bins: penalize with scaled power of overfill amount
+    overfull = remaining < -1e-8
+    over_amount = -remaining[overfull]
+    priority_scores[overfull] = - (over_amount ** 1.5)
+    return priority_scores
+

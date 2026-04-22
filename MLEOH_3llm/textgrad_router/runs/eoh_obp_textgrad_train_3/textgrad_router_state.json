@@ -1,0 +1,441 @@
+{
+  "policy_version": 30,
+  "policy_text": "[Routing Policy v30]\n- If operator is E1 (exploration/variant generation): choose doubao.\n- If operator is E2 (global restructure): choose qwen.\n- If operator is M1 or M2 (local mutation/edit): choose deepseek.\n- If prompt contains traceback/exception or explicit error: choose deepseek.\n- If prompt is very long / dense code: choose deepseek.\n- Otherwise: choose deepseek.",
+  "updates": 30,
+  "history": [
+    {
+      "time": 1772565343.8605444,
+      "ok": true,
+      "policy_version_after": 1,
+      "rationale": "The data shows that E2 (global restructure) tasks routed to qwen consistently yield poor scores (-5000.0, -5000.0, -5000.0), while deepseek performs well across M1/M2 tasks and error debugging. Doubao performs adequately for E1 and default cases. Therefore, shifting E2 and long/dense code tasks from qwen to deepseek should improve overall EoH scores by avoiding qwen's poor performance on restructuring tasks while leveraging deepseek's stronger capabilities for complex code operations.",
+      "changes": [
+        "Changed E2 (global restructure) routing from qwen to deepseek",
+        "Changed 'very long / dense code' routing from qwen to deepseek",
+        "Kept all other rules unchanged based on observed performance patterns"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "2e9e823403a0c38dd33136e16ff7708238c1ee7a469c368239a1044e7fea7886",
+      "new_policy_sha256": "fdfa97c8a9eb4006d06965ea521fad21bd0088c29c400361ecaa72e8eb162225"
+    },
+    {
+      "time": 1772565354.8986557,
+      "ok": true,
+      "policy_version_after": 2,
+      "rationale": "The data shows E1 tasks routed to doubao consistently yield poor scores (-5000, -4439, -2733), while E2 tasks routed to qwen show mixed results but some successes (-2091). Since E1 and E2 are both exploration/restructuring tasks, consolidating them to qwen may improve E1 performance while maintaining E2 capability. Deepseek continues performing well for M1/M2 (local edits) with stable scores (-2091 to -2626). The 'otherwise' default should favor qwen over doubao given doubao's poor E1 performanc",
+      "changes": [
+        "Changed E1 routing from doubao to qwen due to consistently poor scores with doubao",
+        "Changed default 'otherwise' from doubao to qwen for better baseline performance",
+        "Reordered rules to prioritize operator-based routing over content-based heuristics",
+        "Kept deepseek for error/debugging and long/dense code scenarios based on stable performance"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "fdfa97c8a9eb4006d06965ea521fad21bd0088c29c400361ecaa72e8eb162225",
+      "new_policy_sha256": "c64fba33c66bec535961b11751fd069b8a1378133261d2abbae6c22d7ea0be1e"
+    },
+    {
+      "time": 1772565367.7377374,
+      "ok": true,
+      "policy_version_after": 3,
+      "rationale": "The training data shows that doubao consistently outperforms qwen for E1 and E2 operators. For E1, doubao scores (-2091.8 to -2733.2) are significantly better than qwen's worst-case (-5000). For E2, doubao's default performance (-2091.8) is better than qwen's frequent -5000 failures. The 'Otherwise' default should also be doubao since all UNKNOWN operator cases used doubao successfully with -2091.8 scores. Deepseek remains optimal for M1/M2 and error/debugging tasks.",
+      "changes": [
+        "Changed E1 rule from qwen to doubao based on superior performance",
+        "Changed E2 rule from qwen to doubao to avoid catastrophic -5000 scores",
+        "Changed default 'Otherwise' from qwen to doubao for consistency"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "c64fba33c66bec535961b11751fd069b8a1378133261d2abbae6c22d7ea0be1e",
+      "new_policy_sha256": "a75a60f7d65382b818bd9da8ca4d3414d03131476b1872c039a0e48ece606e10"
+    },
+    {
+      "time": 1772565400.137076,
+      "ok": true,
+      "policy_version_after": 4,
+      "rationale": "The data shows E1/E2 tasks with doubao consistently yield poor scores (-5000, -4439, -2733), while qwen performs better on similar tasks (-2091 baseline). For E1 tasks specifically, doubao scores are catastrophic (-5000 multiple times), suggesting qwen should handle both exploration (E1) and restructuring (E2). Deepseek remains strong for local edits (M1/M2) and error contexts. The default should shift to qwen since it provides more reliable performance across general tasks.",
+      "changes": [
+        "Changed E1 routing from doubao to qwen due to catastrophic scores (-5000) with doubao",
+        "Changed E2 routing from doubao to qwen for consistency and better baseline performance",
+        "Changed default from doubao to qwen for UNKNOWN operators to improve reliability",
+        "Kept deepseek for M1/M2 and error/long-code contexts unchanged as they work well"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "a75a60f7d65382b818bd9da8ca4d3414d03131476b1872c039a0e48ece606e10",
+      "new_policy_sha256": "e2f6d25b6f652b195305144bdfc043006c611d83269b3b7ffc8085deb1f7e475"
+    },
+    {
+      "time": 1772565418.7535973,
+      "ok": true,
+      "policy_version_after": 5,
+      "rationale": "The data shows doubao consistently outperforms qwen for E1/E2 operators while maintaining similar performance for unknown operators. For E1: doubao scores (-2117.6, -2733.2, -4439.0) vs qwen (-2868.0) and both have -5000 outliers. For E2: qwen has catastrophic -5000 scores while doubao handles unknown operators well (-2091.8 consistently). Deepseek remains strong for M1/M2. Changing default from qwen to doubao improves average scores since doubao shows reliable performance across non-error/non-m",
+      "changes": [
+        "Changed E1 from qwen to doubao based on better E1 scores",
+        "Changed E2 from qwen to doubao to avoid catastrophic -5000 failures",
+        "Changed default fallback from qwen to doubao for consistency",
+        "Kept deepseek rules unchanged as they work well for M1/M2 and error cases"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "e2f6d25b6f652b195305144bdfc043006c611d83269b3b7ffc8085deb1f7e475",
+      "new_policy_sha256": "2dc4f7ffd863a1bfa25e22c797800bfb92402d2a1e485df7fb86b7ba25a698ab"
+    },
+    {
+      "time": 1772565466.4651883,
+      "ok": true,
+      "policy_version_after": 6,
+      "rationale": "The data shows qwen consistently outperforms doubao for E1 tasks (compare step 29: doubao scored -2117.6 vs step 28: qwen scored -2868.0 - note that lower scores are worse, so -2117.6 is actually better than -2868.0, but wait, I need to check the pattern more carefully). Actually examining the scores: for E1, doubao had scores of -5000, -4439, -5000, -2733.2, -2117.6 while qwen had -2868.0. The -2117.6 with doubao is the best E1 score. However, looking at E2: qwen consistently scored around -209",
+      "changes": [
+        "Changed default backend from doubao to qwen for better consistency",
+        "Changed E1 routing from doubao to qwen to avoid catastrophic -5000 scores",
+        "Kept deepseek for M1/M2, errors, and long/dense code as it performs well there"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "2dc4f7ffd863a1bfa25e22c797800bfb92402d2a1e485df7fb86b7ba25a698ab",
+      "new_policy_sha256": "81bef2fd6fbf88d86fc5a8f8bf5f6ffd75f8117e1146cbe1364b4cb16fecdc9a"
+    },
+    {
+      "time": 1772565482.0787485,
+      "ok": true,
+      "policy_version_after": 7,
+      "rationale": "The data shows that doubao consistently outperforms qwen for E1 tasks (exploration/variant generation), with doubao achieving scores around -2091 to -2733 while qwen scored -2868 for E1. For E2 tasks, qwen performs better than doubao (qwen: -2091 to -2626 vs doubao: -4439). The 'Otherwise' default case should route to doubao since all UNKNOWN operator cases with doubao scored -2091.8 (high reward 3908.2), indicating doubao is optimal for general code generation. Deepseek remains strong for M1/M2",
+      "changes": [
+        "Changed E1 routing from qwen to doubao based on superior performance",
+        "Changed default 'Otherwise' case from qwen to doubao for general code generation",
+        "Kept E2 routing to qwen (better than doubao for restructuring)",
+        "Maintained deepseek for M1/M2, errors, and long/dense code"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "81bef2fd6fbf88d86fc5a8f8bf5f6ffd75f8117e1146cbe1364b4cb16fecdc9a",
+      "new_policy_sha256": "518a2bd773e69c71df9923d09c4822ab9e0bae00c1a9d603ac00040bec2747f0"
+    },
+    {
+      "time": 1772565492.4371443,
+      "ok": true,
+      "policy_version_after": 8,
+      "rationale": "The data shows qwen consistently outperforms doubao on E1 tasks (compare step 28 qwen: -2868 vs step 29 doubao: -2117.6, and multiple -5000 scores with doubao on E1). For E2, qwen performs better than doubao (step 31 doubao: -4439 vs step 30 qwen: -2626.4). Deepseek remains strong for M1/M2 and error handling. Changing default from doubao to qwen improves overall performance since qwen shows more consistent scores across unknown operators and exploration tasks.",
+      "changes": [
+        "Changed E1 from doubao to qwen based on superior performance",
+        "Changed default backend from doubao to qwen for better consistency",
+        "Kept E2 as qwen (confirmed by data)",
+        "Kept M1/M2, error handling, and dense code rules unchanged"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "518a2bd773e69c71df9923d09c4822ab9e0bae00c1a9d603ac00040bec2747f0",
+      "new_policy_sha256": "7ba54e09706ee6a561a5b02977983d65ce2b6e73aeb7354bb77849933e02d884"
+    },
+    {
+      "time": 1772565506.1792593,
+      "ok": true,
+      "policy_version_after": 9,
+      "rationale": "The data shows that doubao consistently outperforms qwen for E1 tasks (exploration/variant generation), with doubao achieving significantly higher rewards (1561-3882) compared to qwen's lower performance (3132). For E2 tasks, qwen performs better than doubao (3373.6 vs 1561 reward). Deepseek remains optimal for M1/M2 tasks with consistently high rewards (3373-3908). The default should be doubao for standard code generation tasks, as it shows strong performance in UNKNOWN operator cases with 3908",
+      "changes": [
+        "Changed E1 from qwen to doubao based on superior performance data",
+        "Changed default from qwen to doubao for better baseline performance",
+        "Kept E2 as qwen (best performer for global restructure)",
+        "Kept M1/M2 as deepseek (consistently high performance)",
+        "Maintained error/long-code rules for deepseek"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "7ba54e09706ee6a561a5b02977983d65ce2b6e73aeb7354bb77849933e02d884",
+      "new_policy_sha256": "60a9ecc53f62c57a787336d945661f839cb3b4f37d15d970b54bf9e318f0cfdb"
+    },
+    {
+      "time": 1772565516.6499848,
+      "ok": true,
+      "policy_version_after": 10,
+      "rationale": "The data shows E1 tasks with doubao consistently yield poor scores (-5000, -4439, -2733) while qwen on E1 achieved -2868 (better). E2 with qwen shows mixed results but better than doubao's -4439. Deepseek performs well on M1/M2 tasks with consistently good scores (-2091 to -2626). The change moves E1 from doubao to qwen based on empirical evidence of better performance on exploration tasks.",
+      "changes": [
+        "Changed E1 routing from doubao to qwen based on poor doubao performance (-5000, -4439) vs better qwen performance (-2868)",
+        "Kept E2 with qwen despite mixed results, as doubao performed worse on E2",
+        "Maintained deepseek for M1/M2 and error/long-code cases where it performs consistently well",
+        "Kept doubao as default for standard tasks where it shows good performance (-2091)"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "60a9ecc53f62c57a787336d945661f839cb3b4f37d15d970b54bf9e318f0cfdb",
+      "new_policy_sha256": "14823083a0fe77f21e8061c55a57d18fceac7dedde03e02da6d22075960b7dd9"
+    },
+    {
+      "time": 1772565530.462332,
+      "ok": true,
+      "policy_version_after": 11,
+      "rationale": "The data shows that doubao consistently underperforms on E1 tasks with extremely low scores (-5000, -4439, -2733), while qwen performs better on E1 (-2868) and comparably on E2. The 'otherwise' default to doubao is problematic as it yields poor performance (-2091.8) even on standard tasks. Changing the default to qwen should improve overall scores since qwen shows more consistent performance across operator types, while keeping deepseek for error handling and local edits where it performs well.",
+      "changes": [
+        "Changed default backend from doubao to qwen in 'otherwise' clause",
+        "Removed doubao entirely from policy as it consistently underperforms",
+        "Kept deepseek for error/long-code cases and M1/M2 where it performs well",
+        "Kept qwen for E1/E2 based on comparative performance data"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "14823083a0fe77f21e8061c55a57d18fceac7dedde03e02da6d22075960b7dd9",
+      "new_policy_sha256": "b66c645b6ee7b4f61c7086592a3a2b2291510c5302358ff931a5fae30410828f"
+    },
+    {
+      "time": 1772565585.6091034,
+      "ok": true,
+      "policy_version_after": 12,
+      "rationale": "The current policy already performs well overall, but analysis reveals: 1) E1 with qwen (policy_version 10, reward 3132) outperforms doubao (policy_version 3, reward 3882.4) in recent consistent runs, 2) E2 with qwen (policy_version 4, reward 3373.6) outperforms doubao (policy_version 5, reward 1561), 3) M1/M2 with deepseek consistently yields high rewards (3908.2, 3373.6, 3864.0). The main issue is that doubao for E1/E2 shows high variance (some -5000 scores). Keeping qwen for E1/E2 and deepsee",
+      "changes": [
+        "No changes to policy rules - current configuration already optimal based on recent performance data",
+        "Maintained qwen for E1/E2 due to consistent high performance",
+        "Maintained deepseek for M1/M2 due to consistently high rewards",
+        "Kept all heuristic rules unchanged as they provide valuable fallbacks"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "b66c645b6ee7b4f61c7086592a3a2b2291510c5302358ff931a5fae30410828f",
+      "new_policy_sha256": "3e470073456b18ee8f86a23dd0a4e8bd7c58685753915fe2890fad436c2413ba"
+    },
+    {
+      "time": 1772565595.235233,
+      "ok": true,
+      "policy_version_after": 13,
+      "rationale": "The current policy already performs well, but analysis reveals that doubao consistently underperforms on E1 tasks (-4439, -5000, -2733 scores) while qwen performs better on E1 (-2868, -2091). For E2, qwen generally outperforms doubao (-2091 vs -4439). Deepseek remains strong for M1/M2 tasks. The main issue is doubao's poor performance on exploration tasks, so we should eliminate doubao from the policy entirely and default to qwen for exploration/restructure tasks where it shows more consistent r",
+      "changes": [
+        "Removed doubao from consideration entirely",
+        "Kept qwen for E1/E2 based on superior performance",
+        "Maintained deepseek for M1/M2 and error/long-code scenarios"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "3e470073456b18ee8f86a23dd0a4e8bd7c58685753915fe2890fad436c2413ba",
+      "new_policy_sha256": "2b1aa31f329103c4f0b80fe3bfd3f020603d4287d76f49f9a2527604f359ef5a"
+    },
+    {
+      "time": 1772565647.4563794,
+      "ok": true,
+      "policy_version_after": 14,
+      "rationale": "The current policy already performs well for most operators, with qwen consistently delivering good scores for E1/E2 (rewards: 3132-3908) and deepseek performing well for M1/M2 (rewards: 3373-3908). The only concerning pattern is step 31 where doubao for E2 scored poorly (reward: 1561), but this appears to be an outlier from policy v5. Recent qwen E2 scores (steps 30, 38) show acceptable performance (3373, 1044). The policy should remain stable as it's generally effective, with no clear evidence",
+      "changes": [
+        "Version number updated to v14",
+        "No substantive rule changes - current policy shows consistent performance patterns"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "2b1aa31f329103c4f0b80fe3bfd3f020603d4287d76f49f9a2527604f359ef5a",
+      "new_policy_sha256": "08f763fed036ef5e026d4e364d5781dcaf6bcddce5a8b6c19b9568af6a5b7bd0"
+    },
+    {
+      "time": 1772565659.93412,
+      "ok": true,
+      "policy_version_after": 15,
+      "rationale": "The current policy already performs well for most operators. Analysis of the training batch shows: 1) qwen consistently delivers good scores for E1 and E2 operators (scores around -2091 to -2868, rewards 3132-3908), 2) deepseek performs reliably for M1/M2 operators with similar score ranges, 3) The single E1→doubao case at step 21 had a poor score (-5000), confirming qwen is better for E1. No evidence suggests changing the current operator-based routing. The policy should remain unchanged as it ",
+      "changes": [
+        "No changes made - current policy already optimal based on training data",
+        "Confirmed qwen superiority for E1 over doubao",
+        "Maintained deepseek for M1/M2 based on consistent performance"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "08f763fed036ef5e026d4e364d5781dcaf6bcddce5a8b6c19b9568af6a5b7bd0",
+      "new_policy_sha256": "9ebc91927500037f260fc9599c47e19e1eb55cab657d1ce958c93ec128f5c2da"
+    },
+    {
+      "time": 1772565669.9341855,
+      "ok": true,
+      "policy_version_after": 16,
+      "rationale": "The data shows doubao consistently outperforms qwen on E1 tasks (e.g., step 29: doubao score -2117.6 vs step 28: qwen score -2868.0, step 21: doubao -2733.2 vs qwen -5000.0). For E2 tasks, qwen performs better than doubao (step 31: doubao -4439.0 vs step 30: qwen -2626.4). M1/M2 tasks with deepseek show stable performance with generally good scores. The change optimizes E1 routing to use the better-performing backend while maintaining other effective rules.",
+      "changes": [
+        "Changed E1 routing from qwen to doubao based on superior performance evidence",
+        "Kept all other rules unchanged as they show appropriate backend selection"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "9ebc91927500037f260fc9599c47e19e1eb55cab657d1ce958c93ec128f5c2da",
+      "new_policy_sha256": "075ca47fbb2c6a84873c012e1c3e4d9829c5e96185e9b6f43d446a551f4867dc"
+    },
+    {
+      "time": 1772565685.5388827,
+      "ok": true,
+      "policy_version_after": 17,
+      "rationale": "The data shows qwen consistently outperforms doubao for E1 tasks: qwen scores range from -2091.8 to -2868.0 (rewards 3908.2-3132.0) while doubao has catastrophic failures (-5000.0) and lower performance (-2733.2, -2117.6). For E2, qwen generally performs better than doubao's single poor result (-4439.0). Deepseek remains strong for M1/M2 operations with consistent moderate scores. This change eliminates the underperforming doubao for E1 while maintaining qwen's dominance in exploration/restructu",
+      "changes": [
+        "Changed E1 routing from doubao to qwen based on superior performance data",
+        "Kept E2 routing as qwen (already optimal)",
+        "Maintained deepseek for M1/M2, error handling, and long/dense code"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "075ca47fbb2c6a84873c012e1c3e4d9829c5e96185e9b6f43d446a551f4867dc",
+      "new_policy_sha256": "88e18cb585c3d82acc03e32b0dea17965c31732d761e92c8b83cc03e89bc4b3e"
+    },
+    {
+      "time": 1772565696.3072143,
+      "ok": true,
+      "policy_version_after": 18,
+      "rationale": "The data shows doubao consistently outperforms qwen on E1 tasks (e.g., step 29: doubao scored -2117.6 vs step 28: qwen scored -2868.0, step 21: doubao -2733.2 vs qwen -5000.0). For E2 tasks, qwen performs better than doubao (step 31: doubao scored -4439.0 vs step 30: qwen -2626.4). Deepseek remains strong for M1/M2 tasks with generally good scores. Changing E1 to doubao and default to doubao (instead of qwen) should increase overall EoH scores by routing E1 tasks to the better-performing backend",
+      "changes": [
+        "Changed E1 routing from qwen to doubao based on superior performance evidence",
+        "Changed default fallback from qwen to doubao to improve overall baseline performance",
+        "Kept all other rules unchanged as they show good performance patterns"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "88e18cb585c3d82acc03e32b0dea17965c31732d761e92c8b83cc03e89bc4b3e",
+      "new_policy_sha256": "232fad57c3145797e696bc911df3d789c8d4b2640f81578b4d45b66d260759f3"
+    },
+    {
+      "time": 1772565710.5057979,
+      "ok": true,
+      "policy_version_after": 19,
+      "rationale": "The data shows qwen consistently outperforms doubao for E1 tasks (compare step 29: doubao -2117.6 vs step 37: qwen -2091.8, and multiple -5000 failures with doubao). For E2, qwen has better performance (step 30: -2626.4 vs step 31: doubao -4439.0). Deepseek remains strong for M1/M2 tasks with consistently good scores. The 'Otherwise' fallback should align with the best general performer, which is qwen based on the evidence.",
+      "changes": [
+        "Changed E1 from doubao to qwen based on superior performance evidence",
+        "Kept E2 as qwen (confirmed by data)",
+        "Maintained deepseek for M1/M2 (working well)",
+        "Changed default fallback from doubao to qwen for consistency"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "232fad57c3145797e696bc911df3d789c8d4b2640f81578b4d45b66d260759f3",
+      "new_policy_sha256": "2242bd40d124fd927f4bc16b94650718160bb870e1d5462ac7999f8f73c41001"
+    },
+    {
+      "time": 1772565722.7500122,
+      "ok": true,
+      "policy_version_after": 20,
+      "rationale": "The data shows doubao consistently outperforms qwen on E1 tasks (exploration/variant generation). For E1 operations: doubao scores average -2983.9 vs qwen's -2626.0, but more importantly, doubao's worst E1 score (-5000) is better than qwen's worst E1 score (-5000 with same frequency). For E2 tasks, qwen shows mixed results but has some strong performances (-2091.8), while doubao's single E2 attempt scored poorly (-4439.0). M1/M2 tasks continue to work well with deepseek. The change optimizes E1 ",
+      "changes": [
+        "Changed E1 routing from qwen to doubao based on superior performance in exploration tasks",
+        "Kept E2 routing as qwen due to better results than doubao's single poor attempt",
+        "Maintained all other rules unchanged as they appear effective"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "2242bd40d124fd927f4bc16b94650718160bb870e1d5462ac7999f8f73c41001",
+      "new_policy_sha256": "b1fb98b8dde0010fa35feed333de971d6d24f58ef2a46f83cf0578cb2097c22a"
+    },
+    {
+      "time": 1772565771.9487278,
+      "ok": true,
+      "policy_version_after": 21,
+      "rationale": "The data shows qwen consistently outperforms doubao for E1 tasks: qwen scores range from -2091.8 to -5000 (with several strong -2091.8 results), while doubao scores are consistently worse (-2733.2, -2117.6, -4439.0). For E2, qwen has mixed results but shows strong performance in some cases (-2091.8), while doubao's single E2 attempt scored poorly (-4439.0). Deepseek remains solid for M1/M2 tasks with consistent -2091.8 scores. The key improvement is switching E1 from doubao to qwen based on empi",
+      "changes": [
+        "Changed E1 routing from doubao to qwen based on superior performance data",
+        "Kept all other rules unchanged as they show reasonable performance patterns"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "b1fb98b8dde0010fa35feed333de971d6d24f58ef2a46f83cf0578cb2097c22a",
+      "new_policy_sha256": "675258aa413a8db6e6c4572d536211e2db50da3b7a8f269a8c424c0557d86169"
+    },
+    {
+      "time": 1772565787.7896678,
+      "ok": true,
+      "policy_version_after": 22,
+      "rationale": "The data shows clear patterns: 1) For E1 (exploration/variant generation), doubao consistently outperforms qwen (compare steps 29 vs 28: -2117.6 vs -2868.0, steps 44 vs 45: -2117.6 vs -5000.0). 2) For E2 (global restructure), qwen performs adequately with some variability but no clear alternative emerges. 3) For M1/M2, deepseek performs consistently well with scores ranging from -2091.8 to -5000.0, but the -5000.0 scores appear to be task-specific failures rather than backend issues. The policy ",
+      "changes": [
+        "Changed E1 routing from qwen to doubao based on superior performance evidence",
+        "Kept E2 routing to qwen as no better alternative is evident",
+        "Maintained deepseek for M1/M2 operations given consistent performance",
+        "Preserved error/long-code fallbacks to deepseek"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "675258aa413a8db6e6c4572d536211e2db50da3b7a8f269a8c424c0557d86169",
+      "new_policy_sha256": "77c098276ead8cf38238ad4ab2da30ca14d31e7d671a490b7f2d1c5b47f50484"
+    },
+    {
+      "time": 1772565812.637028,
+      "ok": true,
+      "policy_version_after": 23,
+      "rationale": "The data shows clear patterns: (1) For E1, doubao consistently outperforms qwen (-2117.6 vs -2868.0/-5000.0). (2) For E2, doubao (-4439.0) outperforms qwen's frequent failures (-5000.0 multiple times). (3) For M1/M2, deepseek performs well with consistent moderate scores. (4) The 'otherwise' default should favor doubao over qwen given qwen's frequent -5000.0 failures. This revision optimizes for higher EoH scores by routing to backends with better demonstrated performance per operator.",
+      "changes": [
+        "Changed E2 from qwen to doubao based on doubao's better performance (-4439.0 vs qwen's frequent -5000.0 failures)",
+        "Changed default 'otherwise' from qwen to doubao to avoid qwen's catastrophic failures",
+        "Kept E1→doubao and M1/M2→deepseek unchanged as they work well"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "77c098276ead8cf38238ad4ab2da30ca14d31e7d671a490b7f2d1c5b47f50484",
+      "new_policy_sha256": "cb3689bec019cf3955a69d297249a4ce41412c8689d14cc234e2ecadf1367de4"
+    },
+    {
+      "time": 1772565836.633215,
+      "ok": true,
+      "policy_version_after": 24,
+      "rationale": "The data shows clear performance patterns: 1) For E2 (global restructure), qwen consistently outperforms doubao (compare steps 30 vs 31, 38 vs 31, 39 vs 31). The single doubao E2 attempt (step 31) scored -4439.0 vs qwen's better scores. 2) For E1, doubao and qwen show mixed results, but doubao has some strong performances (steps 29, 44) while qwen has catastrophic failures (steps 45, 36). Keeping doubao for E1 is conservative. 3) M1/M2 consistently use deepseek with generally acceptable performa",
+      "changes": [
+        "Changed E2 rule from 'choose doubao' to 'choose qwen' based on superior performance in global restructuring tasks",
+        "Kept all other rules unchanged as they show reasonable performance patterns"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "cb3689bec019cf3955a69d297249a4ce41412c8689d14cc234e2ecadf1367de4",
+      "new_policy_sha256": "f0bc1c1ff30d04cd896ba0894e27a5474f22976803fd1f4c3cab849b8f2b19f0"
+    },
+    {
+      "time": 1772565846.4340463,
+      "ok": true,
+      "policy_version_after": 25,
+      "rationale": "The current policy already performs well overall, but analysis of the training batch reveals: 1) For E1 (exploration), doubao consistently outperforms qwen (compare step 29 vs 28, 44 vs 45). 2) For E2 (global restructure), qwen generally performs better than doubao (step 30 vs 31, 39 vs 31). 3) For M1/M2 (local edits), deepseek shows strong performance with multiple high-reward outcomes. The policy correctly routes to the best-performing backends for each operator type. No major changes are need",
+      "changes": [
+        "No changes to routing logic - current policy already optimal based on data",
+        "Only version number updated to v25"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "f0bc1c1ff30d04cd896ba0894e27a5474f22976803fd1f4c3cab849b8f2b19f0",
+      "new_policy_sha256": "258f93719d9e8cd60dde094ac78707762f63c84eb698d8db1c6ca880b0ee2d3e"
+    },
+    {
+      "time": 1772565856.6619563,
+      "ok": true,
+      "policy_version_after": 26,
+      "rationale": "The data shows qwen consistently outperforms doubao for E1 operations (compare steps 29 vs 28, 44 vs 45) and is more reliable for E2 operations (steps 30, 31, 38, 39, 46, 47). Deepseek remains strong for M1/M2 operations with generally high rewards. The 'otherwise' fallback should default to qwen since it shows more consistent performance across exploration tasks.",
+      "changes": [
+        "Changed E1 from doubao to qwen based on superior performance",
+        "Kept E2 as qwen (consistent with best results)",
+        "Maintained deepseek for M1/M2 (working well)",
+        "Changed default fallback from doubao to qwen for better reliability"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "258f93719d9e8cd60dde094ac78707762f63c84eb698d8db1c6ca880b0ee2d3e",
+      "new_policy_sha256": "f5c37335e3617bcc471f664520905148ee3db3ec1dcb77bef8a79b7abc65bc6f"
+    },
+    {
+      "time": 1772565875.1207018,
+      "ok": true,
+      "policy_version_after": 27,
+      "rationale": "The data shows clear performance patterns: (1) For E1 (exploration), doubao consistently outperforms qwen (doubao scores: -2117.6, -2117.6, -3394.2 vs qwen scores: -2868.0, -2868.0, -2091.8, -5000.0). Doubao has higher average reward for E1. (2) For E2 (global restructure), qwen performs well except for one outlier (-4955.6), with most scores being competitive (-2626.4, -2091.8, -3660.6). (3) For M1/M2, deepseek is consistently strong with rewards mostly in 3800-3900 range. The current policy co",
+      "changes": [
+        "Changed E1 routing from qwen to doubao based on superior performance in exploration tasks",
+        "Kept E2 routing to qwen as it shows competitive performance",
+        "Maintained deepseek for M1/M2 and error/long-code scenarios"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "f5c37335e3617bcc471f664520905148ee3db3ec1dcb77bef8a79b7abc65bc6f",
+      "new_policy_sha256": "e4a42eeba4a28c574ae5bf1a34988b1a9481bfbda4984c13e40cb50ba4d257b2"
+    },
+    {
+      "time": 1772565886.810164,
+      "ok": true,
+      "policy_version_after": 28,
+      "rationale": "The data shows deepseek consistently outperforms qwen across all operator types except E2. For E1, doubao (-2117.6, -3394.2) performs better than qwen (-2868.0, -5000.0). For E2, qwen has mixed results but shows some strong performances (-2091.8, -2626.4) while doubao performed poorly (-4439.0). For M1/M2, deepseek consistently delivers good scores (-2091.8 to -2136.0) with only occasional poor results. Changing the default from qwen to deepseek will improve overall performance since deepseek sh",
+      "changes": [
+        "Changed default fallback from 'choose qwen' to 'choose deepseek'",
+        "Kept E1→doubao rule based on superior performance over qwen",
+        "Kept E2→qwen rule despite mixed results (best option available)",
+        "Kept M1/M2→deepseek rule which shows consistent good performance",
+        "Kept error/long-code→deepseek rules unchanged"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "e4a42eeba4a28c574ae5bf1a34988b1a9481bfbda4984c13e40cb50ba4d257b2",
+      "new_policy_sha256": "5609d296c9c7f061f062d16933f1491fc37a4715ac1ea9e64f996b5158066c57"
+    },
+    {
+      "time": 1772565919.243196,
+      "ok": true,
+      "policy_version_after": 29,
+      "rationale": "The current policy is already well-structured, but the data reveals that qwen consistently underperforms on E2 tasks with multiple catastrophic failures (scores of -4955.6, -5000.0, -4439.0), while doubao shows strong performance on E1 tasks (scores of -2117.6, -3394.2). Deepseek consistently delivers reliable performance across M1/M2 tasks with scores consistently better than -2200. The policy should maintain doubao for E1, deepseek for M1/M2, and keep qwen for E2 despite its variability, as it",
+      "changes": [
+        "No structural changes needed - policy already optimized",
+        "Maintain doubao for E1 based on strong performance (-2117.6, -3394.2)",
+        "Keep qwen for E2 despite variability - it's the designated backend",
+        "Confirm deepseek as optimal for M1/M2 with consistent performance",
+        "Preserve deepseek as default for safety and error handling"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "5609d296c9c7f061f062d16933f1491fc37a4715ac1ea9e64f996b5158066c57",
+      "new_policy_sha256": "aacb424acceccca8b695d4029d101ea8a4454fea48e8d82096e420e95c7a7685"
+    },
+    {
+      "time": 1772565928.249262,
+      "ok": true,
+      "policy_version_after": 30,
+      "rationale": "The data shows the current policy is already optimal: (1) For E1, doubao consistently outperforms qwen (compare steps 44 vs 45: -2117.6 vs -5000.0). (2) For E2, qwen generally outperforms doubao (step 30: -2626.4 vs step 31: -4439.0). (3) For M1/M2, deepseek consistently delivers high rewards (3900+ range). The policy correctly assigns each operator to its best-performing backend based on empirical evidence. No changes are needed as the current routing logic maximizes EoH scores.",
+      "changes": [
+        "No changes made - current policy already optimal based on training data"
+      ],
+      "batch_size": 25,
+      "old_policy_sha256": "aacb424acceccca8b695d4029d101ea8a4454fea48e8d82096e420e95c7a7685",
+      "new_policy_sha256": "dc08263b766a78f2e1c7451cc0e532d09a2049ea82a86dc4db416b04dd0b88ca"
+    }
+  ],
+  "update_every": 25,
+  "batch_size": 25,
+  "max_updates": 30,
+  "reward_shift": 6000.0
+}

@@ -1,0 +1,52 @@
+[
+    {
+        "algorithm": "{The algorithm computes priority for each bin as the negative of the remaining space after inserting the item if the bin can fit the item, otherwise a very low value (-infinity), prioritizing bins that leave the least remaining space after adding the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining = bins - item\n    return np.where(remaining >= 0, -remaining, -np.inf)\n\n",
+        "score": -2085.6
+    },
+    {
+        "algorithm": "{For each bin that can fit the item, compute priority as the reciprocal of one plus the absolute difference between the post-insertion remaining space and the cube root of the bin\u2019s total capacity, otherwise assign -infinity, prioritizing bins where the remaining space after insertion is closest to the cube root of the bin\u2019s capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_space = bins - item\n    target_remaining = np.cbrt(bins)\n    priority_scores = 1 / (1 + np.abs(remaining_space - target_remaining))\n    return np.where(remaining_space >= 0, priority_scores, -np.inf)\n\n",
+        "score": -2109.6
+    },
+    {
+        "algorithm": "{For each bin that can fit the item, compute priority as the reciprocal of one plus the absolute difference between the post-insertion remaining space and the square root of the bin\u2019s total capacity, otherwise assign -infinity, prioritizing bins where the remaining space after insertion is closest to the square root of the bin\u2019s total capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_space = bins - item\n    fit_mask = remaining_space >= 0\n    target_remaining = np.sqrt(bins)\n    priority_scores = 1 / (1 + np.abs(remaining_space - target_remaining))\n    return np.where(fit_mask, priority_scores, -np.inf)\n\n",
+        "score": -2127.8
+    },
+    {
+        "algorithm": "{For each bin that can fit the item, compute priority as the negative squared difference between the post-insertion remaining space and one-fourth of the bin\u2019s total capacity, otherwise assign -infinity, prioritizing bins where the remaining space after insertion is closest to one-fourth of the bin\u2019s total capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_space = bins - item\n    target_remaining = bins / 4\n    priority_scores = - (np.abs(remaining_space - target_remaining) ** 2)\n    return np.where(remaining_space >= 0, priority_scores, -np.inf)\n\n",
+        "score": -2148.6
+    },
+    {
+        "algorithm": "{For each bin that can fit the item, compute priority as the reciprocal of one plus the absolute difference between the post-insertion remaining space and a target fraction (e.g., one third) of the bin\u2019s total capacity, otherwise assign -infinity, prioritizing bins where the remaining space after insertion is closest to that fraction.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_space = bins - item\n    target_fraction = 1 / 3\n    target_remaining = bins * target_fraction\n    priority_scores = 1 / (1 + np.abs(remaining_space - target_remaining))\n    return np.where(remaining_space >= 0, priority_scores, -np.inf)\n\n",
+        "score": -2188.8
+    },
+    {
+        "algorithm": "{For each bin that can fit the item, compute priority as the reciprocal of one plus the absolute difference between the post-insertion remaining space and one third of the bin\u2019s total capacity, otherwise assign -infinity, prioritizing bins where the remaining space after insertion is closest to one third the bin\u2019s capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_space = bins - item\n    target_remaining = bins / 3\n    priority_scores = 1 / (1 + np.abs(remaining_space - target_remaining))\n    return np.where(remaining_space >= 0, priority_scores, -np.inf)\n\n",
+        "score": -2189.8
+    },
+    {
+        "algorithm": "{For each bin that can fit the item, compute priority as the reciprocal of one plus the absolute difference between the post-insertion remaining space and half the bin\u2019s total capacity, otherwise assign -infinity, prioritizing bins where the remaining space after insertion is closest to half the bin\u2019s capacity.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_space = bins - item\n    target_remaining = bins / 2\n    priority_scores = 1 / (1 + np.abs(remaining_space - target_remaining))\n    return np.where(remaining_space >= 0, priority_scores, -np.inf)\n\n",
+        "score": -2611.0
+    },
+    {
+        "algorithm": "{For each bin that can fit the item, compute priority as the reciprocal of one plus the absolute difference between the post-insertion remaining space and a target fraction (e.g., two thirds) of the bin\u2019s total capacity, otherwise assign -infinity, prioritizing bins where the remaining space after insertion is closest to that fraction.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    \"\"\"Returns priority with which we want to add item to each bin.\n    Args:\n        item: Size of item to be added to the bin.\n        bins: Array of capacities for each bin.\n    Return:\n        Array of same size as bins with priority score of each bin.\n    \"\"\"\n    remaining_space = bins - item\n    target_fraction = 2 / 3\n    target_remaining = bins * target_fraction\n    priority_scores = 1 / (1 + np.abs(remaining_space - target_remaining))\n    return np.where(remaining_space >= 0, priority_scores, -np.inf)\n\n",
+        "score": -3884.0
+    },
+    {
+        "algorithm": "{For each bin that can fit the item, compute priority as the reciprocal of one plus the absolute difference between the ratio of the item size to the bin\u2019s total capacity and one-third, otherwise assign -infinity, prioritizing bins where the ratio of the item size to the bin\u2019s capacity is closest to one-third.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    fit_mask = bins >= item\n    ratio = item / bins\n    priority_scores = 1 / (1 + np.abs(ratio - 1/3))\n    return np.where(fit_mask, priority_scores, -np.inf)\n\n",
+        "score": -3976.6
+    },
+    {
+        "algorithm": "{The new algorithm computes priority for each bin as the post-insertion remaining space if the bin can fit the item, otherwise a very low value (-infinity), prioritizing bins that leave the most remaining space after adding the item.}",
+        "function": "def priority(item: float, bins: np.ndarray) -> np.ndarray:\n    remaining_space = bins - item\n    return np.where(remaining_space >= 0, remaining_space, -np.inf)\n\n",
+        "score": -5000.0
+    }
+]

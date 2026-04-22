@@ -1,0 +1,19 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    priority_scores = np.full_like(bins, -np.inf)
+    fits_mask = bins >= item
+    if np.any(fits_mask):
+        q = bins[fits_mask] // item
+        max_fitted_size = q * item
+        priority_scores[fits_mask] = -(bins[fits_mask] - max_fitted_size)
+    return priority_scores
+

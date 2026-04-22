@@ -1,0 +1,24 @@
+
+import numpy as np
+
+def priority(item: float, bins: np.ndarray) -> np.ndarray:
+    """Returns priority with which we want to add item to each bin.
+    Args:
+        item: Size of item to be added to the bin.
+        bins: Array of capacities for each bin.
+    Return:
+        Array of same size as bins with priority score of each bin.
+    """
+    import numpy as np
+    remaining = bins - item
+    valid = remaining >= 0
+    priority_scores = np.full_like(bins, -np.inf)
+    if not np.any(valid):
+        return priority_scores
+    normalized_used = item / (bins + 1e-10)
+    # Gaussian centered at 100% fill rate, narrow width for steep priority peak near full
+    sigma = 0.05
+    gaussian_score = np.exp(-((normalized_used - 1.0) ** 2) / (2 * sigma ** 2))
+    priority_scores[valid] = gaussian_score[valid] * (bins[valid] + 1e-10)
+    return priority_scores
+

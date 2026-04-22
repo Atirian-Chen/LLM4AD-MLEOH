@@ -1,0 +1,64 @@
+{
+  "run_id": "eoh_obp_single_3backends_20260302_155431",
+  "time_start": "2026-03-02T15:54:31",
+  "python": "3.10.19 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 16:41:31) [MSC v.1929 64 bit (AMD64)]",
+  "platform": {
+    "system": "Windows",
+    "release": "10",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 151 Stepping 2, GenuineIntel"
+  },
+  "args": {
+    "deepseek_host": "api.deepseek.com",
+    "deepseek_model": "deepseek-chat",
+    "deepseek_key_env": "DEEPSEEK_API_KEY",
+    "qwen_host": "dashscope.aliyuncs.com",
+    "qwen_model": "qwen-flash",
+    "qwen_key_env": "QWEN_API_KEY",
+    "doubao_host": "ark.cn-beijing.volces.com",
+    "doubao_model": "doubao-seed-2-0-mini-260215",
+    "doubao_key_env": "ARK_API_KEY",
+    "timeout": 60,
+    "temperature": null,
+    "top_p": null,
+    "pop_size": 10,
+    "max_generations": 6,
+    "max_sample_nums": 10000,
+    "selection_num": 3,
+    "use_e2_operator": true,
+    "use_m1_operator": true,
+    "use_m2_operator": true,
+    "num_samplers": 4,
+    "num_evaluators": 4,
+    "debug_mode": false,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "out_dir": "results/eoh_obp_repro_3",
+    "exp_name": "eoh_obp_single_3backends"
+  },
+  "backends": [
+    {
+      "name": "deepseek",
+      "host": "api.deepseek.com",
+      "model": "deepseek-chat",
+      "key_env": "DEEPSEEK_API_KEY"
+    },
+    {
+      "name": "qwen",
+      "host": "dashscope.aliyuncs.com",
+      "model": "qwen-flash",
+      "key_env": "QWEN_API_KEY"
+    },
+    {
+      "name": "doubao",
+      "host": "ark.cn-beijing.volces.com",
+      "model": "doubao-seed-2-0-mini-260215",
+      "key_env": "ARK_API_KEY"
+    }
+  ]
+}
